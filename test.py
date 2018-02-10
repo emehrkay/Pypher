@@ -1,4 +1,4 @@
-from pypher.builder import Pypher, _LINKS, __
+from pypher.builder import Pypher, _LINKS, __, Param
 
 p = Pypher()
 # import pudb; pu.db
@@ -8,7 +8,7 @@ p = Pypher()
 # print(p, p.bound_params)
 
 x = Pypher()
-
+# print(_LINKS)
 # import pudb; pu.db
 
 
@@ -23,16 +23,20 @@ x = Pypher()
 # n = Pypher().node('ee', labels='Person', **d)
 # x.CREATE(n, n)
 
-x.MATCH.node('n').WHERE.n.property('name') == "Rik"
-x.SET.n.label('Food')
+# x.func('someFunction', 1, 2, 3).MATCH.node('n').rel_out(labels='THIS IS OUT').node('z').WHERE.n.property('name') == "Rik"
+# x.SET.n.label('Food')
 
+
+x.MATCH.node().WHERE.idd('n') == 0
+x.RETURN.n
 print(x)
 print(x.bound_params)
 
 
-q = Pypher()
-q.Match.node('mark', labels='Person').WHERE.mark.property('name') == 'Mark'
-q.RETURN.mark
-
-print(q)
-print(q.bound_params)
+# p = Param(name='some_param_name', value='Mark')
+# q = Pypher()
+# q.Match.node('mark', labels='Person').WHERE.mark.property('name') == p
+# q.RETURN.mark
+#
+# print(q)
+# print(q.bound_params)

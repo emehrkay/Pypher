@@ -11,6 +11,11 @@ from .exception import (PypherException, PypherAliasException,
 
 _LINKS = {}
 _MODULE = sys.modules[__name__]
+_PREDEFINED_STATEMENTS = []
+_PREDEFINED_FUNCTIONS = [('size',), ('reverse',), ('head',), ('tail',),
+    ('last',), ('extract',), ('filter',), ('reduce',), ('Type', 'type'),
+    ('startNode',), ('endNode',), ('count',), ('ID', 'id'), ('collect',),
+    ('sum',), ('percentileDisc',), ('stDev',)]
 RELATIONSHIP_DIRECTIONS = {
     '-': 'undirected',
     '>': 'out',
@@ -191,7 +196,7 @@ class Pypher(with_metaclass(_Link)):
             prev = token
             token = token.next
 
-        return ''.join(tokens)
+        return ''.join(tokens).strip()
 
     def __gt__(self, other):
         return self.operator(operator='>', value=other)
@@ -238,7 +243,28 @@ class Pypher(with_metaclass(_Link)):
         return self.add_link(prop)
 
     def alias(self, alias):
-        return self
+        return self.operator(operator='AS', value=alias)
+
+    def rel_out(self, *args, **kwargs):
+        kwargs['direction'] = 'out'
+        rel = Relationship(*args, **kwargs)
+        rel.parent = self
+
+        return self.add_link(rel)
+
+    def rel_in(self, *args, **kwargs):
+        kwargs['direction'] = 'in'
+        rel = Relationship(*args, **kwargs)
+        rel.parent = self
+
+        return self.add_link(rel)
+
+    def func(self, name, *args, **kwargs):
+        kwargs['name'] = name
+        func = Func(*args, **kwargs)
+        func.parent = self
+
+        return self.add_link(func)
 
     def add_link(self, link):
         token = self.next
@@ -464,8 +490,19 @@ class Func(Statement):
             args=args)
 
 
-class Id(Func):
+class idd(Func):
     name = 'id'
+
+# create all of the predefined functions
+for fun in _PREDEFINED_FUNCTIONS:
+    name = fun[0]
+
+    try:
+        attrs = {'name': fun[1]}
+    except Exception as e:
+        attrs = {'name': name}
+
+    setattr(_MODULE, name, type(name, (Func,), attrs))
 
 
 class Comprehension(_BaseLink):
