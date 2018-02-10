@@ -18,7 +18,8 @@ _PREDEFINED_STATEMENTS = [('Match',), ('Create',), ('Merge',), ('Delete',),
     ('CSV'), ('FROM'), ('Headers'), ('LoadCsvFrom', 'LOAD CSV FROM'),
     ('LoadCSVWithHeadersFrom', 'LOAD CSV WITH HEADERS FROM'), ('WITH'),
     ('UsingPeriodIcCommit', 'USING PERIODIC COMMIT'), ('Periodic'), ('Commit'),
-    ('FieldTerminator', 'FIELDTERMINATOR'),
+    ('FieldTerminator', 'FIELDTERMINATOR'), ('Optional', 'OPTIONAL'),
+    ('OptionalMatch', 'OPTIONAL MATCH'),
     ('OnCreateSet', 'ON CREATE SET'), ('OnMatchSet', 'ON MATCH SET'),
     ('CreateIndexOn', 'CREATE INDEX ON'), ('UsingIndex', 'USING INDEX'),
     ('DropIndexOn', 'DROP INDEX ON'),
@@ -43,6 +44,18 @@ RELATIONSHIP_DIRECTIONS = {
     '<': 'in',
     '<>': 'both',
 }
+
+
+def create_function(name, attrs=None):
+    attrs = attrs or {}
+
+    setattr(_MODULE, name, type(name, (Func,), attrs))
+
+
+def create_statement(name, attrs=None):
+    attrs = attrs or {}
+
+    setattr(_MODULE, name, type(name, (Statement,), attrs))
 
 
 Param = namedtuple('Param', 'name value')
@@ -219,6 +232,60 @@ class Pypher(with_metaclass(_Link)):
 
         return ''.join(tokens).strip()
 
+    def __add__(self, other):
+        return self.operator(operator='+', value=other)
+
+    def __iadd__(self, other):
+        return self.operator(operator='+=', value=other)
+
+    def __radd__(self, other):
+        return self.operator(operator='+=', value=other)
+
+    def __sub__(self, other):
+        return self.operator(operator='-', value=other)
+
+    def __isub__(self, other):
+        return self.operator(operator='-', value=other)
+
+    def __rsub__(self, other):
+        return self.operator(operator='-', value=other)
+
+    def __mul__(self, other):
+        return self.operator(operator='*', value=other)
+
+    def __imul__(self, other):
+        return self.operator(operator='*', value=other)
+
+    def __rmul__(self, other):
+        return self.operator(operator='*', value=other)
+
+    def __div__(self, other):
+        return self.operator(operator='/', value=other)
+
+    def __idiv__(self, other):
+        return self.operator(operator='/', value=other)
+
+    def __rdiv__(self, other):
+        return self.operator(operator='/', value=other)
+
+    def __mod__(self, other):
+        return self.operator(operator='%', value=other)
+
+    def __and__(self, other):
+        return self.operator(operator='&', value=other)
+
+    def __or__(self, other):
+        return self.operator(operator='|', value=other)
+
+    def __ror__(self, other):
+        return self.operator(operator='|', value=other)
+
+    def __xor__(self, other):
+        return self.operator(operator='^', value=other)
+
+    def __rxor__(self, other):
+        return self.operator(operator='^', value=other)
+
     def __gt__(self, other):
         return self.operator(operator='>', value=other)
 
@@ -236,21 +303,6 @@ class Pypher(with_metaclass(_Link)):
 
     def __eq__(self, other):
         return self.operator(operator='=', value=other)
-
-    def __and__(self, other):
-        return self.operator(operator='&', value=other)
-
-    def __iadd__(self, other):
-        return self.operator(operator='+=', value=other)
-
-    # def AND(self, other):
-    #     return self.operator(operator='&', value=other)
-    #
-    # def OR(self, other):
-    #     return self.operator(operator='|', value=other)
-    #
-    # def IN(self, other):
-    #     return self.operator(operator='in', value=other)
 
     def operator(self, operator, value):
         op = Operator(operator=operator, value=value, parent=self)
@@ -392,18 +444,6 @@ class Statement(_BaseLink):
         return self.name
 
 
-# dynamically create Statments
-for state in _PREDEFINED_STATEMENTS:
-    name = state[0]
-
-    try:
-        attrs = {'name': state[1]}
-    except Exception as e:
-        attrs = {}
-
-    setattr(_MODULE, name, type(name, (Statement,), attrs))
-
-
 class Property(Statement):
     _ADD_PRECEEDING_WS = False
     _CLEAR_PRECEEDING_WS = True
@@ -457,21 +497,6 @@ class Func(Statement):
 
         return '{function}({args})'.format(function=self.name,
             args=args)
-
-
-class idd(Func):
-    name = 'id'
-
-# create all of the predefined functions
-for fun in _PREDEFINED_FUNCTIONS:
-    name = fun[0]
-
-    try:
-        attrs = {'name': fun[1]}
-    except Exception as e:
-        attrs = {'name': name}
-
-    setattr(_MODULE, name, type(name, (Func,), attrs))
 
 
 class Comprehension(_BaseLink):
@@ -626,4 +651,28 @@ class Anon(object):
         return py
 
 
+# Create an anonymous Pypher factory
 __ = Anon()
+
+
+# dynamically create all pre defined Statments and functions
+for state in _PREDEFINED_STATEMENTS:
+    name = state[0]
+
+    try:
+        attrs = {'name': state[1]}
+    except Exception as e:
+        attrs = {}
+
+    create_statement(name=name, attrs=attrs)
+
+
+for fun in _PREDEFINED_FUNCTIONS:
+    name = fun[0]
+
+    try:
+        attrs = {'name': fun[1]}
+    except Exception as e:
+        attrs = {'name': name}
+
+    create_function(name=name, attrs=attrs)
