@@ -19,10 +19,10 @@ _PREDEFINED_STATEMENTS = [('Match',), ('Create',), ('Merge',), ('Delete',),
     ('LoadCSVWithHeadersFrom', 'LOAD CSV WITH HEADERS FROM'), ('WITH'),
     ('UsingPeriodIcCommit', 'USING PERIODIC COMMIT'), ('Periodic'), ('Commit'),
     ('FieldTerminator', 'FIELDTERMINATOR'), ('Optional', 'OPTIONAL'),
-    ('OptionalMatch', 'OPTIONAL MATCH'),
-    ('OnCreateSet', 'ON CREATE SET'), ('OnMatchSet', 'ON MATCH SET'),
-    ('CreateIndexOn', 'CREATE INDEX ON'), ('UsingIndex', 'USING INDEX'),
-    ('DropIndexOn', 'DROP INDEX ON'),
+    ('OptionalMatch', 'OPTIONAL MATCH'), ('Desc'), ('When'), ('ELSE'),
+    ('Case'), ('End'), ('OnCreateSet', 'ON CREATE SET'),
+    ('OnMatchSet', 'ON MATCH SET'), ('CreateIndexOn', 'CREATE INDEX ON'),
+    ('UsingIndex', 'USING INDEX'), ('DropIndexOn', 'DROP INDEX ON'),
     ('CreateConstraintOn', 'CREATE CONSTRAINT ON'),
     ('DropConstraintOn', 'DROP CONSTRAINT ON')]
 _PREDEFINED_FUNCTIONS = [('size',), ('reverse',), ('head',), ('tail',),
@@ -235,44 +235,53 @@ class Pypher(with_metaclass(_Link)):
     def __add__(self, other):
         return self.operator(operator='+', value=other)
 
-    def __iadd__(self, other):
-        return self.operator(operator='+=', value=other)
-
     def __radd__(self, other):
+        return self.operator(operator='+', value=other)
+
+    def __iadd__(self, other):
         return self.operator(operator='+=', value=other)
 
     def __sub__(self, other):
         return self.operator(operator='-', value=other)
 
-    def __isub__(self, other):
-        return self.operator(operator='-', value=other)
-
     def __rsub__(self, other):
         return self.operator(operator='-', value=other)
 
-    def __mul__(self, other):
-        return self.operator(operator='*', value=other)
+    def __isub__(self, other):
+        return self.operator(operator='-=', value=other)
 
-    def __imul__(self, other):
+    def __mul__(self, other):
         return self.operator(operator='*', value=other)
 
     def __rmul__(self, other):
         return self.operator(operator='*', value=other)
 
-    def __div__(self, other):
-        return self.operator(operator='/', value=other)
+    def __imul__(self, other):
+        return self.operator(operator='*=', value=other)
 
-    def __idiv__(self, other):
+    def __div__(self, other):
         return self.operator(operator='/', value=other)
 
     def __rdiv__(self, other):
         return self.operator(operator='/', value=other)
 
+    def __idiv__(self, other):
+        return self.operator(operator='/=', value=other)
+
     def __mod__(self, other):
         return self.operator(operator='%', value=other)
 
+    def __rmod__(self, other):
+        return self.operator(operator='%', value=other)
+
+    def __imod__(self, other):
+        return self.operator(operator='%=', value=other)
+
     def __and__(self, other):
         return self.operator(operator='&', value=other)
+
+    def __iand__(self, other):
+        return self.operator(operator='&=', value=other)
 
     def __or__(self, other):
         return self.operator(operator='|', value=other)
@@ -280,11 +289,17 @@ class Pypher(with_metaclass(_Link)):
     def __ror__(self, other):
         return self.operator(operator='|', value=other)
 
+    def __iror__(self, other):
+        return self.operator(operator='|=', value=other)
+
     def __xor__(self, other):
         return self.operator(operator='^', value=other)
 
     def __rxor__(self, other):
         return self.operator(operator='^', value=other)
+
+    def __ixor__(self, other):
+        return self.operator(operator='^=', value=other)
 
     def __gt__(self, other):
         return self.operator(operator='>', value=other)
@@ -532,6 +547,10 @@ class AND(Operator):
 
 class OR(Operator):
     operator = 'OR'
+
+
+class Assign(Operator):
+    operator = '='
 
 
 class Entity(_BaseLink):

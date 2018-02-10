@@ -2,6 +2,7 @@ from .builder import (Pypher, _PREDEFINED_STATEMENTS, _PREDEFINED_FUNCTIONS,
     Anon, __, create_statement, create_function)
 from .exception import (PypherException, PypherAliasException,
     PypherArgumentException)
+from .version import __version__
 
 
 _all = [Pypher, Anon, __, PypherException, PypherAliasException,
@@ -16,3 +17,4 @@ for pf in _PREDEFINED_FUNCTIONS:
 
 
 __all__ = _all
+__version__ = __version__
