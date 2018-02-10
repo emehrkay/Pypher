@@ -28,7 +28,9 @@ x = Pypher()
 
 
 x.MATCH.node().WHERE.idd('n') == 0
-x.RETURN.n
+x.RETURN('n', __.node('k').rel_out(labels='somerel').node('u', labels='Person'))
+x = Pypher()
+x.CreateIndexOn(__.label('Person')('name'))
 print(x)
 print(x.bound_params)
 

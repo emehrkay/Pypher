@@ -11,11 +11,32 @@ from .exception import (PypherException, PypherAliasException,
 
 _LINKS = {}
 _MODULE = sys.modules[__name__]
-_PREDEFINED_STATEMENTS = []
+_PREDEFINED_STATEMENTS = [('Match',), ('Create',), ('Merge',), ('Delete',),
+    ('Remove',), ('Drop',), ('Where',), ('Distinct',), ('OrderBy', 'ORDER BY'),
+    ('Set',), ('Skip',), ('Limit',), ('Return',), ('Unwind',), ('ASSERT'),
+    ('Detach'), ('DetachDelete', 'DETACH DELETE'), ('Foreach'), ('Load'),
+    ('CSV'), ('FROM'), ('Headers'), ('LoadCsvFrom', 'LOAD CSV FROM'),
+    ('LoadCSVWithHeadersFrom', 'LOAD CSV WITH HEADERS FROM'), ('WITH'),
+    ('UsingPeriodIcCommit', 'USING PERIODIC COMMIT'), ('Periodic'), ('Commit'),
+    ('FieldTerminator', 'FIELDTERMINATOR'),
+    ('OnCreateSet', 'ON CREATE SET'), ('OnMatchSet', 'ON MATCH SET'),
+    ('CreateIndexOn', 'CREATE INDEX ON'), ('UsingIndex', 'USING INDEX'),
+    ('DropIndexOn', 'DROP INDEX ON'),
+    ('CreateConstraintOn', 'CREATE CONSTRAINT ON'),
+    ('DropConstraintOn', 'DROP CONSTRAINT ON')]
 _PREDEFINED_FUNCTIONS = [('size',), ('reverse',), ('head',), ('tail',),
-    ('last',), ('extract',), ('filter',), ('reduce',), ('Type', 'type'),
-    ('startNode',), ('endNode',), ('count',), ('ID', 'id'), ('collect',),
-    ('sum',), ('percentileDisc',), ('stDev',)]
+    ('last',), ('extract',), ('filter',), ('reduce',), ('Type', 'type',),
+    ('startNode',), ('endNode',), ('count',), ('ID', 'id',), ('collect',),
+    ('sum',), ('percentileDisc',), ('stDev',), ('coalesce',), ('timestamp',),
+    ('toInteger',), ('toFloat',), ('toBoolean',), ('keys',), ('properties',),
+    ('length',), ('nodes',), ('relationships',), ('point',), ('distance',),
+    ('abs',), ('rand',), ('ROUND', 'round',), ('CEIL', 'ceil',),
+    ('Floor', 'floor',), ('sqrt',), ('sign',), ('sin',), ('cos',), ('tan',),
+    ('cot',), ('asin',), ('acos',), ('atan',), ('atanZ',), ('haversin',),
+    ('degrees',), ('radians',), ('pi',), ('log10',), ('log',), ('exp',),
+    ('e',), ('toString',), ('replace',), ('substring',), ('left',),
+    ('right',), ('trim',), ('ltrim',), ('toUpper',), ('toLower',),
+    ('SPLIT', 'split',)]
 RELATIONSHIP_DIRECTIONS = {
     '-': 'undirected',
     '>': 'out',
@@ -371,68 +392,16 @@ class Statement(_BaseLink):
         return self.name
 
 
-class Match(Statement):
+# dynamically create Statments
+for state in _PREDEFINED_STATEMENTS:
+    name = state[0]
 
-    def __str__(self):
-        return self.__unicode__()
+    try:
+        attrs = {'name': state[1]}
+    except Exception as e:
+        attrs = {}
 
-    def __unicode__(self):
-        return 'MATCH'
-
-
-class Create(Statement):
-
-    def __call__(self, *args):
-        """should allow for .CREATE(NODE(), NODE(), ...)"""
-        return self
-
-
-class Merge(Statement):
-    pass
-
-
-class Delete(Statement):
-    pass
-
-
-class Remove(Statement):
-    pass
-
-
-class Drop(Statement):
-    pass
-
-
-class Where(Statement):
-    pass
-
-
-class Distinct(Statement):
-    pass
-
-
-class Orderby(Statement):
-    pass
-
-
-class Set(Statement):
-    pass
-
-
-class Skip(Statement):
-    pass
-
-
-class Limit(Statement):
-    pass
-
-
-class Return(Statement):
-    pass
-
-
-class Unwind(Statement):
-    pass
+    setattr(_MODULE, name, type(name, (Statement,), attrs))
 
 
 class Property(Statement):
