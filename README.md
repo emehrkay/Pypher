@@ -71,6 +71,24 @@ Pypher is a very simple query builder for Cypher. It works by creating a simple 
 * `operator(operator, value)` -- a simple way to add anything to the chain. All of the Pypher magic methods around assignments and math call this method. Note: the `other` needs to be a different Pypher instance or you will get a funky Cypher string.
 * `_` -- the current Pypher instance. This is useful for special edge cases. See `Property`
 
+
+### __
+
+*`__`* The double underscore object is just an instance of `Anon`. It is basically a factory class that creates instances of Pypher when attributes are accessed against it.
+
+* Useful for creating Pypher objects that will either be passed in as arguments or used to continue a chain after a math or assignment operation on an existing chain.
+
+```python
+from pypher import __, Pypher
+
+p = Pypher()
+
+p.MATCH.node('mark', labels='Person').rel(labels='knows').node('mikey', lables='Cat')
+p.return(__.mark, __.mikey) 
+
+str(p) # MATCH (mark:Person)-[:knows]-(mikey:Cat) RETURN mark, mikey
+```
+
 ### Param
 
 *`Param`* objects are simple containers that store a name and a value.
