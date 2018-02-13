@@ -1,12 +1,13 @@
 from .builder import (Pypher, _PREDEFINED_STATEMENTS, _PREDEFINED_FUNCTIONS,
-    Anon, __, create_statement, create_function)
+    Anon, __, create_statement, create_function, RELATIONSHIP_DIRECTIONS)
 from .exception import (PypherException, PypherAliasException,
     PypherArgumentException)
 from .version import __version__
 
 
 _all = [Pypher, Anon, __, PypherException, PypherAliasException,
-    PypherArgumentException, create_function, create_statement]
+    PypherArgumentException, create_function, create_statement,
+    RELATIONSHIP_DIRECTIONS]
 
 
 for ps in _PREDEFINED_STATEMENTS:

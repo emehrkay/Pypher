@@ -83,6 +83,7 @@ class Pypher(with_metaclass(_Link)):
     PARAM_PREFIX = 'NEO'
 
     def __init__(self, parent=None, *args, **kwargs):
+        self._ = self
         self._parent = parent
         self.link = None
         self.next = None
@@ -112,7 +113,12 @@ class Pypher(with_metaclass(_Link)):
 
     @property
     def bound_params(self):
-        return self._bound_params
+        params = self._bound_params
+
+        if self.parent:
+            params.update(self.parent.bound_params)
+
+        return params
 
     def safely_stringify_for_pudb(self):
         return None
@@ -137,17 +143,17 @@ class Pypher(with_metaclass(_Link)):
             if isinstance(value, Param):
                 name = value.name
                 value = value.value
-            elif value in self._bound_params.values():
-                for k, v in self._bound_params.items():
-                    if v == value:
-                        name = k
-                        break
-            elif value in self._bound_params.keys():
-                for k, v in self._bound_params.items():
-                    if v == k:
-                        name = k
-                        value = v
-                        break
+            # elif value in self.bound_params.values():
+            #     for k, v in self._bound_params.items():
+            #         if v == value:
+            #             name = k
+            #             break
+            # elif value in self._bound_params.keys():
+            #     for k, v in self._bound_params.items():
+            #         if v == k:
+            #             name = k
+            #             value = v
+            #             break
         except:
             pass
 
@@ -157,7 +163,7 @@ class Pypher(with_metaclass(_Link)):
         self._bound_params[name] = value
 
         if self.parent:
-            self.parent.bind_param(value=value, name=name)
+            return self.parent.bind_param(value=value, name=name)
 
         return Param(name=name, value=value)
 
@@ -172,14 +178,15 @@ class Pypher(with_metaclass(_Link)):
     def __getattr__(self, attr):
         attr_low = attr.lower()
 
-        if attr_low in _LINKS:
+        if attr_low[:2] == '__' and attr_low[-2:] == '__':
+            link = Property(name=attr.strip('__'))
+        elif attr_low in _LINKS:
             link = (getattr(_MODULE, _LINKS[attr_low]))()
-            link.parent = self
         else:
             link = Statement(name=attr)
-            link.parent = self
-
             self._set_attr = attr
+
+        link.parent = self
 
         return self.add_link(link)
 
@@ -190,7 +197,8 @@ class Pypher(with_metaclass(_Link)):
         return self.remove_link(self._bottom).add_link(func)
 
     def __getitem__(self, *args):
-        comp = Comprehension(parent=self, *args)
+        comp = List(parent=self, *args)
+        comp.parent = self
 
         return self.add_link(comp)
 
@@ -333,6 +341,12 @@ class Pypher(with_metaclass(_Link)):
     def alias(self, alias):
         return self.operator(operator='AS', value=alias)
 
+    def raw(self, *args):
+        d = {'parent', self}
+        raw = Raw(*args, **d)
+
+        return self.add_link(raw)
+
     def rel_out(self, *args, **kwargs):
         kwargs['direction'] = 'out'
         rel = Relationship(*args, **kwargs)
@@ -354,7 +368,15 @@ class Pypher(with_metaclass(_Link)):
 
         return self.add_link(func)
 
+    def func_raw(self, name, *args, **kwargs):
+        kwargs['name'] = name
+        func = FuncRaw(*args, **kwargs)
+        func.parent = self
+
+        return self.add_link(func)
+
     def add_link(self, link):
+        link.parent = self
         token = self.next
 
         if not token:
@@ -408,15 +430,6 @@ class _BaseLink(Pypher):
 
     def __unicode__(self):
         return self.__class__.__name__.upper()
-
-
-class Alias(_BaseLink):
-
-    def __getattr__(self, attr):
-        pass
-
-    def alias(self, alias):
-        return self
 
 
 class Statement(_BaseLink):
@@ -476,8 +489,14 @@ class Label(Statement):
         labels = []
 
         for arg in self.args:
-            param = self.bind_param(arg)
-            labels.append(param.name)
+            if isinstance(arg, Pypher):
+                value = str(arg)
+                arg.parent = self.parent
+            else:
+                param = self.bind_param(arg)
+                value = param.name
+
+            labels.append(value)
 
         labels = ':'.join(labels)
 
@@ -501,25 +520,67 @@ class IN(Statement):
 class Func(Statement):
     _CAPITALIZE = False
 
-    def __unicode__(self):
+    def get_args(self):
         args = []
 
         for arg in self.args:
-            param = self.bind_param(arg)
-            args.append(param.name)
+            if isinstance(arg, Pypher):
+                value = str(arg)
+                arg.parent = self.parent
+            else:
+                param = self.bind_param(arg)
+                value = param.name
 
-        args = ', '.join(args)
+            args.append(value)
+
+        return ', '.join(args)
+
+    def __unicode__(self):
+        args = self.get_args()
 
         return '{function}({args})'.format(function=self.name,
             args=args)
 
 
-class Comprehension(_BaseLink):
+class FuncRaw(Func):
+
+    def get_args(self):
+        return ', '.join(self.args)
+
+
+class Raw(Statement):
 
     def __unicode__(self):
-        args = ''.join(map(str, self.args))
+        ' '.join(self.args)
+
+        return '{args}'.format(args=args)
+
+
+class List(_BaseLink):
+    _ADD_PRECEEDING_WS = False
+    _CLEAR_PRECEEDING_WS = True
+
+    def __unicode__(self):
+        args = []
+
+        for arg in self.args:
+            if isinstance(arg, Pypher):
+                value = str(arg)
+                arg.parent = self.parent
+            else:
+                param = self.bind_param(arg)
+                value = param.name
+
+            args.append(value)
+
+        args = ' '.join(args)
 
         return '[{args}]'.format(args=args)
+
+
+class Comprehension(List):
+    _ADD_PRECEEDING_WS = True
+    _CLEAR_PRECEEDING_WS = False
 
 
 class Operator(_BaseLink):
@@ -534,9 +595,14 @@ class Operator(_BaseLink):
 
     def __unicode__(self):
         if self.value:
-            param = self.bind_param(self.value)
+            if isinstance(self.value, Pypher):
+                self.value.parent = self
+                value = str(self.value)
+            else:
+                param = self.bind_param(self.value)
+                value = param.name
 
-            return '{} {}'.format(self.operator, param.name)
+            return '{} {}'.format(self.operator, value)
 
         return self.operator
 

@@ -1,4 +1,8 @@
-from pypher.builder import Pypher, _LINKS, __, Param
+from pypher.builder import Pypher, _LINKS, __, Param, create_statement, create_function
+
+
+create_statement('m', {'name': 'MarkIsSoCool'})
+create_function('u', {'name': 'UUUUUU'})
 
 p = Pypher()
 # import pudb; pu.db
@@ -27,10 +31,8 @@ x = Pypher()
 # x.SET.n.label('Food')
 
 
-x.MATCH.node().WHERE.idd('n') == 0
-x.RETURN('n', __.node('k').rel_out(labels='somerel').node('u', labels='Person'))
-x = Pypher()
-x.CreateIndexOn(__.label('Person')('name'))
+x.n.__new_age__[__.x.__sex__ | 'money'] + __.n.property('feet') == 4
+x.new_age[__.x.__sex__ | 'money']
 print(x)
 print(x.bound_params)
 
