@@ -534,13 +534,13 @@ class Func(Statement):
 class FuncRaw(Func):
 
     def get_args(self):
-        return ', '.join(self.args)
+        return ', '.join(map(str, self.args))
 
 
 class Raw(Statement):
 
     def __unicode__(self):
-        ' '.join(self.args)
+        ' '.join(map(str, self.args))
 
         return '{args}'.format(args=args)
 
