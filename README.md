@@ -87,6 +87,15 @@ p.MATCH.node('mark', labels='Person').rel(labels='knows').node('mikey', lables='
 p.return(__.mark, __.mikey) 
 
 str(p) # MATCH (mark:Person)-[:knows]-(mikey:Cat) RETURN mark, mikey
+
+# OR
+
+p = Pypher()
+
+p.MATCH.node('mark').SET(__.mark.property('name') == 'Mark!!')
+
+str(p) # MATCH (NEO_XXUU3_1) SET mark.name = NEO_XXUU3_2
+print(p.bound_params) # {'NEO_XXUU3_1': 'mark', 'NEO_XXUU3_2': 'Mark!!'}
 ```
 
 ### Param
