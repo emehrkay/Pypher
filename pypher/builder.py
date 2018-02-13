@@ -486,18 +486,7 @@ class Label(Statement):
     _CLEAR_PRECEEDING_WS = True
 
     def __unicode__(self):
-        labels = []
-
-        for arg in self.args:
-            if isinstance(arg, Pypher):
-                value = str(arg)
-                arg.parent = self.parent
-            else:
-                param = self.bind_param(arg)
-                value = param.name
-
-            labels.append(value)
-
+        labels = [str(a) for a in self.args]
         labels = ':'.join(labels)
 
         return ':{labels}'.format(labels=labels)

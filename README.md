@@ -72,7 +72,7 @@ Pypher is a very simple query builder for Cypher. It works by creating a simple 
 * `_` -- the current Pypher instance. This is useful for special edge cases. See `Property`
 
 
-### __
+### __ (double underscore)
 
 *`__`* The double underscore object is just an instance of `Anon`. It is basically a factory class that creates instances of Pypher when attributes are accessed against it.
 
@@ -83,10 +83,10 @@ from pypher import __, Pypher
 
 p = Pypher()
 
-p.MATCH.node('mark', labels='Person').rel(labels='knows').node('mikey', lables='Cat')
+p.MATCH.node('mark', labels='Person').rel(labels='knows').node('mikey', lables=['Cat', 'Animal'])
 p.return(__.mark, __.mikey) 
 
-str(p) # MATCH (mark:Person)-[:knows]-(mikey:Cat) RETURN mark, mikey
+str(p) # MATCH (mark:Person)-[:knows]-(mikey:Cat:Animal) RETURN mark, mikey
 
 # OR
 
