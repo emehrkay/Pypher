@@ -2,6 +2,12 @@
 
 Pypher is a tiny library that focuses on building Cypher queries by constructing pure Python objects.
 
+## To-do
+
+- [ ] Unitests
+- [ ] Finish Documentation
+- [ ] Create pypi package
+
 ## Setup
 
 ```
@@ -62,13 +68,14 @@ Pypher is a very simple query builder for Cypher. It works by creating a simple 
 * `rel_in(*args, **kwargs)` -- this will start an incoming relationship. See `Relationship` for argument details.
 * `alias(alias)` -- this is a way to allow for simple `AS $name` in the resulting Cypher.
 * `property(name)` -- since Pypher already co-opted the dot notation for stringing together the object, it needed a way to represent properties on a `Node` or `Relationship`. Simply type `q.n.property('name')` or `q.n__name__` to have it create `n.name` in Cypher. See `Property` for more details.
-* `operator(operator, value)` -- a simple way to add anything to the chain. Note: the `other` needs to be a different Pypher instance or you will get a funky Cypher string.
+* `operator(operator, value)` -- a simple way to add anything to the chain. All of the Pypher magic methods around assignments and math call this method. Note: the `other` needs to be a different Pypher instance or you will get a funky Cypher string.
 * `_` -- the current Pypher instance. This is useful for special edge cases. See `Property`
 
 ### Param
 
 *`Param`* objects are simple containers that store a name and a value.
 
+* These objects are useful when you want finer control over the names of the bound params in the resulting Cypher query.
 * These can be passed in to Pyper instances and will be referenced by their name once the Cypher string is created. 
 * `Pypher.bind_param` will return an instance of a Param object.
 
@@ -145,7 +152,7 @@ p.MyStatementName.is.cool
 str(p) # MY STATEMENT IN CYPHER IS COOL
 ```
 
-> The Cypher definition is optional. If omitted the resulting Cypher will be the class name in call caps
+> The name definition is optional. If omitted the resulting Cypher will be the class name in call caps
 
 
 ### Func
@@ -238,7 +245,7 @@ p.myFunction(1, 2, 3)
 str(p) # myFunction(1, 2, 3) note that the arguments will be bound and not "1, 2, 3"
 ```
 
-> The Cypher definition is optional. If omitted the resulting Cypher will be the class name in call caps
+> The name definition is optional. If omitted the resulting Cypher will be the exact name of the function
 
 ### Entity
 
