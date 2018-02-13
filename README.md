@@ -38,13 +38,13 @@ q.Match.node('mark', labels='Person').WHERE.mark.property('name') == 'Mark'
 q.RETURN.mark
 ```
 
-> That isn't a one-to-one match, but it is close, and more importantly, easy to read and understand.
+> That isn't a one-to-one match, but it is close. More importantly, easy to read, understand, and compose complex queries without string concatenation.
 
 Creating an actual Cypher string from a Pypher query is simple
 
 ```python
-cypher = str(c) # MATCH (mark:Person) WHERE mark.name = NEO_9326c_1 RETURN mark
-params = c.bound_params # {'NEO_9326c_1': 'Mark'}
+cypher = str(q) # MATCH (mark:Person) WHERE mark.name = NEO_9326c_1 RETURN mark
+params = q.bound_params # {'NEO_9326c_1': 'Mark'}
 ```
 
 # Structure
