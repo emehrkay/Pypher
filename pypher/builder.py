@@ -1,7 +1,7 @@
 import sys
 import uuid
 
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 
 from six import with_metaclass
 
@@ -11,33 +11,33 @@ from .exception import (PypherException, PypherAliasException,
 
 _LINKS = {}
 _MODULE = sys.modules[__name__]
-_PREDEFINED_STATEMENTS = [('Match',), ('Create',), ('Merge',), ('Delete',),
-    ('Remove',), ('Drop',), ('Where',), ('Distinct',), ('OrderBy', 'ORDER BY'),
-    ('Set',), ('Skip',), ('Limit',), ('Return',), ('Unwind',), ('ASSERT'),
-    ('Detach'), ('DetachDelete', 'DETACH DELETE'), ('Foreach'), ('Load'),
-    ('CSV'), ('FROM'), ('Headers'), ('LoadCsvFrom', 'LOAD CSV FROM'),
-    ('LoadCSVWithHeadersFrom', 'LOAD CSV WITH HEADERS FROM'), ('WITH'),
-    ('UsingPeriodIcCommit', 'USING PERIODIC COMMIT'), ('Periodic'), ('Commit'),
-    ('FieldTerminator', 'FIELDTERMINATOR'), ('Optional', 'OPTIONAL'),
-    ('OptionalMatch', 'OPTIONAL MATCH'), ('Desc'), ('When'), ('ELSE'),
-    ('Case'), ('End'), ('OnCreateSet', 'ON CREATE SET'),
-    ('OnMatchSet', 'ON MATCH SET'), ('CreateIndexOn', 'CREATE INDEX ON'),
-    ('UsingIndex', 'USING INDEX'), ('DropIndexOn', 'DROP INDEX ON'),
-    ('CreateConstraintOn', 'CREATE CONSTRAINT ON'),
-    ('DropConstraintOn', 'DROP CONSTRAINT ON')]
-_PREDEFINED_FUNCTIONS = [('size',), ('reverse',), ('head',), ('tail',),
-    ('last',), ('extract',), ('filter',), ('reduce',), ('Type', 'type',),
-    ('startNode',), ('endNode',), ('count',), ('ID', 'id',), ('collect',),
-    ('sum',), ('percentileDisc',), ('stDev',), ('coalesce',), ('timestamp',),
-    ('toInteger',), ('toFloat',), ('toBoolean',), ('keys',), ('properties',),
-    ('length',), ('nodes',), ('relationships',), ('point',), ('distance',),
-    ('abs',), ('rand',), ('ROUND', 'round',), ('CEIL', 'ceil',),
-    ('Floor', 'floor',), ('sqrt',), ('sign',), ('sin',), ('cos',), ('tan',),
-    ('cot',), ('asin',), ('acos',), ('atan',), ('atanZ',), ('haversin',),
-    ('degrees',), ('radians',), ('pi',), ('log10',), ('log',), ('exp',),
-    ('e',), ('toString',), ('replace',), ('substring',), ('left',),
-    ('right',), ('trim',), ('ltrim',), ('toUpper',), ('toLower',),
-    ('SPLIT', 'split',)]
+_PREDEFINED_STATEMENTS = [['Match',], ['Create',], ['Merge',], ['Delete',],
+    ['Remove',], ['Drop',], ['Where',], ['Distinct',], ['OrderBy', 'ORDER BY'],
+    ['Set',], ['Skip',], ['Limit',], ['Return',], ['Unwind',], ['ASSERT'],
+    ['Detach'], ['DetachDelete', 'DETACH DELETE'], ['Foreach'], ['Load'],
+    ['CSV'], ['FROM'], ['Headers'], ['LoadCsvFrom', 'LOAD CSV FROM'],
+    ['LoadCSVWithHeadersFrom', 'LOAD CSV WITH HEADERS FROM'], ['WITH'],
+    ['UsingPeriodIcCommit', 'USING PERIODIC COMMIT'], ['Periodic'], ['Commit'],
+    ['FieldTerminator', 'FIELDTERMINATOR'], ['Optional', 'OPTIONAL'],
+    ['OptionalMatch', 'OPTIONAL MATCH'], ['Desc'], ['When'], ['ELSE'],
+    ['Case'], ['End'], ['OnCreateSet', 'ON CREATE SET'],
+    ['OnMatchSet', 'ON MATCH SET'], ['CreateIndexOn', 'CREATE INDEX ON'],
+    ['UsingIndex', 'USING INDEX'], ['DropIndexOn', 'DROP INDEX ON'],
+    ['CreateConstraintOn', 'CREATE CONSTRAINT ON'],
+    ['DropConstraintOn', 'DROP CONSTRAINT ON']]
+_PREDEFINED_FUNCTIONS = [['size',], ['reverse',], ['head',], ['tail',],
+    ['last',], ['extract',], ['filter',], ['reduce',], ['Type', 'type',],
+    ['startNode',], ['endNode',], ['count',], ['ID', 'id',], ['collect',],
+    ['sum',], ['percentileDisc',], ['stDev',], ['coalesce',], ['timestamp',],
+    ['toInteger',], ['toFloat',], ['toBoolean',], ['keys',], ['properties',],
+    ['length',], ['nodes',], ['relationships',], ['point',], ['distance',],
+    ['abs',], ['rand',], ['ROUND', 'round',], ['CEIL', 'ceil',],
+    ['Floor', 'floor',], ['sqrt',], ['sign',], ['sin',], ['cos',], ['tan',],
+    ['cot',], ['asin',], ['acos',], ['atan',], ['atanZ',], ['haversin',],
+    ['degrees',], ['radians',], ['pi',], ['log10',], ['log',], ['exp',],
+    ['E', 'e'], ['toString',], ['replace',], ['substring',], ['left',],
+    ['right',], ['trim',], ['ltrim',], ['toUpper',], ['toLower',],
+    ['SPLIT', 'split',]]
 RELATIONSHIP_DIRECTIONS = {
     '-': 'undirected',
     '>': 'out',
@@ -59,6 +59,66 @@ def create_statement(name, attrs=None):
 
 
 Param = namedtuple('Param', 'name value')
+
+
+class Params(object):
+
+    def __init__(self, prefix=None, key=None):
+        self.prefix = prefix + '_' or ''
+        self.key = key or str(uuid.uuid4())[-5:]
+        self._bound_params = {}
+
+    def reset(self):
+        self.bind_params = {}
+
+    @property
+    def bound_params(self):
+        return OrderedDict(sorted(self._bound_params.items()))
+
+    def bind_params(self, params=None):
+        if not params:
+            return self
+
+        if isinstance(params, dict):
+            for name, value in params.items():
+                self.bind_param(value, name)
+        else:
+            for value in params:
+                self.bind_param(value)
+
+        return self.bound_params
+
+    def bind_param(self, value, name=None):
+        if isinstance(value, Param):
+            name = value.name
+            value = value.value
+        elif value in self._bound_params.values():
+            for k, v in self._bound_params.items():
+                if v == value:
+                    name = k
+                    break
+        elif value in self._bound_params.keys():
+            for k, v in self._bound_params.items():
+                if v == k:
+                    name = k
+                    value = v
+                    break
+
+        if not name:
+            name = self.param_name()
+
+        self._bound_params[name] = value
+
+        return Param(name=name, value=value)
+
+    def param_name(self, name=None):
+        return '{}{}_{}'.format(name or self.prefix, self.key,
+            len(self.bound_params))
+
+    def __iadd__(self, other):
+        self.bind_params(other.bound_params)
+
+        return self
 
 
 class _Link(type):
@@ -87,10 +147,7 @@ class Pypher(with_metaclass(_Link)):
         self._parent = parent
         self.link = None
         self.next = None
-        self._set_attr = None
-        self._bound_count = 0
-        self._bound_params = {}
-        self._bound_param_key = str(uuid.uuid4())[-5:]
+        self.params = Params(prefix=self.PARAM_PREFIX)
 
     def reset(self):
         self.link = None
@@ -103,9 +160,9 @@ class Pypher(with_metaclass(_Link)):
         return self._parent
 
     def _set_parent(self, parent):
-        parent.bind_params(self.bound_params)
-
         self._parent = parent
+        parent.params += self.params
+        self.params = parent.params
 
         return self
 
@@ -113,67 +170,16 @@ class Pypher(with_metaclass(_Link)):
 
     @property
     def bound_params(self):
-        params = self._bound_params
-
-        if self.parent:
-            params.update(self.parent.bound_params)
-
-        return params
+        return self.params.bound_params
 
     def safely_stringify_for_pudb(self):
         return None
 
     def bind_params(self, params=None):
-        if not params:
-            return self
-
-        if isinstance(params, dict):
-            for name, value in params.items():
-                self.bind_param(value, name)
-        else:
-            for value in params:
-                self.bind_param(value)
-
-        return self.bound_params
+        return self.params.bind_params(params=params)
 
     def bind_param(self, value, name=None):
-        self._bound_count += 1
-
-        try:
-            if isinstance(value, Param):
-                name = value.name
-                value = value.value
-            # elif value in self.bound_params.values():
-            #     for k, v in self._bound_params.items():
-            #         if v == value:
-            #             name = k
-            #             break
-            # elif value in self._bound_params.keys():
-            #     for k, v in self._bound_params.items():
-            #         if v == k:
-            #             name = k
-            #             value = v
-            #             break
-        except:
-            pass
-
-        if not name:
-            name = self._param_name()
-
-        self._bound_params[name] = value
-
-        if self.parent:
-            return self.parent.bind_param(value=value, name=name)
-
-        return Param(name=name, value=value)
-
-    def _param_name(self, name=None):
-        if not name:
-            return '{}_{}_{}'.format(self.PARAM_PREFIX, self._bound_param_key,
-                self._bound_count)
-
-        return '{}_{}_{}'.format(name, self._bound_param_key,
-                self._bound_count)
+        return self.params.bind_param(value=value, name=name)
 
     def __getattr__(self, attr):
         attr_low = attr.lower()
@@ -184,21 +190,16 @@ class Pypher(with_metaclass(_Link)):
             link = (getattr(_MODULE, _LINKS[attr_low]))()
         else:
             link = Statement(name=attr)
-            self._set_attr = attr
-
-        link.parent = self
 
         return self.add_link(link)
 
     def __call__(self, *args, **kwargs):
         func = self._bottom.__class__(*args, **kwargs)
-        func.parent = self
 
         return self.remove_link(self._bottom).add_link(func)
 
     def __getitem__(self, *args):
         comp = List(parent=self, *args)
-        comp.parent = self
 
         return self.add_link(comp)
 
@@ -211,6 +212,7 @@ class Pypher(with_metaclass(_Link)):
         tokens = []
 
         while token:
+            token.parent = self
             pre = ''
             suff = ''
 
@@ -328,13 +330,12 @@ class Pypher(with_metaclass(_Link)):
         return self.operator(operator='=', value=other)
 
     def operator(self, operator, value):
-        op = Operator(operator=operator, value=value, parent=self)
-        op.parent = self
+        op = Operator(operator=operator, value=value)
 
         return self.add_link(op)
 
     def property(self, name):
-        prop = Property(name=name, parent=self)
+        prop = Property(name=name)
 
         return self.add_link(prop)
 
@@ -350,28 +351,24 @@ class Pypher(with_metaclass(_Link)):
     def rel_out(self, *args, **kwargs):
         kwargs['direction'] = 'out'
         rel = Relationship(*args, **kwargs)
-        rel.parent = self
 
         return self.add_link(rel)
 
     def rel_in(self, *args, **kwargs):
         kwargs['direction'] = 'in'
         rel = Relationship(*args, **kwargs)
-        rel.parent = self
 
         return self.add_link(rel)
 
     def func(self, name, *args, **kwargs):
         kwargs['name'] = name
         func = Func(*args, **kwargs)
-        func.parent = self
 
         return self.add_link(func)
 
     def func_raw(self, name, *args, **kwargs):
         kwargs['name'] = name
         func = FuncRaw(*args, **kwargs)
-        func.parent = self
 
         return self.add_link(func)
 
@@ -585,7 +582,7 @@ class Operator(_BaseLink):
     def __unicode__(self):
         if self.value:
             if isinstance(self.value, Pypher):
-                self.value.parent = self
+                self.value.parent = self.parent
                 value = str(self.value)
             else:
                 param = self.bind_param(self.value)
@@ -619,7 +616,7 @@ class Entity(_BaseLink):
 
         self.variable = variable or ''
         self._labels = labels
-        self._properties = properties
+        self._properties = OrderedDict(sorted(properties.items()))
 
         super(Entity, self).__init__(parent=parent)
 
@@ -640,7 +637,7 @@ class Entity(_BaseLink):
         properties = []
 
         for k, v in self._properties.items():
-            name = self._param_name(k)
+            name = self.params.param_name(k)
             param = self.bind_param(value=v, name=name)
 
             properties.append('{key}: {val}'.format(key=k, val=param.name))
@@ -702,12 +699,16 @@ class Relationship(Entity):
 
     def __unicode__(self):
         properties = self.properties
+        labels = self.labels
 
         if properties:
             properties = ' ' + properties
 
-        fill = '[{labels}{properties}]'.format(labels=self.labels,
-            properties=properties)
+        if labels or properties:
+            fill = '[{labels}{properties}]'.format(labels=labels,
+                properties=properties)
+        else:
+            fill = ''
 
         return self.direction.format(fill)
 

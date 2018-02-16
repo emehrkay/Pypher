@@ -31,11 +31,15 @@ x = Pypher()
 # x.SET.n.label('Food')
 
 
-x.n.__new_age__[__.x.__sex__ | 'money'] + __.n.property('feet') == 4
-x.new_age[__.x.__sex__ | 'money']
+x.sqrt('1') + __.cot('1').n.property('money').tan('money').id('money').RETURN(1, 2) == 'money'
+x.RETURN(__.one, __.id('xxx'), __.cot('yyy'), __.id('money'))
 print(x)
 print(x.bound_params)
 
+u = Pypher()
+u.money.IS.everything.id('sucka')
+print(u)
+print(u.bound_params)
 
 # p = Param(name='some_param_name', value='Mark')
 # q = Pypher()

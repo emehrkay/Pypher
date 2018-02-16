@@ -244,7 +244,7 @@ str(p) # MY STATEMENT IN CYPHER IS COOL
 | `log10` | `log10` |
 | `log` | `log` |
 | `exp` | `exp` |
-| `e` | `e` |
+| `E` | `e` |
 | `toString` | `toString` |
 | `replace` | `replace` |
 | `substring` | `substring` |

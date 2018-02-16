@@ -5,9 +5,9 @@ from .exception import (PypherException, PypherAliasException,
 from .version import __version__
 
 
-_all = [Pypher, Anon, __, PypherException, PypherAliasException,
-    PypherArgumentException, create_function, create_statement,
-    RELATIONSHIP_DIRECTIONS]
+_all = ['Pypher', 'Anon', '__', 'PypherException', 'PypherAliasException',
+    'PypherArgumentException', 'create_function', 'create_statement',
+    'RELATIONSHIP_DIRECTIONS']
 
 
 for ps in _PREDEFINED_STATEMENTS:
@@ -17,5 +17,5 @@ for pf in _PREDEFINED_FUNCTIONS:
     _all.append(pf[0])
 
 
-__all__ = _all
+# __all__ = _all
 __version__ = __version__
