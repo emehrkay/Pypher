@@ -108,7 +108,7 @@ str(x) # WHERE n.name ** NEO_az23p_0
 | `%` | `%` |
 | `%=` | `%=` |
 | `&` | `&` |
-| `|` | `|` |
+| `\|` | `\|` |
 | `^` | `^` |
 | `^=` | `^=` |
 | `>` | `>` |
@@ -116,7 +116,7 @@ str(x) # WHERE n.name ** NEO_az23p_0
 | `<` | `<` |
 | `<=` | `<=` |
 
-*Operator Methods*
+**Operator Methods**
 
 Some methods resolve to Operator instances. These are called on the Pypher instance with parenthesis.
 
