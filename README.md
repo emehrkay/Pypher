@@ -93,6 +93,42 @@ x.WHERE.name.operator('**', 'mark') # mark will be a bound param
 str(x) # WHERE n.name ** NEO_az23p_0 
 ```
 
+| Pypher Operator | Resulting Cypher |
+| ------------- | ------------- |
+| `==` | `=` |
+| `!=` | `!=` |
+| `+` | `+` |
+| `+=` | `+=` |
+| `-` | `-` |
+| `-=` | `-=` |
+| `*` | `*` |
+| `*=` | `*=` |
+| `/` | `/` |
+| `/=` | `/=` |
+| `%` | `%` |
+| `%=` | `%=` |
+| `&` | `&` |
+| `|` | `|` |
+| `^` | `^` |
+| `^=` | `^=` |
+| `>` | `>` |
+| `>=` | `>=` |
+| `<` | `<` |
+| `<=` | `<=` |
+
+*Operator Methods*
+
+Some methods resolve to Operator instances. These are called on the Pypher instance with parenthesis.
+
+| Pypher Operator | Resulting Cypher |
+| ------------- | ------------- |
+| `.AND(other)` | `AND other` |
+| `.OR(other)` | `OR other` |
+| `.ALIAS(other)` | `AS other` |
+| `.AS(other)` | `AS other` |
+| `.rexp(other)` | `=~ other` |
+
+
 ### __ (double underscore)
 
 _`__`_ The double underscore object is just an instance of `Anon`. It is basically a factory class that creates instances of Pypher when attributes are accessed against it.
@@ -187,7 +223,7 @@ _`Statement`_ objects are simple, they are things like `MATCH` or `CREATE` or `R
 
 > Python keywords will be in all CAPS
 
-* Pypher provides a way to define a custom Statement class via a function call (this is used to create all of the statements listed above)
+* Pypher provides a way to define a custom Statement class via a function call (this is used to create all of the statements listed above).
 
 ```python
 from pyher import create_statement, Pypher
@@ -202,6 +238,20 @@ str(p) # MY STATEMENT IN CYPHER IS COOL
 ```
 
 > The name definition is optional. If omitted the resulting Cypher will be the class name in call caps
+
+Another way is to sub-class the Statement class
+
+```python
+from pypher import Pypher, Statement
+
+
+class MyStatement(Statement):
+    _CAPATILIZE = True # will make the resulting name all caps. Defaults to True
+    _ADD_PRECEEDING_WS = True # add whitespace before the resulting Cypher string. Defaults to True
+    _CLEAR_PRECEEDING_WS = True # add whitespace after the resulting Cypher string. Defaults to False
+    _ALIASES = ['myst',] # aliases for your custom statement. Will throw an exception if it is already defined
+    name = 'my statement name' # the string that will be printed in the resulting Cypher. If this isn't defined, the class name will be used
+```
 
 
 ### Func
@@ -295,6 +345,23 @@ str(p) # myFunction(1, 2, 3) note that the arguments will be bound and not "1, 2
 ```
 
 > The name definition is optional. If omitted the resulting Cypher will be the exact name of the function
+
+
+Another way is to sub-class the Func or FuncRaw class.
+
+> FuncRaw will not bind its arguments.
+
+```python
+from pypher import Pypher, Func, FuncRaw
+
+
+class MyCustomFunction(Func):
+    _CAPATILIZE = True # will make the resulting name all caps. Defaults to False
+    _ADD_PRECEEDING_WS = True # add whitespace before the resulting Cypher string. Defaults to True
+    _CLEAR_PRECEEDING_WS = True # add whitespace after the resulting Cypher string. Defaults to False
+    _ALIASES = ['myst',] # aliases for your custom function. Will throw an exception if it is already defined
+    name = 'myCustomFunction' # the string that will be printed in the resulting Cypher. If this isn't defined, the class name will be used
+```
 
 ### Entity
 

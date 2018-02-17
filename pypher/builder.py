@@ -330,12 +330,6 @@ class Pypher(with_metaclass(_Link)):
 
         return self.add_link(prop)
 
-    def alias(self, alias):
-        return self.operator(operator='AS', value=alias)
-
-    def rexp(self, exp):
-        return self.operator(operator='=~', value=exp)
-
     def raw(self, *args):
         raw = Raw(*args)
 
@@ -597,6 +591,16 @@ class OR(Operator):
 
 class Assign(Operator):
     operator = '='
+
+
+class Alias(Operator):
+    _ALIASES = ['AS',]
+    operator = 'AS'
+
+
+class Rexp(Operator):
+    _ALIASES = ['re',]
+    operator = '=~'
 
 
 class Entity(_BaseLink):
