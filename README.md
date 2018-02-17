@@ -385,12 +385,12 @@ Entities are `Node` or `Relationship` objects. They both sub-class the `Entity` 
 
 _`Node`__ This represents an actual node in the ascii format.
 
-* The init can accept a `variable`<String>, `labels`<List|String>, `properties`<Keyword Arguments>
+* The init can accept a `variable`\<String>, `labels`<List|String>, `properties`\<Keyword Arguments>
 * Can be added to the chain by typing `.node` or `.n_`
 
 _`Relationship`__ This represents an relationship node in the ascii format.
 
-* The init can accept a `variable`<String>, `direction`<String>['in', 'out', '>', '<'], `labels`<List|String>, `properties`<Keyword Arguments>
+* The init can accept a `variable`\<String>, `direction`\<String>['in', 'out', '>', '<'], `labels`<List|String>, `properties`\<Keyword Arguments>
 * Can be added to the chain by typing `.relationship`, `.rel`, `.r_`, or for directed: `.rel_out` or `.rel_in`
 
 ### Property
