@@ -4,7 +4,7 @@ import unittest
 import re
 
 from pypher.builder import (Pypher, Statement, _PREDEFINED_STATEMENTS,
-    _PREDEFINED_FUNCTIONS)
+    _PREDEFINED_FUNCTIONS, __)
 
 
 def get_dict_key(dict, value):
@@ -302,6 +302,287 @@ class BuilderTests(unittest.TestCase):
         exp = '()--()'
 
         self.assertEqual(str(p), exp)
+
+    def test_can_add_named_node_labeled_out_relationship_node_with_properties(self):
+        n = 'name'
+        l = 'KNOWS'
+        name = 'somename'
+        age = 99
+        p = Pypher()
+        p.node(n).rel_out(labels=l).node(name=name, age=age)
+        c = str(p)
+        params = p.bound_params
+        exp = '({n})-[:{l}]->( {{age: {age}, name: {name}}})'.format(n=n, l=l,
+            name=get_dict_key(params, name), age=get_dict_key(params, age))
+
+        self.assertEqual(c, exp)
+
+    def test_can_add_raw(self):
+        p = Pypher()
+        s = 'raw content {}'.format(random())
+        p.this.will.be.raw(s)
+        exp = 'this will be {}'.format(s)
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_add_random_function(self):
+        p = Pypher()
+        f = 'someFunction{}'.format(random())
+        p.func(f)
+        exp = '{}()'.format(f)
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_add_random_function_with_args(self):
+        p = Pypher()
+        f = 'someFunction{}'.format(random())
+        one = 'one'
+        two = 2
+        p.func(f, one, two)
+        c = str(p)
+        params = p.bound_params
+        exp = '{}({}, {})'.format(f, get_dict_key(params, one),
+            get_dict_key(params, two))
+
+        self.assertEqual(c, exp)
+        self.assertEqual(2, len(params))
+
+    def test_can_add_random_raw_function_with_args(self):
+        p = Pypher()
+        f = 'someFunction{}'.format(random())
+        one = 'one'
+        two = 2
+        p.func_raw(f, one, two)
+        c = str(p)
+        params = p.bound_params
+        exp = '{}({}, {})'.format(f, one, two)
+
+        self.assertEqual(c, exp)
+        self.assertEqual(0, len(params))
+
+    def test_can_add_in_clause(self):
+        p = Pypher()
+        one = 1
+        two = 2
+        three = 3
+        p.n.property('name').IN(one, two, three)
+        c = str(p)
+        params = p.bound_params
+        exp = 'n.name IN [{}, {}, {}]'.format(get_dict_key(params, one),
+            get_dict_key(params, two), get_dict_key(params, three))
+
+        self.assertEqual(c, exp)
+        self.assertEqual(3, len(params))
+
+    def test_can_add_list_comprehension_clause(self):
+        p = Pypher()
+        three = 3
+        p.n.property('name').comp(__.field.operator('|', three))
+        c = str(p)
+        params = p.bound_params
+        exp = 'n.name [field | {}]'.format(get_dict_key(params, three))
+
+        self.assertEqual(c, exp)
+        self.assertEqual(1, len(params))
+
+
+class OperatorTests(unittest.TestCase):
+
+    def test_can_add_two_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one + a.two
+        exp = 'one + two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_add_pypher_and_string(self):
+        p = Pypher()
+        s = 'some string'
+        p.one + s
+        c = str(p)
+        params = p.bound_params
+        exp = 'one + {s}'.format(s=get_dict_key(params, s))
+
+        self.assertEqual(c, exp)
+        self.assertEqual(1, len(params))
+
+    def test_can_add_two_pypher_objects_and_string(self):
+        p = Pypher()
+        a = Pypher()
+        s = 'some string'
+        p.one + a.two + s
+        c = str(p)
+        params = p.bound_params
+        exp = 'one + two + {s}'.format(s=get_dict_key(params, s))
+
+        self.assertEqual(c, exp)
+        self.assertEqual(1, len(params))
+
+    # no need to repeat permutations of operations
+    def test_can_iadd_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one += a.two
+        exp = 'one += two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_subtract_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one - a.two
+        exp = 'one - two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_isubtract_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one -= a.two
+        exp = 'one -= two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_multiply_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one * a.two
+        exp = 'one * two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_imultiply_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one *= a.two
+        exp = 'one *= two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_divide_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one / a.two
+        exp = 'one / two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_idivide_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one /= a.two
+        exp = 'one /= two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_mod_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one % a.two
+        exp = 'one % two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_imod_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one %= a.two
+        exp = 'one %= two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_and_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one & a.two
+        exp = 'one AND two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_or_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one | a.two
+        exp = 'one OR two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_not_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one ^ a.two
+        exp = 'one ^ two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_ge_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one > a.two
+        exp = 'one > two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_gte_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one >= a.two
+        exp = 'one >= two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_lt_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one < a.two
+        exp = 'one < two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_lte_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one <= a.two
+        exp = 'one <= two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_not_equal_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one != a.two
+        exp = 'one != two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_regular_expression_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one.rexp(a.two)
+        exp = 'one =~ two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_regular_expression_pypher_object_and_string(self):
+        p = Pypher()
+        s = 'Two.*'
+        p.one.rexp(s)
+        c = str(p)
+        params = p.bound_params
+        exp = 'one =~ {}'.format(get_dict_key(params, s))
+
+        self.assertEqual(c, exp)
+
+    def test_can_create_custom_operator(self):
+        p = Pypher()
+        a = Pypher()
+        p.one.operator(operator='**', value=a.two)
+        exp = 'one ** two'
+
+        self.assertEqual(str(p), exp)
+
+
 
 
 if __name__ == '__main__':

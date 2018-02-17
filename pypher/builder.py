@@ -288,19 +288,10 @@ class Pypher(with_metaclass(_Link)):
         return self.operator(operator='%=', value=other)
 
     def __and__(self, other):
-        return self.operator(operator='&', value=other)
-
-    def __iand__(self, other):
-        return self.operator(operator='&=', value=other)
+        return self.operator(operator='AND', value=other)
 
     def __or__(self, other):
-        return self.operator(operator='|', value=other)
-
-    def __ror__(self, other):
-        return self.operator(operator='|', value=other)
-
-    def __iror__(self, other):
-        return self.operator(operator='|=', value=other)
+        return self.operator(operator='OR', value=other)
 
     def __xor__(self, other):
         return self.operator(operator='^', value=other)
@@ -342,9 +333,11 @@ class Pypher(with_metaclass(_Link)):
     def alias(self, alias):
         return self.operator(operator='AS', value=alias)
 
+    def rexp(self, exp):
+        return self.operator(operator='=~', value=exp)
+
     def raw(self, *args):
-        d = {'parent', self}
-        raw = Raw(*args, **d)
+        raw = Raw(*args)
 
         return self.add_link(raw)
 
@@ -537,7 +530,7 @@ class FuncRaw(Func):
 class Raw(Statement):
 
     def __unicode__(self):
-        ' '.join(map(str, self.args))
+        args = ' '.join(map(str, self.args))
 
         return '{args}'.format(args=args)
 
@@ -567,6 +560,7 @@ class List(_BaseLink):
 class Comprehension(List):
     _ADD_PRECEEDING_WS = True
     _CLEAR_PRECEEDING_WS = False
+    _ALIASES = ['comp']
 
 
 class Operator(_BaseLink):
