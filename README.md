@@ -4,9 +4,9 @@ Pypher is a tiny library that focuses on building Cypher queries by constructing
 
 ## To-do
 
-- [ x ] Unitests
-- [ ] Finish Documentation
-- [ ] Create pypi package
+- [x] Unitests
+- [x] Finish Documentation
+- [x] Create pypi package
 
 ## Setup
 
@@ -14,7 +14,9 @@ Pypher is a tiny library that focuses on building Cypher queries by constructing
 python setup.py install
 ```
 
-> Pypi package coming soon
+```
+pip install python_cypher
+```
 
 ## Usage
 
