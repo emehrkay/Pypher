@@ -305,6 +305,10 @@ Entities are `Node` or `Relationship` objects.
 
 This section will simply cover how to write Pypher that will convert to both common and complex Cypher queries.
 
-| Cypher Query | Pypher Object Chain |
-| ------------- | ------------- |
-| ```MATCH (n:Person)-[:KNOWS]->(m:Person)<br>WHERE n.name = 'Alice'``` | ```p.MATCH.node('n', 'Person').rel_out(labels='KNOWS').node('m', 'PERSON).WHERE.n.__name__ == 'Alice``` |
+```cypher
+MATCH (n:Person)-[:KNOWS]->(m:Person)<br>WHERE n.name = 'Alice'
+```
+
+```python
+p.MATCH.node('n', 'Person').rel_out(labels='KNOWS').node('m', 'PERSON).WHERE.n.__name__ == 'Alice
+```
