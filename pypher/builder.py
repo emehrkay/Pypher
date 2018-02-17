@@ -288,10 +288,10 @@ class Pypher(with_metaclass(_Link)):
         return self.operator(operator='%=', value=other)
 
     def __and__(self, other):
-        return self.operator(operator='AND', value=other)
+        return self.operator(operator='&', value=other)
 
     def __or__(self, other):
-        return self.operator(operator='OR', value=other)
+        return self.operator(operator='|', value=other)
 
     def __xor__(self, other):
         return self.operator(operator='^', value=other)
@@ -567,11 +567,11 @@ class Operator(_BaseLink):
     _ADD_PRECEEDING_WS = True
     _ADD_SUCEEDING_WS = False
 
-    def __init__(self, operator=None, value=None, parent=None):
+    def __init__(self, value=None, operator=None):
         self.operator = operator or self.operator
         self.value = value
 
-        super(Operator, self).__init__(parent=parent)
+        super(Operator, self).__init__()
 
     def __unicode__(self):
         if self.value:

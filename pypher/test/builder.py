@@ -377,13 +377,34 @@ class BuilderTests(unittest.TestCase):
     def test_can_add_list_comprehension_clause(self):
         p = Pypher()
         three = 3
-        p.n.property('name').comp(__.field.operator('|', three))
+        p.n.property('name').comp(__.field | three)
         c = str(p)
         params = p.bound_params
         exp = 'n.name [field | {}]'.format(get_dict_key(params, three))
 
         self.assertEqual(c, exp)
         self.assertEqual(1, len(params))
+
+    def test_can_add_single_label(self):
+        p = Pypher()
+        p.n.label('one')
+        exp = 'n:one'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_add_multiple_labels(self):
+        p = Pypher()
+        p.n.label('one', 'two', 'three', 'four')
+        exp = 'n:one:two:three:four'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_assign_variable(self):
+        p = Pypher()
+        p.MATCH.p.assign(__.node('n').rel_out().node('m'))
+        exp = 'MATCH p = (n)-->(m)'
+
+        self.assertEqual(str(p), exp)
 
 
 class OperatorTests(unittest.TestCase):
@@ -496,6 +517,14 @@ class OperatorTests(unittest.TestCase):
         p = Pypher()
         a = Pypher()
         p.one & a.two
+        exp = 'one & two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_explicit_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one.AND(a.two)
         exp = 'one AND two'
 
         self.assertEqual(str(p), exp)
@@ -504,6 +533,14 @@ class OperatorTests(unittest.TestCase):
         p = Pypher()
         a = Pypher()
         p.one | a.two
+        exp = 'one | two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_explicit_or_pypher_objects(self):
+        p = Pypher()
+        a = Pypher()
+        p.one.OR(a.two)
         exp = 'one OR two'
 
         self.assertEqual(str(p), exp)
