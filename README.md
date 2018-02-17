@@ -307,4 +307,4 @@ This section will simply cover how to write Pypher that will convert to both com
 
 | Cypher Query | Pypher Object Chain |
 | ------------- | ------------- |
-| ```cypher MATCH (n:Person)-[:KNOWS]->(m:Person)<br>WHERE n.name = 'Alice'``` | ```python p.MATCH.node('n', 'Person').rel_out(labels='KNOWS').node('m', 'PERSON).WHERE.n.__name__ == 'Alice``` |
+| ```cypher MATCH (n:Person)-[:KNOWS]->(m:Person)<br>WHERE n.name = 'Alice'``` | ```python<br>p.MATCH.node('n', 'Person').rel_out(labels='KNOWS').node('m', 'PERSON).WHERE.n.__name__ == 'Alice``` |
