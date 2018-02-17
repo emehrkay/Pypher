@@ -4,7 +4,7 @@ Pypher is a tiny library that focuses on building Cypher queries by constructing
 
 ## To-do
 
-- [ ] Unitests
+- [ x ] Unitests
 - [ ] Finish Documentation
 - [ ] Create pypi package
 
@@ -71,6 +71,27 @@ Pypher is a very simple query builder for Cypher. It works by creating a simple 
 * `operator(operator, value)` -- a simple way to add anything to the chain. All of the Pypher magic methods around assignments and math call this method. Note: the `other` needs to be a different Pypher instance or you will get a funky Cypher string.
 * `_` -- the current Pypher instance. This is useful for special edge cases. See `Property`
 
+#### Operators
+
+Since Pypher is an object whose sole job is to compose a linked list via a fluid interface, adding common operators to the object is tricky. Here are some rules:
+
+* No matter the operator, the right side of the operation must not be the same Pypher instance as found on the left. A common way around this is to import and use the `__` Anon Pypher factory.
+* You can create custom Operators by calling `.operator(name, other_value)` on the Pypher instance -- the first operator rule must be followed if the other end is a Pypher object.
+    * Operators always resolve in a space, the operator, and then the other right side.
+
+```python
+from pypher import Pypher, __
+
+p = Pypher()
+p.WHERE.n.name == __.s.name
+
+str(p) # WHERE n.name = s.name
+
+# custom operator
+x = Pypher()
+x.WHERE.name.operator('**', 'mark') # mark will be a bound param
+str(x) # WHERE n.name ** NEO_az23p_0 
+```
 
 ### __ (double underscore)
 
@@ -279,3 +300,11 @@ str(p) # myFunction(1, 2, 3) note that the arguments will be bound and not "1, 2
 Entities are `Node` or `Relationship` objects.
 
 *`Node`* 
+
+## Code Examples
+
+This section will simply cover how to write Pypher that will convert to both common and complex Cypher queries.
+
+| Cypher Query | Pypher Object Chain |
+| ------------- | ------------- |
+| ```cypher MATCH (n:Person)-[:KNOWS]->(m:Person)<br>WHERE n.name = 'Alice'``` | ```python p.MATCH.node('n', 'Person').rel_out(labels='KNOWS').node('m', 'PERSON).WHERE.n.__name__ == 'Alice` |
