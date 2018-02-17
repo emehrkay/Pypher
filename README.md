@@ -165,6 +165,18 @@ _`Param`_ objects are simple containers that store a name and a value.
 * These can be passed in to Pyper instances and will be referenced by their name once the Cypher string is created. 
 * `Pypher.bind_param` will return an instance of a Param object.
 
+```python
+from pypher import Param, Pypher, __
+
+
+p = Pypher()
+name = Param(name='namedParam', value='Mark')
+p.SET(__.m.__name__ == name)
+
+str(p) # SET m.name = namedParam
+print(p.bound_params) # {'namedParam': 'Mark'}
+```
+
 ### Statement
 
 _`Statement`_ objects are simple, they are things like `MATCH` or `CREATE` or `RETURN`.
