@@ -604,7 +604,7 @@ class Entity(_BaseLink):
     _ADD_SUCEEDING_WS = False
     _CLEAR_PRECEEDING_WS = False
 
-    def __init__(self, variable=None, labels=None, parent=None, **properties):
+    def __init__(self, variable=None, labels=None, **properties):
         if labels and not isinstance(labels, (list, set, tuple)):
             labels = [labels]
 
@@ -612,7 +612,7 @@ class Entity(_BaseLink):
         self._labels = labels
         self._properties = OrderedDict(sorted(properties.items()))
 
-        super(Entity, self).__init__(parent=parent)
+        super(Entity, self).__init__()
 
     @property
     def labels(self):
@@ -643,6 +643,7 @@ class Entity(_BaseLink):
 
 
 class Node(Entity):
+    _ALIASES = ['n_',]
 
     def __unicode__(self):
         properties = self.properties
@@ -655,7 +656,7 @@ class Node(Entity):
 
 
 class Relationship(Entity):
-    _ALIASES = ['rel',]
+    _ALIASES = ['rel', 'r_']
     _DEFAULT_DIRECTION = 'undirected'
     _DIRECTIONS = {
         'undirected': '-{}-',
@@ -663,10 +664,11 @@ class Relationship(Entity):
         'out': '-{}->',
     }
 
-    def __init__(self, variable=None, labels=None, parent=None,
-                 direction=None, **properties):
+    def __init__(self, variable=None, labels=None, direction=None,
+                 **properties):
         super(Relationship, self).__init__(variable=variable, labels=labels,
-            parent=parent, **properties)
+            **properties)
+
         self._direction = None
         self.direction = direction
 

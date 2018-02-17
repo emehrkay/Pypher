@@ -298,9 +298,32 @@ str(p) # myFunction(1, 2, 3) note that the arguments will be bound and not "1, 2
 
 ### Entity
 
-Entities are `Node` or `Relationship` objects.
+Entities are `Node` or `Relationship` objects. They both sub-class the `Entity` class and share the same attributes.
 
-*`Node`* 
+_`Node`__ This represents an actual node in the ascii format.
+
+* The init can accept a `variable`<String>, `labels`<List|String>, `properties`<Keyword Arguments>
+* Can be added to the chain by typing `.node` or `.n_`
+
+_`Relationship`__ This represents an relationship node in the ascii format.
+
+* The init can accept a `variable`<String>, `direction`<String>['in', 'out', '>', '<'], `labels`<List|String>, `properties`<Keyword Arguments>
+* Can be added to the chain by typing `.relationship`, `.rel`, `.r_`, or for directed: `.rel_out` or `.rel_in`
+
+### Property
+
+_`Property`_ objects simply allow for adding `.property` to the resulting Cypher query.
+
+* These can be added to the chain by calling `.property('name')` or `.__name__` (double underscore before and after)
+* Python does not allow assignment for function calls so something like this is illegal `n.property('name') == 'Mark'` if you wanted to use the property method in this scenario, you would have to get back to the Pypher instance like this `n.property('name')._ == 'Mark'` or use the double underscore method `n.property.__name__ == 'Mark'`.
+* Property objects work just like any other link and you can add them anywhere, even if it doesn't produce property Cypher. `p.RETURN.property('name')` will create `RETURN.name`
+
+### Label
+
+_`Label`_ objects simply add a label to the preceding link.
+
+* Can be init with *args<String> of labels `n.label('Person', 'Male')` would produce `n:Person:Male`
+* This does not bind its arguments
 
 ## Code Examples
 
