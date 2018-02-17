@@ -157,6 +157,8 @@ str(p) # MATCH (NEO_XXUU3_1) SET mark.name = NEO_XXUU3_2
 print(p.bound_params) # {'NEO_XXUU3_1': 'mark', 'NEO_XXUU3_2': 'Mark!!'}
 ```
 
+> The `__` is just an instance of the Anon object. You can change what you want your factory name to be, or create an instance of Anon and assign it to another variable as you see fit.
+
 ### Param
 
 _`Param`_ objects are simple containers that store a name and a value.
