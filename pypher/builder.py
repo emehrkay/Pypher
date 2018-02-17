@@ -23,7 +23,7 @@ _PREDEFINED_STATEMENTS = [['Match',], ['Create',], ['Merge',], ['Delete',],
     ['Case'], ['End'], ['OnCreateSet', 'ON CREATE SET'],
     ['OnMatchSet', 'ON MATCH SET'], ['CreateIndexOn', 'CREATE INDEX ON'],
     ['UsingIndex', 'USING INDEX'], ['DropIndexOn', 'DROP INDEX ON'],
-    ['CreateConstraintOn', 'CREATE CONSTRAINT ON'],
+    ['CreateConstraintOn', 'CREATE CONSTRAINT ON'], ['OnCreate', 'ON CREATE'],
     ['DropConstraintOn', 'DROP CONSTRAINT ON']]
 _PREDEFINED_FUNCTIONS = [['size',], ['reverse',], ['head',], ['tail',],
     ['last',], ['extract',], ['filter',], ['reduce',], ['Type', 'type',],

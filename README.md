@@ -176,6 +176,7 @@ print(p.bound_params) # {'NEO_XXUU3_1': 'mark', 'NEO_XXUU3_2': 'Mark!!'}
 | `ELSE` | `ELSE` |
 | `Case` | `CASE` |
 | `End` | `END` |
+| `OnCreate` | `ON CREATE` |
 | `OnCreateSet` | `ON CREATE SET` |
 | `OnMatchSet` | `ON MATCH SET` |
 | `CreateIndexOn` | `CREATE INDEX ON` |
@@ -314,4 +315,24 @@ WHERE n.name = 'Alice'
 
 ```python
 p.MATCH.node('n', 'Person').rel_out(labels='KNOWS').node('m', 'PERSON').WHERE.n.__name__ == 'Alice'
+```
+
+_Create A Node_
+
+```cypher
+CREATE (user:User {Name: 'Jim'})
+```
+
+```python
+p.CREATE.node('user', 'User', Name='Jim')
+```
+
+```cypher
+MERGE (user:User { Id: 456 })
+ON CREATE user
+SET user.Name = 'Jim'
+```
+
+```python
+p.MERGE.node('user', 'User', Id=456).ON.CREATE.user.SET(__.user.__Name__ == 'Jim')
 ```

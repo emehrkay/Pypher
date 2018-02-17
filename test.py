@@ -5,6 +5,6 @@ create_statement('m', {'name': 'MarkIsSoCool'})
 create_function('u', {'name': 'UUUUUU'})
 
 u = Pypher()
-u.MATCH.node('n', 'Person').rel_out(labels='KNOWS').node('m', 'PERSON').WHERE.n.__name__ == 'Alice'
+u.MERGE.node('user', 'User', Id=456).ON.CREATE.user.SET(__.user.__Name__ == 'Jim')
 print(u)
 print(u.bound_params)
