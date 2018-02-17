@@ -105,7 +105,7 @@ from pypher import __, Pypher
 p = Pypher()
 
 p.MATCH.node('mark', labels='Person').rel(labels='knows').node('mikey', lables=['Cat', 'Animal'])
-p.return(__.mark, __.mikey) 
+p.RETURN(__.mark, __.mikey) 
 
 str(p) # MATCH (mark:Person)-[:knows]-(mikey:Cat:Animal) RETURN mark, mikey
 
@@ -305,7 +305,7 @@ Entities are `Node` or `Relationship` objects.
 
 This section will simply cover how to write Pypher that will convert to both common and complex Cypher queries.
 
-*A Simple Match with WHERE*
+_A Simple Match with WHERE_
 
 ```cypher
 MATCH (n:Person)-[:KNOWS]->(m:Person)
@@ -313,5 +313,5 @@ WHERE n.name = 'Alice'
 ```
 
 ```python
-p.MATCH.node('n', 'Person').rel_out(labels='KNOWS').node('m', 'PERSON).WHERE.n.__name__ == 'Alice
+p.MATCH.node('n', 'Person').rel_out(labels='KNOWS').node('m', 'PERSON').WHERE.n.__name__ == 'Alice'
 ```
