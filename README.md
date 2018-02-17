@@ -55,7 +55,7 @@ Pypher is a very simple query builder for Cypher. It works by creating a simple 
 
 ### Pypher
 
-*`Pypher`* is the root object that all other objects sub-class and it makes everything work. Every operation taken on it (attribute access or assignments or comparisons) will result in link being added to list.
+_`Pypher`_ is the root object that all other objects sub-class and it makes everything work. Every operation taken on it (attribute access or assignments or comparisons) will result in link being added to list.
 
 *Useful Methods and Properties*
 
@@ -95,7 +95,7 @@ str(x) # WHERE n.name ** NEO_az23p_0
 
 ### __ (double underscore)
 
-*`__`* The double underscore object is just an instance of `Anon`. It is basically a factory class that creates instances of Pypher when attributes are accessed against it.
+_`__`_ The double underscore object is just an instance of `Anon`. It is basically a factory class that creates instances of Pypher when attributes are accessed against it.
 
 * Useful for creating Pypher objects that will either be passed in as arguments or used to continue a chain after a math or assignment operation on an existing chain.
 
@@ -121,7 +121,7 @@ print(p.bound_params) # {'NEO_XXUU3_1': 'mark', 'NEO_XXUU3_2': 'Mark!!'}
 
 ### Param
 
-*`Param`* objects are simple containers that store a name and a value.
+_`Param`_ objects are simple containers that store a name and a value.
 
 * These objects are useful when you want finer control over the names of the bound params in the resulting Cypher query.
 * These can be passed in to Pyper instances and will be referenced by their name once the Cypher string is created. 
@@ -129,7 +129,7 @@ print(p.bound_params) # {'NEO_XXUU3_1': 'mark', 'NEO_XXUU3_2': 'Mark!!'}
 
 ### Statement
 
-*`Statement`* objects are simple, they are things like `MATCH` or `CREATE` or `RETURN`.
+_`Statement`_ objects are simple, they are things like `MATCH` or `CREATE` or `RETURN`.
 
 * Can be added to the list with any casing `q.MATCH` is the same as `a.match` both will result in `MATCH ` being generated.
 * When an undefined attribute is accessed on a Pypher instance, it will create a Statement from it. `q.iMade.ThisUp` will result in `IMADE THISUP `
@@ -206,7 +206,7 @@ str(p) # MY STATEMENT IN CYPHER IS COOL
 
 ### Func
 
-*`Func`* objects resolve to functions (things that have parenthesis)
+_`Func`_ objects resolve to functions (things that have parenthesis)
 
 * Func objects take a list of arguments. These can be anything from Python primitives to nested Pypher objects, it must have a `__str__` representation to be used.
 * Each argument will be automatically set as a bound parameter unless it is either a `Param` or Pypher object. If the argument is not from the Pypher module, it will be given a randomly generated name in the resulting Cypher query and bound params.
