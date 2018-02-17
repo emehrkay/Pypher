@@ -42,7 +42,6 @@ RELATIONSHIP_DIRECTIONS = {
     '-': 'undirected',
     '>': 'out',
     '<': 'in',
-    '<>': 'both',
 }
 
 
