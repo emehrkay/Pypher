@@ -72,6 +72,7 @@ _`Pypher`_ is the root object that all other objects sub-class and it makes ever
 * `property(name)` -- since Pypher already co-opted the dot notation for stringing together the object, it needed a way to represent properties on a `Node` or `Relationship`. Simply type `q.n.property('name')` or `q.n__name__` to have it create `n.name` in Cypher. See `Property` for more details.
 * `operator(operator, value)` -- a simple way to add anything to the chain. All of the Pypher magic methods around assignments and math call this method. Note: the `other` needs to be a different Pypher instance or you will get a funky Cypher string.
 * `_` -- the current Pypher instance. This is useful for special edge cases. See `Property`
+* `apply_partial` -- adds the result of the Partial object to the given Pypher instance.
 
 #### Operators
 
@@ -407,6 +408,62 @@ _`Label`_ objects simply add a label to the preceding link.
 
 * Can be init with *args<String> of labels `n.label('Person', 'Male')` would produce `n:Person:Male`
 * This does not bind its arguments
+
+### Partial
+
+_`Partial`_ objects allows for encapsulation of complex Pypher chains. These objects will allow for preset definitions to be added to the current Pypher instance.
+
+* The sub-class must call `super` in the `__init__`
+* The sub-class must define a `build` method that houses all of the business rules for the Partial
+* The partial can have any interface the developer sees fit.
+
+Here is an example of the built in Case Partial that provides a `CASE $case [WHEN $when THEN $then,...] [ELSE $else] END` addition:
+
+```python
+class Case(Partial):
+
+    def __init__(self, case):
+        super(Case, self).__init__()
+
+        self._case = case
+        self._whens = []
+        self._else = None
+
+    def WHEN(self, when, then):
+        self._whens.append((when, then))
+
+        return self
+
+    def ELSE(self, else_case):
+        self._else = else_case
+
+        return self
+
+    def build(self):
+        self.pypher.CASE(self._case)
+
+        for w in self._whens:
+            self.pypher.WHEN(w[0]).THEN(w[1])
+
+        if self._else:
+            self.pypher.ELSE(self._else)
+
+        self.pypher.END
+
+#usage is simple
+p = Pypher()
+
+# build the partial according to its interface
+case = Case(__.n.__eyes__)
+case.WHEN('blue', one)
+case.WHEN('brown', two)
+case.ELSE(three)
+
+# add it to the Pypher instance
+p.apply_partial(case)
+
+str(p) # CASE n.eyes WHEN blue THEN 1 WHEN brown THEN 2 ELSE 3 END
+```
 
 ## Code Examples
 

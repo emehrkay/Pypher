@@ -7,6 +7,7 @@ from six import with_metaclass
 
 from .exception import (PypherException, PypherAliasException,
     PypherArgumentException)
+from .partial import Partial
 
 
 _LINKS = {}
@@ -24,7 +25,7 @@ _PREDEFINED_STATEMENTS = [['Match',], ['Create',], ['Merge',], ['Delete',],
     ['OnMatchSet', 'ON MATCH SET'], ['CreateIndexOn', 'CREATE INDEX ON'],
     ['UsingIndex', 'USING INDEX'], ['DropIndexOn', 'DROP INDEX ON'],
     ['CreateConstraintOn', 'CREATE CONSTRAINT ON'], ['OnCreate', 'ON CREATE'],
-    ['DropConstraintOn', 'DROP CONSTRAINT ON']]
+    ['DropConstraintOn', 'DROP CONSTRAINT ON'], ['WHEN'], ['THEN']]
 _PREDEFINED_FUNCTIONS = [['size',], ['reverse',], ['head',], ['tail',],
     ['last',], ['extract',], ['filter',], ['reduce',], ['Type', 'type',],
     ['startNode',], ['endNode',], ['count',], ['ID', 'id',], ['collect',],
@@ -358,6 +359,12 @@ class Pypher(with_metaclass(_Link)):
 
         return self.add_link(func)
 
+    def apply_partial(self, partial):
+        partial.pypher = self
+        partial.build()
+
+        return self
+
     def add_link(self, link):
         link.parent = self
         token = self.next
@@ -443,7 +450,7 @@ class Statement(_BaseLink):
             parts = []
 
             for arg in self.args:
-                if isinstance(arg, Pypher):
+                if isinstance(arg, (Pypher, Partial)):
                     arg.parent = self.parent
 
                 parts.append(str(arg))
@@ -481,8 +488,14 @@ class IN(Statement):
         args = []
 
         for arg in self.args:
-            param = self.bind_param(arg)
-            args.append(param.name)
+            if isinstance(arg, (Pypher, Partial)):
+                arg.parent = self.parent
+                value = str(arg)
+            else:
+                param = self.bind_param(arg)
+                value = param.name
+
+            args.append(value)
 
         args = ', '.join(args)
 
@@ -496,9 +509,9 @@ class Func(Statement):
         args = []
 
         for arg in self.args:
-            if isinstance(arg, Pypher):
-                value = str(arg)
+            if isinstance(arg, (Pypher, Partial)):
                 arg.parent = self.parent
+                value = str(arg)
             else:
                 param = self.bind_param(arg)
                 value = param.name
@@ -539,6 +552,8 @@ class List(_BaseLink):
             if isinstance(arg, Pypher):
                 value = str(arg)
                 arg.parent = self.parent
+            elif isinstance(arg, Partial):
+                value = str(arg)
             else:
                 param = self.bind_param(arg)
                 value = param.name
@@ -568,7 +583,7 @@ class Operator(_BaseLink):
 
     def __unicode__(self):
         if self.value:
-            if isinstance(self.value, Pypher):
+            if isinstance(self.value, (Pypher, Partial)):
                 self.value.parent = self.parent
                 value = str(self.value)
             else:

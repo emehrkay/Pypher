@@ -620,7 +620,5 @@ class OperatorTests(unittest.TestCase):
         self.assertEqual(str(p), exp)
 
 
-
-
 if __name__ == '__main__':
     unittest.main()
