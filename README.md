@@ -27,7 +27,7 @@ python setup.py test
 Or if the package is already installed
 
 ```
-pyton -m unittest pypher.test.builder
+python -m unittest pypher.test.builder
 ```
 
 ## Usage
@@ -77,7 +77,7 @@ _`Pypher`_ is the root object that all other objects sub-class and it makes ever
 * `add_link(link)` -- this method is used in every interaction with the Pypher object. It lets you manually add a link to the list that you may not had been able to otherwise express with existing methods or objects.
 * `func(name, *args)` -- this will allow you to call a custom function. Say you want the resulting Cypher to have a Python keyword like `__init__`, you would call `q.func('__init__', 1, 2, 3)` which would resolve to `__init__(1, 2, 3)` (the arguments will be bound).
 * `func_raw(name, *args)` -- this acts just like the func method, but it will not bind the arguments passed in.
-* `raw(*args)` -- this will take whatever you put in it and print it out in the resulting Cypher query. This is useful if you dont want to do something that may not be possible in the Pypher structure.
+* `raw(*args)` -- this will take whatever you put in it and print it out in the resulting Cypher query. This is useful if you want to do something that may not be possible in the Pypher structure.
 * `rel_out(*args, **kwargs)` -- this will start an outgoing relationship. See `Relationship` for argument details.
 * `rel_in(*args, **kwargs)` -- this will start an incoming relationship. See `Relationship` for argument details.
 * `alias(alias)` -- this is a way to allow for simple `AS $name` in the resulting Cypher.
@@ -166,8 +166,8 @@ p = Pypher()
 
 p.MATCH.node('mark').SET(__.mark.property('name') == 'Mark!!')
 
-str(p) # MATCH (NEO_XXUU3_1) SET mark.name = NEO_XXUU3_2
-print(p.bound_params) # {'NEO_XXUU3_1': 'mark', 'NEO_XXUU3_2': 'Mark!!'}
+str(p) # MATCH (mark) SET mark.name = NEO_XXUU3_1
+print(p.bound_params) # {'NEO_XXUU3_1': 'Mark!!'}
 ```
 
 > The `__` is just an instance of the Anon object. You can change what you want your factory name to be, or create an instance of Anon and assign it to another variable as you see fit.
@@ -200,7 +200,7 @@ _`Statement`_ objects are simple, they are things like `MATCH` or `CREATE` or `R
 * When an undefined attribute is accessed on a Pypher instance, it will create a Statement from it. `q.iMade.ThisUp` will result in `IMADE THISUP `
 * Will print out in ALL CAPS and end with an empty space.
 * Can take a list of arguments `q.return(1, 2, 3)` will print out `RETURN 1, 2, 3`
-* Can also just exist along the chain `a.MATACH.node('m')` will print out `MATCH ('m')`
+* Can also just exist along the chain `a.MATACH.node('m')` will print out `MATCH (m)`
 * Pypher provides a suite of pre-defined statements out of the box:
 
 | Pypher Object | Resulting Cypher |
@@ -288,7 +288,7 @@ class MyStatement(Statement):
 _`Func`_ objects resolve to functions (things that have parenthesis)
 
 * Func objects take a list of arguments. These can be anything from Python primitives to nested Pypher objects, it must have a `__str__` representation to be used.
-* Each argument will be automatically set as a bound parameter unless it is either a `Param` or Pypher object. If the argument is not from the Pypher module, it will be given a randomly generated name in the resulting Cypher query and bound params.
+* Each argument will be automatically set as a bound parameter unless it is either a `Param` , `Pypher`, or `Partial` object. If the argument is not from the Pypher module, it will be given a randomly generated name in the resulting Cypher query and bound params.
 * Can take an unlimited number of arguments.
 * Pypher provides a suite of pre-defined functions out of the box:
 
@@ -427,7 +427,9 @@ _`Partial`_ objects allows for encapsulation of complex Pypher chains. These obj
 
 * The sub-class must call `super` in the `__init__`
 * The sub-class must define a `build` method that houses all of the business rules for the Partial
-* The partial can have any interface the developer sees fit.
+* The partial can have any interface the developer sees fit
+* Any bound params will be passed up to the parent Pypher instance
+* Partial objects maintain the same interface as Pypher objects, they simply proxy all calls up to the Pypher instance that the Partial contains (this is useful for assignments or math, etc)
 
 Here is an example of the built in Case Partial that provides a `CASE $case [WHEN $when THEN $then,...] [ELSE $else] END` addition:
 
@@ -467,9 +469,9 @@ p = Pypher()
 
 # build the partial according to its interface
 case = Case(__.n.__eyes__)
-case.WHEN('blue', one)
-case.WHEN('brown', two)
-case.ELSE(three)
+case.WHEN('blue', 1)
+case.WHEN('brown', 2)
+case.ELSE(3)
 
 # add it to the Pypher instance
 p.apply_partial(case)
