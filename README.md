@@ -18,6 +18,18 @@ python setup.py install
 pip install python_cypher
 ```
 
+## Running Tests
+
+```
+python setup.py test
+```
+
+Or if the package is already installed
+
+```
+pyton -m unittest pypher.test.builder
+```
+
 ## Usage
 
 Pypher is pretty simple and has a small interface. Pypher tries to replicate building a Cypher query by utilizing all of Python's magic methods behind the scenes.
