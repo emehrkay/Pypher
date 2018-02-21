@@ -2,12 +2,6 @@
 
 Pypher is a tiny library that focuses on building Cypher queries by constructing pure Python objects.
 
-## To-do
-
-- [x] Unitests
-- [x] Finish Documentation
-- [x] Create pypi package
-
 ## Setup
 
 ```
@@ -469,15 +463,17 @@ p = Pypher()
 
 # build the partial according to its interface
 case = Case(__.n.__eyes__)
-case.WHEN('blue', 1)
-case.WHEN('brown', 2)
+case.WHEN('"blue"', 1)
+case.WHEN('"brown"', 2)
 case.ELSE(3)
 
 # add it to the Pypher instance
 p.apply_partial(case)
 
-str(p) # CASE n.eyes WHEN blue THEN 1 WHEN brown THEN 2 ELSE 3 END
+str(p) # CASE n.eyes WHEN "blue" THEN 1 WHEN "brown" THEN 2 ELSE 3 END
 ```
+
+> As seen in this example, if you want your resulting Cypher to have actual quotes, you must nest quotes when passing in the arguments to the Statement objects
 
 ## Code Examples
 
