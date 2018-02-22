@@ -160,6 +160,9 @@ class Pypher(with_metaclass(_Link)):
         return self._parent
 
     def _set_parent(self, parent):
+        if not parent:
+            return self
+
         self._parent = parent
         parent.params += self.params
         self.params = parent.params
@@ -246,7 +249,7 @@ class Pypher(with_metaclass(_Link)):
         return self.operator(operator='+', value=other)
 
     def __radd__(self, other):
-        return self.operator(operator='+', value=other)
+        return self.operator(operator='+', value=other, inverse=True)
 
     def __iadd__(self, other):
         return self.operator(operator='+=', value=other)
@@ -255,7 +258,7 @@ class Pypher(with_metaclass(_Link)):
         return self.operator(operator='-', value=other)
 
     def __rsub__(self, other):
-        return self.operator(operator='-', value=other)
+        return self.operator(operator='-', value=other, inverse=True)
 
     def __isub__(self, other):
         return self.operator(operator='-=', value=other)
@@ -264,7 +267,7 @@ class Pypher(with_metaclass(_Link)):
         return self.operator(operator='*', value=other)
 
     def __rmul__(self, other):
-        return self.operator(operator='*', value=other)
+        return self.operator(operator='*', value=other, inverse=True)
 
     def __imul__(self, other):
         return self.operator(operator='*=', value=other)
@@ -273,7 +276,7 @@ class Pypher(with_metaclass(_Link)):
         return self.operator(operator='/', value=other)
 
     def __rdiv__(self, other):
-        return self.operator(operator='/', value=other)
+        return self.operator(operator='/', value=other, inverse=True)
 
     def __idiv__(self, other):
         return self.operator(operator='/=', value=other)
@@ -282,7 +285,7 @@ class Pypher(with_metaclass(_Link)):
         return self.operator(operator='%', value=other)
 
     def __rmod__(self, other):
-        return self.operator(operator='%', value=other)
+        return self.operator(operator='%', value=other, inverse=True)
 
     def __imod__(self, other):
         return self.operator(operator='%=', value=other)
@@ -290,14 +293,20 @@ class Pypher(with_metaclass(_Link)):
     def __and__(self, other):
         return self.operator(operator='&', value=other)
 
+    def __rand__(self, other):
+        return self.operator(operator='&', value=other, inverse=True)
+
     def __or__(self, other):
         return self.operator(operator='|', value=other)
+
+    def __ror__(self, other):
+        return self.operator(operator='|', value=other, inverse=True)
 
     def __xor__(self, other):
         return self.operator(operator='^', value=other)
 
     def __rxor__(self, other):
-        return self.operator(operator='^', value=other)
+        return self.operator(operator='^', value=other, inverse=True)
 
     def __ixor__(self, other):
         return self.operator(operator='^=', value=other)
@@ -320,10 +329,10 @@ class Pypher(with_metaclass(_Link)):
     def __eq__(self, other):
         return self.operator(operator='=', value=other)
 
-    def operator(self, operator, value):
-        op = Operator(operator=operator, value=value)
+    def operator(self, operator, value, inverse=False):
+        op = Operator(operator=operator, value=value, inverse=inverse)
 
-        return self.add_link(op)
+        return self.add_link(op, before_self=inverse)
 
     def property(self, name):
         prop = Property(name=name)
@@ -365,7 +374,14 @@ class Pypher(with_metaclass(_Link)):
 
         return self
 
-    def add_link(self, link):
+    def add_link(self, link, before_self=False):
+        if before_self:
+            link.parent = self.parent or self
+            link.next = self.next
+            self.next = link
+
+            return self
+
         link.parent = self
         token = self.next
 
@@ -575,14 +591,17 @@ class Operator(_BaseLink):
     _ADD_PRECEEDING_WS = True
     _ADD_SUCEEDING_WS = False
 
-    def __init__(self, value=None, operator=None):
+    def __init__(self, value=None, operator=None, inverse=False):
         self.operator = operator or self.operator
         self.value = value
+        self.inverse = inverse
 
         super(Operator, self).__init__()
 
     def __unicode__(self):
         if self.value:
+            operator = self.operator
+
             if isinstance(self.value, (Pypher, Partial)):
                 self.value.parent = self.parent
                 value = str(self.value)
@@ -590,7 +609,10 @@ class Operator(_BaseLink):
                 param = self.bind_param(self.value)
                 value = param.name
 
-            return '{} {}'.format(self.operator, value)
+            if self.inverse:
+                operator, value = value, operator
+
+            return '{} {}'.format(operator, value)
 
         return self.operator
 

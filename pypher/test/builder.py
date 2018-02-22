@@ -428,6 +428,17 @@ class OperatorTests(unittest.TestCase):
         self.assertEqual(c, exp)
         self.assertEqual(1, len(params))
 
+    def test_can_add_pypher_and_string_inverse(self):
+        p = Pypher()
+        s = 'some string'
+        s + p.one
+        c = str(p)
+        params = p.bound_params
+        exp = '{s} + one'.format(s=get_dict_key(params, s))
+
+        self.assertEqual(c, exp)
+        self.assertEqual(1, len(params))
+
     def test_can_add_two_pypher_objects_and_string(self):
         p = Pypher()
         a = Pypher()
@@ -465,6 +476,16 @@ class OperatorTests(unittest.TestCase):
 
         self.assertEqual(str(p), exp)
 
+    def test_can_rsubtract_pypher_and_primitive(self):
+        p = Pypher()
+        a = random()
+        a - p.two
+        c = str(p)
+        params = p.bound_params
+        exp = '{} - two'.format(get_dict_key(params, a))
+
+        self.assertEqual(str(p), exp)
+
     def test_can_multiply_pypher_objects(self):
         p = Pypher()
         a = Pypher()
@@ -478,6 +499,16 @@ class OperatorTests(unittest.TestCase):
         a = Pypher()
         p.one *= a.two
         exp = 'one *= two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_rmultiply_pypher_and_primitive(self):
+        p = Pypher()
+        a = random()
+        a * p.two
+        c = str(p)
+        params = p.bound_params
+        exp = '{} * two'.format(get_dict_key(params, a))
 
         self.assertEqual(str(p), exp)
 
@@ -497,6 +528,16 @@ class OperatorTests(unittest.TestCase):
 
         self.assertEqual(str(p), exp)
 
+    def test_can_rdivide_pypher_and_primitive(self):
+        p = Pypher()
+        a = random()
+        a / p.two
+        c = str(p)
+        params = p.bound_params
+        exp = '{} / two'.format(get_dict_key(params, a))
+
+        self.assertEqual(str(p), exp)
+
     def test_can_mod_pypher_objects(self):
         p = Pypher()
         a = Pypher()
@@ -513,11 +554,31 @@ class OperatorTests(unittest.TestCase):
 
         self.assertEqual(str(p), exp)
 
+    def test_can_rmod_pypher_and_primitive(self):
+        p = Pypher()
+        a = random()
+        a % p.two
+        c = str(p)
+        params = p.bound_params
+        exp = '{} % two'.format(get_dict_key(params, a))
+
+        self.assertEqual(str(p), exp)
+
     def test_can_and_pypher_objects(self):
         p = Pypher()
         a = Pypher()
         p.one & a.two
         exp = 'one & two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_rand_pypher_and_primitive(self):
+        p = Pypher()
+        a = random()
+        a & p.two
+        c = str(p)
+        params = p.bound_params
+        exp = '{} & two'.format(get_dict_key(params, a))
 
         self.assertEqual(str(p), exp)
 
@@ -537,6 +598,16 @@ class OperatorTests(unittest.TestCase):
 
         self.assertEqual(str(p), exp)
 
+    def test_can_ror_pypher_and_primitive(self):
+        p = Pypher()
+        a = random()
+        a | p.two
+        c = str(p)
+        params = p.bound_params
+        exp = '{} | two'.format(get_dict_key(params, a))
+
+        self.assertEqual(str(p), exp)
+
     def test_can_explicit_or_pypher_objects(self):
         p = Pypher()
         a = Pypher()
@@ -550,6 +621,16 @@ class OperatorTests(unittest.TestCase):
         a = Pypher()
         p.one ^ a.two
         exp = 'one ^ two'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_rnot_pypher_and_primitive(self):
+        p = Pypher()
+        a = random()
+        a ^ p.two
+        c = str(p)
+        params = p.bound_params
+        exp = '{} ^ two'.format(get_dict_key(params, a))
 
         self.assertEqual(str(p), exp)
 

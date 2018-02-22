@@ -86,7 +86,8 @@ Since Pypher is an object whose sole job is to compose a linked list via a fluid
 
 * No matter the operator, the right side of the operation must not be the same Pypher instance as found on the left. A common way around this is to import and use the `__` Anon Pypher factory.
 * You can create custom Operators by calling `.operator(name, other_value)` on the Pypher instance -- the first operator rule must be followed if the other end is a Pypher object.
-    * Operators always resolve in a space, the operator, and then the other right side.
+    * Operators always resolve in a space, the operator, and then the other value. Until it doesn't.
+        * Certain operators (all of the Python magic methods that support it) support reflected, or right, side assignment and will print the resulting Cypher as expected. Something like `99 - p.__field__` will work as expected, but `99 > p.__field__` will result in `p.field < 99`
 
 ```python
 from pypher import Pypher, __
@@ -102,28 +103,28 @@ x.WHERE.name.operator('**', 'mark') # mark will be a bound param
 str(x) # WHERE n.name ** NEO_az23p_0 
 ```
 
-| Pypher Operator | Resulting Cypher |
+| Pypher Operator | Resulting Cypher | Supports Referece Assignment |
 | ------------- | ------------- |
-| `==` | `=` |
-| `!=` | `!=` |
-| `+` | `+` |
-| `+=` | `+=` |
-| `-` | `-` |
-| `-=` | `-=` |
-| `*` | `*` |
-| `*=` | `*=` |
-| `/` | `/` |
-| `/=` | `/=` |
-| `%` | `%` |
-| `%=` | `%=` |
-| `&` | `&` |
-| `\|` | `\|` |
-| `^` | `^` |
-| `^=` | `^=` |
-| `>` | `>` |
-| `>=` | `>=` |
-| `<` | `<` |
-| `<=` | `<=` |
+| `==` | `=` | - |
+| `!=` | `!=` | - |
+| `+` | `+` | yes |
+| `+=` | `+=` | - |
+| `-` | `-` | yes |
+| `-=` | `-=` | - |
+| `*` | `*` | yes |
+| `*=` | `*=` | - |
+| `/` | `/` | yes |
+| `/=` | `/=` | - |
+| `%` | `%` | yes |
+| `%=` | `%=` | - |
+| `&` | `&` | yes |
+| `\|` | `\|` | yes |
+| `^` | `^` | yes |
+| `^=` | `^=` | - |
+| `>` | `>` | - |
+| `>=` | `>=` | - |
+| `<` | `<` | - |
+| `<=` | `<=` | - |
 
 **Operator Methods**
 
