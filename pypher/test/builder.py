@@ -388,14 +388,14 @@ class BuilderTests(unittest.TestCase):
     def test_can_add_single_label(self):
         p = Pypher()
         p.n.label('one')
-        exp = 'n:one'
+        exp = 'n:`one`'
 
         self.assertEqual(str(p), exp)
 
     def test_can_add_multiple_labels(self):
         p = Pypher()
         p.n.label('one', 'two', 'three', 'four')
-        exp = 'n:one:two:three:four'
+        exp = 'n:`one`:`two`:`three`:`four`'
 
         self.assertEqual(str(p), exp)
 

@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+## 0.3.1 -- 2/22/2018
+
+### Hotfix
+
+* The `pypher.builder.Label` class did not add back ticks to the labels.
+
 ## 0.3.0 -- 2/22/2018
 
 ### Changed

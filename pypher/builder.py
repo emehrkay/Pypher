@@ -492,7 +492,7 @@ class Label(Statement):
     _CLEAR_PRECEEDING_WS = True
 
     def __unicode__(self):
-        labels = [str(a) for a in self.args]
+        labels = ['`{}`'.format(a) for a in self.args]
         labels = ':'.join(labels)
 
         return ':{labels}'.format(labels=labels)
