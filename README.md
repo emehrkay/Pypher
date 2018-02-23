@@ -51,7 +51,7 @@ q.RETURN.mark
 Creating an actual Cypher string from a Pypher query is simple
 
 ```python
-cypher = str(q) # MATCH (mark:Person) WHERE mark.name = NEO_9326c_1 RETURN mark
+cypher = str(q) # MATCH (mark:`Person`) WHERE mark.`name` = NEO_9326c_1 RETURN mark
 params = q.bound_params # {'NEO_9326c_1': 'Mark'}
 ```
 
@@ -75,7 +75,7 @@ _`Pypher`_ is the root object that all other objects sub-class and it makes ever
 * `rel_out(*args, **kwargs)` -- this will start an outgoing relationship. See `Relationship` for argument details.
 * `rel_in(*args, **kwargs)` -- this will start an incoming relationship. See `Relationship` for argument details.
 * `alias(alias)` -- this is a way to allow for simple `AS $name` in the resulting Cypher.
-* `property(name)` -- since Pypher already co-opted the dot notation for stringing together the object, it needed a way to represent properties on a `Node` or `Relationship`. Simply type `q.n.property('name')` or `q.n__name__` to have it create `n.name` in Cypher. See `Property` for more details.
+* `property(name)` -- since Pypher already co-opted the dot notation for stringing together the object, it needed a way to represent properties on a `Node` or `Relationship`. Simply type `q.n.property('name')` or `q.n__name__` to have it create `n.name` in Cypher. See `Property` for more details. Properties will be wrapped in back ticks to allow for spaces and other special characters.
 * `operator(operator, value)` -- a simple way to add anything to the chain. All of the Pypher magic methods around assignments and math call this method. Note: the `other` needs to be a different Pypher instance or you will get a funky Cypher string.
 * `_` -- the current Pypher instance. This is useful for special edge cases. See `Property`
 * `apply_partial` -- adds the result of the Partial object to the given Pypher instance.
@@ -95,7 +95,7 @@ from pypher import Pypher, __
 p = Pypher()
 p.WHERE.n.name == __.s.name
 
-str(p) # WHERE n.name = s.name
+str(p) # WHERE n.`name` = s.`name`
 
 # custom operator
 x = Pypher()
@@ -153,7 +153,7 @@ p = Pypher()
 p.MATCH.node('mark', labels='Person').rel(labels='knows').node('mikey', lables=['Cat', 'Animal'])
 p.RETURN(__.mark, __.mikey) 
 
-str(p) # MATCH (mark:Person)-[:knows]-(mikey:Cat:Animal) RETURN mark, mikey
+str(p) # MATCH (mark:`Person`)-[:knows]-(mikey:`Cat`:`Animal`) RETURN mark, mikey
 
 # OR
 
@@ -161,7 +161,7 @@ p = Pypher()
 
 p.MATCH.node('mark').SET(__.mark.property('name') == 'Mark!!')
 
-str(p) # MATCH (mark) SET mark.name = NEO_XXUU3_1
+str(p) # MATCH (mark) SET mark.`name` = NEO_XXUU3_1
 print(p.bound_params) # {'NEO_XXUU3_1': 'Mark!!'}
 ```
 
@@ -183,7 +183,7 @@ p = Pypher()
 name = Param(name='namedParam', value='Mark')
 p.SET(__.m.__name__ == name)
 
-str(p) # SET m.name = namedParam
+str(p) # SET m.`name` = namedParam
 print(p.bound_params) # {'namedParam': 'Mark'}
 ```
 
@@ -415,6 +415,7 @@ _`Label`_ objects simply add a label to the preceding link.
 
 * Can be init with *args<String> of labels `n.label('Person', 'Male')` would produce `n:Person:Male`
 * This does not bind its arguments
+* Labbels will be wrapped in back ticks to allow for spaces and other special characters
 
 ### Partial
 

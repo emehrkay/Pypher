@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+## 0.3.0 -- 2/22/2018
+
+### Changed
+
+* All labels and properties are now wrapped in back ticks to support labels or properties with spaces and other weird characters. From: "n.name" to "n.`name`"
+
 ## 0.2.1 -- 2/21/2018
 
 ### Fixed

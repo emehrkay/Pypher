@@ -86,7 +86,7 @@ class BuilderTests(unittest.TestCase):
         p = Pypher()
         p.property('property')
 
-        expected = '.property'
+        expected = '.`property`'
         c = str(p)
 
         self.assertEqual(c, expected)
@@ -95,7 +95,7 @@ class BuilderTests(unittest.TestCase):
         p = Pypher()
         p.__property__
 
-        expected = '.property'
+        expected = '.`property`'
         c = str(p)
 
         self.assertEqual(c, expected)
@@ -104,7 +104,7 @@ class BuilderTests(unittest.TestCase):
         p = Pypher()
         p.property('prop1').property('prop2')
 
-        expected = '.prop1.prop2'
+        expected = '.`prop1`.`prop2`'
         c = str(p)
 
         self.assertEqual(c, expected)
@@ -113,7 +113,7 @@ class BuilderTests(unittest.TestCase):
         p = Pypher()
         p.__prop1__.__prop2__
 
-        expected = '.prop1.prop2'
+        expected = '.`prop1`.`prop2`'
         c = str(p)
 
         self.assertEqual(c, expected)
@@ -122,7 +122,7 @@ class BuilderTests(unittest.TestCase):
         p = Pypher()
         p.property('prop1').__prop2__
 
-        expected = '.prop1.prop2'
+        expected = '.`prop1`.`prop2`'
         c = str(p)
 
         self.assertEqual(c, expected)
@@ -133,7 +133,7 @@ class BuilderTests(unittest.TestCase):
 
         for x in range(1, randrange(5, 22)):
             p.property(str(x))
-            exp.append(str(x))
+            exp.append('`{}`'.format(x))
 
         expected = '.' + '.'.join(exp)
 
@@ -142,7 +142,7 @@ class BuilderTests(unittest.TestCase):
     def test_can_add_statement_and_property(self):
         p = Pypher()
         p.RETURN.property('money')
-        exp = 'RETURN.money'
+        exp = 'RETURN.`money`'
 
         self.assertEqual(str(p), exp)
 
@@ -164,14 +164,14 @@ class BuilderTests(unittest.TestCase):
     def test_can_add_empty_node_with_one_label(self):
         p = Pypher()
         p.node(labels='Test')
-        exp = '(:Test)'
+        exp = '(:`Test`)'
 
         self.assertEqual(str(p), exp)
 
     def test_can_add_empty_node_with_multiple_labels(self):
         p = Pypher()
         p.node(labels=['Test', 'one', 'two'])
-        exp = '(:Test:one:two)'
+        exp = '(:`Test`:`one`:`two`)'
 
         self.assertEqual(str(p), exp)
 
@@ -185,7 +185,7 @@ class BuilderTests(unittest.TestCase):
     def test_can_add_named_node_with_multiple_labels(self):
         p = Pypher()
         p.node('name', labels=['Test', 'one', 'two'])
-        exp = '(name:Test:one:two)'
+        exp = '(name:`Test`:`one`:`two`)'
 
         self.assertEqual(str(p), exp)
 
@@ -197,7 +197,7 @@ class BuilderTests(unittest.TestCase):
         c = str(p)
         params = p.bound_params
 
-        exp = '( {{age: {a}, name: {n}}})'.format(a=get_dict_key(params, age),
+        exp = '( {{`age`: {a}, `name`: {n}}})'.format(a=get_dict_key(params, age),
             n=get_dict_key(params, name))
 
         self.assertEqual(c, exp)
@@ -210,7 +210,7 @@ class BuilderTests(unittest.TestCase):
         c = str(p)
         params = p.bound_params
 
-        exp = '(:Test:one:two {{age: {a}, name: {n}}})'.format(
+        exp = '(:`Test`:`one`:`two` {{`age`: {a}, `name`: {n}}})'.format(
             n=get_dict_key(params, name), a=get_dict_key(params, age))
 
         self.assertEqual(c, exp)
@@ -222,7 +222,7 @@ class BuilderTests(unittest.TestCase):
         p.node('name', name=name, age=age, labels=['Test', 'one', 'two'])
         c = str(p)
         params = p.bound_params
-        exp = '(name:Test:one:two {{age: {a}, name: {n}}})'.format(
+        exp = '(name:`Test`:`one`:`two` {{`age`: {a}, `name`: {n}}})'.format(
             n=get_dict_key(params, name), a=get_dict_key(params, age))
 
         self.assertEqual(c, exp)
@@ -272,14 +272,14 @@ class BuilderTests(unittest.TestCase):
     def test_can_add_empty_undirected_relationship_with_labels(self):
         p = Pypher()
         p.relationship(labels=['one', 'two', 'three'])
-        exp = '-[:one:two:three]-'
+        exp = '-[:`one`:`two`:`three`]-'
 
         self.assertEqual(str(p), exp)
 
     def test_can_add_named_undirected_relationship_with_labels(self):
         p = Pypher()
         p.relationship(variable='test', labels=['one', 'two', 'three'])
-        exp = '-[test:one:two:three]-'
+        exp = '-[test:`one`:`two`:`three`]-'
 
         self.assertEqual(str(p), exp)
 
@@ -291,7 +291,7 @@ class BuilderTests(unittest.TestCase):
             name=name, age=age)
         c = str(p)
         params = p.bound_params
-        exp = '-[test:one:two:three {{age: {a}, name: {n}}}]-'.format(
+        exp = '-[test:`one`:`two`:`three` {{`age`: {a}, `name`: {n}}}]-'.format(
             n=get_dict_key(params, name), a=get_dict_key(params, age))
 
         self.assertEqual(str(p), exp)
@@ -312,7 +312,7 @@ class BuilderTests(unittest.TestCase):
         p.node(n).rel_out(labels=l).node(name=name, age=age)
         c = str(p)
         params = p.bound_params
-        exp = '({n})-[:{l}]->( {{age: {age}, name: {name}}})'.format(n=n, l=l,
+        exp = '({n})-[:`{l}`]->( {{`age`: {age}, `name`: {name}}})'.format(n=n, l=l,
             name=get_dict_key(params, name), age=get_dict_key(params, age))
 
         self.assertEqual(c, exp)
@@ -368,7 +368,7 @@ class BuilderTests(unittest.TestCase):
         p.n.property('name').IN(one, two, three)
         c = str(p)
         params = p.bound_params
-        exp = 'n.name IN [{}, {}, {}]'.format(get_dict_key(params, one),
+        exp = 'n.`name` IN [{}, {}, {}]'.format(get_dict_key(params, one),
             get_dict_key(params, two), get_dict_key(params, three))
 
         self.assertEqual(c, exp)
@@ -380,7 +380,7 @@ class BuilderTests(unittest.TestCase):
         p.n.property('name').comp(__.field | three)
         c = str(p)
         params = p.bound_params
-        exp = 'n.name [field | {}]'.format(get_dict_key(params, three))
+        exp = 'n.`name` [field | {}]'.format(get_dict_key(params, three))
 
         self.assertEqual(c, exp)
         self.assertEqual(1, len(params))

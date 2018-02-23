@@ -484,7 +484,7 @@ class Property(Statement):
     _ALIASES = ['prop',]
 
     def __unicode__(self):
-        return '.{}'.format(self.name)
+        return '.`{}`'.format(self.name)
 
 
 class Label(Statement):
@@ -659,7 +659,8 @@ class Entity(_BaseLink):
         variable = self.variable
 
         if self._labels:
-            labels = ':'.join(self._labels)
+            labels = ['`{}`'.format(l) for l in self._labels]
+            labels = ':'.join(labels)
 
             return '{variable}:{labels}'.format(variable=variable,
                 labels=labels)
@@ -674,7 +675,7 @@ class Entity(_BaseLink):
             name = self.params.param_name(k)
             param = self.bind_param(value=v, name=name)
 
-            properties.append('{key}: {val}'.format(key=k, val=param.name))
+            properties.append('`{key}`: {val}'.format(key=k, val=param.name))
 
         if properties:
             return '{{{props}}}'.format(props=', '.join(properties))

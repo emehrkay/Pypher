@@ -84,7 +84,7 @@ class PartialTests(unittest.TestCase):
 
         p.n.__name__ + vp
 
-        exp = 'n.name + VALID PARTIAL'
+        exp = 'n.`name` + VALID PARTIAL'
 
         self.assertEqual(str(p), exp)
 
@@ -96,7 +96,7 @@ class PartialTests(unittest.TestCase):
         p.n.__name__ + ap
         c = str(p)
         params = p.bound_params
-        exp = 'n.name + toInteger({})'.format(get_dict_key(params, arg))
+        exp = 'n.`name` + toInteger({})'.format(get_dict_key(params, arg))
 
         self.assertEqual(c, exp)
         self.assertEqual(1, len(params))
@@ -111,7 +111,7 @@ class PartialTests(unittest.TestCase):
         p.n.__name__ + ap
         c = str(p)
         params = p.bound_params
-        exp = 'n.name + toInteger({}, toInteger({}))'.format(
+        exp = 'n.`name` + toInteger({}, toInteger({}))'.format(
             get_dict_key(params, arg), get_dict_key(params, arg2))
 
         self.assertEqual(c, exp)
@@ -164,7 +164,7 @@ class PartialCaseTests(unittest.TestCase):
         p.apply_partial(case)
         c = str(p)
         params = p.bound_params
-        exp = 'CASE n.eyes WHEN {blue} THEN {one} WHEN {brown} THEN {two} ELSE {three} END'.format(
+        exp = 'CASE n.`eyes` WHEN {blue} THEN {one} WHEN {brown} THEN {two} ELSE {three} END'.format(
             blue='blue', one=one, brown='brown', two=two, three=three)
 
         self.assertEqual(c, exp)
