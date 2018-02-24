@@ -325,6 +325,19 @@ class BuilderTests(unittest.TestCase):
 
         self.assertEqual(str(p), exp)
 
+    def test_can_add_raw_with_mixed_args(self):
+        p = Pypher()
+        a = Pypher()
+        i = random()
+        s = 'raw content {}'.format(random())
+        p.this.will.be.raw(s, a.test.ID(i))
+        c = str(p)
+        params = p.bound_params
+        exp = 'this will be {} test id({})'.format(s, get_dict_key(params, i))
+
+        self.assertEqual(c, exp)
+        self.assertEqual(1, len(params))
+
     def test_can_add_random_function(self):
         p = Pypher()
         f = 'someFunction{}'.format(random())
@@ -347,18 +360,20 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(c, exp)
         self.assertEqual(2, len(params))
 
-    def test_can_add_random_raw_function_with_args(self):
+    def test_can_add_random_raw_function_with_mixed_args(self):
         p = Pypher()
+        a = Pypher()
+        i = random()
         f = 'someFunction{}'.format(random())
         one = 'one'
         two = 2
-        p.func_raw(f, one, two)
+        p.func_raw(f, one, two, a.id(i))
         c = str(p)
         params = p.bound_params
-        exp = '{}({}, {})'.format(f, one, two)
+        exp = '{}({}, {}, id({}))'.format(f, one, two, get_dict_key(params, i))
 
         self.assertEqual(c, exp)
-        self.assertEqual(0, len(params))
+        self.assertEqual(1, len(params))
 
     def test_can_add_in_clause(self):
         p = Pypher()

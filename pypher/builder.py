@@ -546,13 +546,29 @@ class Func(Statement):
 class FuncRaw(Func):
 
     def get_args(self):
-        return ', '.join(map(str, self.args))
+        args = []
+
+        for arg in self.args:
+            if isinstance(arg, (Pypher, Partial)):
+                arg.parent = self.parent
+
+            args.append(str(arg))
+
+        return ', '.join(args)
 
 
 class Raw(Statement):
 
     def __unicode__(self):
-        args = ' '.join(map(str, self.args))
+        args = []
+
+        for arg in self.args:
+            if isinstance(arg, (Pypher, Partial)):
+                arg.parent = self.parent
+
+            args.append(str(arg))
+
+        args = ' '.join(args)
 
         return '{args}'.format(args=args)
 

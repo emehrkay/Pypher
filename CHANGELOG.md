@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+## 0.3.1 -- 2/23/2018
+
+### Bugfix
+
+* `pypher.builder.Raw` and `pypher.builder.FuncRaw` objects will now adopt bound_params from Pypher and Partial objects
+
 ## 0.3.1 -- 2/22/2018
 
 ### Hotfix
