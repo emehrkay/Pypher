@@ -107,6 +107,9 @@ class Params(object):
         if not name:
             name = self.param_name()
 
+        if name[0] != '$':
+            name = '$' + name
+
         self._bound_params[name] = value
 
         return Param(name=name, value=value)
@@ -140,7 +143,7 @@ class _Link(type):
 
 
 class Pypher(with_metaclass(_Link)):
-    PARAM_PREFIX = 'NEO'
+    PARAM_PREFIX = '$NEO'
 
     def __init__(self, parent=None, *args, **kwargs):
         self._ = self
@@ -280,6 +283,15 @@ class Pypher(with_metaclass(_Link)):
 
     def __idiv__(self, other):
         return self.operator(operator='/=', value=other)
+
+    def __truediv__(self, other):
+        return self.__div__(other=other)
+
+    def __rtruediv__(self, other):
+        return self.__rdiv__(other=other)
+
+    def __itruediv__(self, other):
+        return self.__idiv__(other=other)
 
     def __mod__(self, other):
         return self.operator(operator='%', value=other)

@@ -316,6 +316,7 @@ class BuilderTests(unittest.TestCase):
             name=get_dict_key(params, name), age=get_dict_key(params, age))
 
         self.assertEqual(c, exp)
+        self.assertEqual(2, len(params))
 
     def test_can_add_raw(self):
         p = Pypher()

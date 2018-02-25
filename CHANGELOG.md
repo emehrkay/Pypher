@@ -1,6 +1,16 @@
 # Pypher Changelog
 
-## 0.3.1 -- 2/23/2018
+## 0.3.3 -- 2/25/2018
+
+### Bugfix
+
+* Fixed division of Pypher objects for Python 3+
+
+### Changed
+
+* The default param name now starts with a dollar sign. And if the manually named param does not start with one, it will be prepended to the name
+
+## 0.3.2 -- 2/23/2018
 
 ### Bugfix
 
