@@ -1,5 +1,17 @@
 # Pypher Changelog
 
+## 0.4.0 -- 3/3/2018
+
+### Added
+
+* `Pypher.OperatorRaw` a class where the operator's argument is not automatically bound in the resulting Cypher.
+
+### Bugfix
+
+* Fixed an issue where `Pypher.reset()` was not clearing out the old bound params
+* Made `Pypher.Alias` and `Pypher.Rexp` sub-class `Pypher.OperatorRaw`
+* Fixed a bug where `Pypher.Link` class `_ALIAS` list were not being stored and referenced by the system properly
+
 ## 0.3.3 -- 2/25/2018
 
 ### Bugfix

@@ -133,11 +133,19 @@ class _Link(type):
 
         if aliases:
             for alias in aliases:
+                alias_low = alias.lower()
+
                 if alias in _LINKS:
                     error = ('The alias: "{}" defined in "{}" is already'
                         ' used by "{}"'.format(alias, name, _LINKS[alias]))
                     raise PypherAliasException(error)
+                elif alias_low in _LINKS:
+                    error = ('The alias: "{}" defined in "{}" is already'
+                        ' used by "{}"'.format(alias, name, _LINKS[alias_low]))
+                    raise PypherAliasException(error)
+
                 _LINKS[alias] = name
+                _LINKS[alias_low] = name
 
         return cls
 
@@ -155,9 +163,7 @@ class Pypher(with_metaclass(_Link)):
     def reset(self):
         self.link = None
         self.next = None
-        self._set_attr = None
-        self._bound_count = 0
-        self._bound_params = {}
+        self.params = Params(prefix=self.PARAM_PREFIX)
 
     def _get_parent(self):
         return self._parent
@@ -618,6 +624,7 @@ class Comprehension(List):
 class Operator(_BaseLink):
     _ADD_PRECEEDING_WS = True
     _ADD_SUCEEDING_WS = False
+    _BIND_PARAMS = True
 
     def __init__(self, value=None, operator=None, inverse=False):
         self.operator = operator or self.operator
@@ -633,9 +640,11 @@ class Operator(_BaseLink):
             if isinstance(self.value, (Pypher, Partial)):
                 self.value.parent = self.parent
                 value = str(self.value)
-            else:
+            elif self._BIND_PARAMS:
                 param = self.bind_param(self.value)
                 value = param.name
+            else:
+                value = self.value
 
             if self.inverse:
                 operator, value = value, operator
@@ -643,6 +652,10 @@ class Operator(_BaseLink):
             return '{} {}'.format(operator, value)
 
         return self.operator
+
+
+class OperatorRaw(Operator):
+    _BIND_PARAMS = False
 
 
 class AND(Operator):
@@ -657,12 +670,12 @@ class Assign(Operator):
     operator = '='
 
 
-class Alias(Operator):
+class Alias(OperatorRaw):
     _ALIASES = ['AS',]
     operator = 'AS'
 
 
-class Rexp(Operator):
+class Rexp(OperatorRaw):
     _ALIASES = ['re',]
     operator = '=~'
 

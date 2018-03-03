@@ -326,6 +326,21 @@ class BuilderTests(unittest.TestCase):
 
         self.assertEqual(str(p), exp)
 
+    def test_can_bind_params_and_clear_them_using_reset(self):
+        p = Pypher()
+        p.bind_param(1)
+        p.bind_param(2)
+
+        s = str(p)
+        bp = p.bound_params
+
+        p.reset()
+
+        bp2 = p.bound_params
+
+        self.assertEqual(2, len(bp))
+        self.assertEqual(0, len(bp2))
+
     def test_can_add_raw_with_mixed_args(self):
         p = Pypher()
         a = Pypher()
@@ -704,9 +719,10 @@ class OperatorTests(unittest.TestCase):
         p.one.rexp(s)
         c = str(p)
         params = p.bound_params
-        exp = 'one =~ {}'.format(get_dict_key(params, s))
+        exp = 'one =~ {}'.format(s)
 
         self.assertEqual(c, exp)
+        self.assertEqual(0, len(params))
 
     def test_can_create_custom_operator(self):
         p = Pypher()
@@ -716,6 +732,21 @@ class OperatorTests(unittest.TestCase):
 
         self.assertEqual(str(p), exp)
 
+    def test_can_add_alias_using_alias(self):
+        p = Pypher()
+        p.mark.alias('MARK')
+        exp = 'mark AS MARK'
+
+        self.assertEqual(exp, str(p))
+
+    def test_can_add_alias_using_alias_as(self):
+        p = Pypher()
+        p.mark
+        import pudb; pu.db
+        p.AS('MARK')
+        exp = 'mark AS MARK'
+
+        self.assertEqual(exp, str(p))
 
 if __name__ == '__main__':
     unittest.main()
