@@ -73,7 +73,7 @@ RETURN user, count(friend) AS number_of_friends
 Pypher
 
 ```python
-p.OPTIONAL.MATCH.node('user', 'User').rel('FRIENDS_WITH').node('friend', 'User')
+p.OPTIONAL.MATCH.node('user', 'User').rel(labels='FRIENDS_WITH').node('friend', 'User')
 # continue later
 p.WHERE.user.__id__ == 1234
 p.RETURN(__.user, __.count('friend').alias('number_of_friends'))
