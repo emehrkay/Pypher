@@ -2,6 +2,8 @@
 
 Pypher is a tiny library that focuses on building Cypher queries by constructing pure Python objects.
 
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/emehrkay/Pypher/master)
+
 ## Setup
 
 ```
