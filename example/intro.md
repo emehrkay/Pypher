@@ -149,6 +149,6 @@ When accessing node or relationship properties, you must either use the `.proper
 
 Pypher is a living project, my goal is to keep it current with the evolution of the Cypher language. So if you come across any bugs or missing features or have suggestions for improvements, you can add a ticket to the [GitHub repo](https://github.com/emehrkay/Pypher).
 
-If you need any help with how to set things up or advanced Pypher use cases, you can always jump into the $Neo4jSlackGroup<Channel> and @ me (emehrkay).
+If you need any help with how to set things up or advanced Pypher use cases, you can always jump into the [https://neo4j.com/developer/slack/](https://neo4j.com/developer/slack/) and @ me (emehrkay).
 
 Have fun. Use Pypher to build some cool things and drop me a link when you do.
