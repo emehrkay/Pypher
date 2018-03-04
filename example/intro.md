@@ -23,7 +23,7 @@ str(p) # MAtCH ('a')-['r']-('b') RETURN a, b, r
 
 Pypher is setup to look and feel just like the Cypher that you're familiar with. It has all of the keywords and functions that you need to create the Cypher queries that power your applications.
 
-> All of the examples found in this article can be run in an interactive Python Notebook located here: [https://hub.mybinder.org/user/emehrkay-pypher-imrnb94u/notebooks/examples.ipynb](https://hub.mybinder.org/user/emehrkay-pypher-imrnb94u/notebooks/examples.ipynb)
+> All of the examples found in this article can be run in an interactive Python Notebook located here: [https://mybinder.org/v2/gh/emehrkay/Pypher/master?filepath=example](https://mybinder.org/v2/gh/emehrkay/Pypher/master?filepath=example)
 
 ### Why use Pypher?
 
@@ -82,7 +82,7 @@ str(p) # OPTIONAL MATCH (user:`User`)-[FRIENDS_WITH]-(friend:`User`) WHERE user.
 print(dict(p.bound_params)) # {'$NEO_964c1_0': 1234, '$NEO_964c1_1': 'friend', '$NEO_964c1_2': 'number_of_friends'}
 ```
 
-> Use the accompanying interactive Python Notebook to play around with Pypher and get comfortable with the syntax [https://hub.mybinder.org/user/emehrkay-pypher-imrnb94u/notebooks/examples.ipynb](https://hub.mybinder.org/user/emehrkay-pypher-imrnb94u/notebooks/examples.ipynb)
+> Use the accompanying interactive Python Notebook to play around with Pypher and get comfortable with the syntax [https://mybinder.org/v2/gh/emehrkay/Pypher/master?filepath=example](https://mybinder.org/v2/gh/emehrkay/Pypher/master?filepath=example)
 
 ## So How Does Pypher Work?
 
