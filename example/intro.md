@@ -1,6 +1,6 @@
 # Pypher -- Cypher in Python
 
-Cypher is a pretty cool language. It allows you to easily manipulate and query your graph in a familiar, but at the same time, unique way — if you’re familiar with SQL, mixing in Cypher’s ASCII node and relationship characters becomes second nature allowing you to be very productive early on.
+Cypher is a pretty cool language. It allows you to easily manipulate and query your graph in a familiar, but at the same time, unique way — if you're familiar with SQL, mixing in Cypher's ASCII node and relationship characters becomes second nature allowing you to be very productive early on.
 
 A query language is the main interface to the data that is stored in the database. In most cases that language is completely different than the programming language interacting with the actual database. This results in query building through either string concatenation or with a few well-structured query builder objects (which themselves resolve to concatenated strings).
 
@@ -35,7 +35,7 @@ Pypher is setup to look and feel just like the Cypher that you're familiar with.
 ### Why not use Pypher?
 
 * Strings are a Python primitive and could use a lot less memory in long running processes. Not much, but it is a fair point.
-* Python objects are susceptible to manipulation outside of the current execution scope if you aren’t too carful with passing them around (if this is an issue with your Pypher, maybe you should re-evaluate your code structure).
+* Python objects are susceptible to manipulation outside of the current execution scope if you aren't too carful with passing them around (if this is an issue with your Pypher, maybe you should re-evaluate your code structure).
 * You must learn both Cypher and Pypher and have an understanding of where they intersect and diverge. Luckily for you Pypher's interface is small and very easy to digest.
 
 Pypher makes my Cypher code easier to wrangle and manage in the long run. It allows me to conditionally build queries and relieves the hassle of worrying about string concatenation or parameter passing. If you're using Cypher with Python, give Pypher a try. You'll love it.
@@ -57,7 +57,7 @@ Pypher:
 from pypher import Pypher, __
 
 p = Pypher()
-p.MATCH.node(‘u’, labels=‘User’).RETURN.u
+p.MATCH.node('u', labels='User').RETURN.u
 
 str(p) # MATCH (u:`User`) RETURN u
 ```
@@ -73,10 +73,10 @@ RETURN user, count(friend) AS number_of_friends
 Pypher
 
 ```python
-p.OPTIONAL.MATCH.node(‘user’, ‘User’).rel(‘FRIENDS_WITH).node(‘friend’, ‘User’)
+p.OPTIONAL.MATCH.node('user', 'User').rel('FRIENDS_WITH').node('friend', 'User')
 # continue later
 p.WHERE.user.__id__ == 1234
-p.RETURN(__.user, __.count(‘friend’).alias(‘number_of_friends’))
+p.RETURN(__.user, __.count('friend').alias('number_of_friends'))
 
 str(p) # OPTIONAL MATCH (user:`User`)-[FRIENDS_WITH]-(friend:`User`) WHERE user.`id` = $NEO_964c1_0 RETURN user, count($NEO_964c1_1) AS $NEO_964c1_2
 print(dict(p.bound_params)) # {'$NEO_964c1_0': 1234, '$NEO_964c1_1': 'friend', '$NEO_964c1_2': 'number_of_friends'}
@@ -94,7 +94,7 @@ Pypher also offers partials in the form of `Partial` objects. These objects are 
 
 ## Things to Look Out For
 
-As you can see in the examples above, Pypher doesn’t map one-to-one with Cypher and you must learn some special syntax in order to produce the desired Cypher query. Here is a short list of things to consider when wring Pypher:
+As you can see in the examples above, Pypher doesn't map one-to-one with Cypher and you must learn some special syntax in order to produce the desired Cypher query. Here is a short list of things to consider when wring Pypher:
 
 ### Watch out for Assignments
 
@@ -117,7 +117,7 @@ p.mark.property('age') <= __.you.property('age')
 If you are doing a function call followed by an assignment operator, you must get back to the Pypher instance using the single underscore member
 
 ```python
-p.property(‘age’)._ += 44
+p.property('age')._ += 44
 ```
 
 ### Watch out for Python Keywords
@@ -130,7 +130,7 @@ p.RETURN.person.AS.p
 
 ### Watch out for Bound Parameters
 
-If you do not manually bind params, Pypher will create the param name with a randomly generated string. This is good because it binds the parameters, however, it also doesn’t allow the Cypher caching engine in the Neo4J server to property cache your query as a template. The solution is to create an instance of the Param object with the name that you want to be used in the resulting Cypher query.
+If you do not manually bind params, Pypher will create the param name with a randomly generated string. This is good because it binds the parameters, however, it also doesn't allow the Cypher caching engine in the Neo4J server to property cache your query as a template. The solution is to create an instance of the Param object with the name that you want to be used in the resulting Cypher query.
 
 ```python
 name = Param('my_param', 'Mark')
