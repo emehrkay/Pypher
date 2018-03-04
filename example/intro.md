@@ -116,7 +116,7 @@ p.mark.property('age') <= __.you.property('age')
 
 If you are doing a function call followed by an assignment operator, you must get back to the Pypher instance using the single underscore member
 
-```
+```python
 p.property(‘age’)._ += 44
 ```
 
@@ -132,7 +132,7 @@ p.RETURN.person.AS.p
 
 If you do not manually bind params, Pypher will create the param name with a randomly generated string. This is good because it binds the parameters, however, it also doesn’t allow the Cypher caching engine in the Neo4J server to property cache your query as a template. The solution is to create an instance of the Param object with the name that you want to be used in the resulting Cypher query.
 
-```
+```python
 name = Param('my_param', 'Mark')
 
 p.MATCH.node('n').WHERE(__.n.__name__ == name).RETURN.n
