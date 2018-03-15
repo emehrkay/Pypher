@@ -1,5 +1,13 @@
 # Pypher Changelog
 
+
+## 0.4.1 -- 3/14/2018
+
+### Fixed
+
+* Changed the `ID` class to subclass `FuncRaw` so that its arguments are not automatically bound.
+* Fixed the name of the param staring with a `$`
+
 ## 0.4.0 -- 3/3/2018
 
 ### Added

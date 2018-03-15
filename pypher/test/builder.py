@@ -197,7 +197,7 @@ class BuilderTests(unittest.TestCase):
         c = str(p)
         params = p.bound_params
 
-        exp = '( {{`age`: {a}, `name`: {n}}})'.format(a=get_dict_key(params, age),
+        exp = '( {{`age`: ${a}, `name`: ${n}}})'.format(a=get_dict_key(params, age),
             n=get_dict_key(params, name))
 
         self.assertEqual(c, exp)
@@ -210,7 +210,7 @@ class BuilderTests(unittest.TestCase):
         c = str(p)
         params = p.bound_params
 
-        exp = '(:`Test`:`one`:`two` {{`age`: {a}, `name`: {n}}})'.format(
+        exp = '(:`Test`:`one`:`two` {{`age`: ${a}, `name`: ${n}}})'.format(
             n=get_dict_key(params, name), a=get_dict_key(params, age))
 
         self.assertEqual(c, exp)
@@ -222,7 +222,7 @@ class BuilderTests(unittest.TestCase):
         p.node('name', name=name, age=age, labels=['Test', 'one', 'two'])
         c = str(p)
         params = p.bound_params
-        exp = '(name:`Test`:`one`:`two` {{`age`: {a}, `name`: {n}}})'.format(
+        exp = '(name:`Test`:`one`:`two` {{`age`: ${a}, `name`: ${n}}})'.format(
             n=get_dict_key(params, name), a=get_dict_key(params, age))
 
         self.assertEqual(c, exp)
@@ -291,7 +291,7 @@ class BuilderTests(unittest.TestCase):
             name=name, age=age)
         c = str(p)
         params = p.bound_params
-        exp = '-[test:`one`:`two`:`three` {{`age`: {a}, `name`: {n}}}]-'.format(
+        exp = '-[test:`one`:`two`:`three` {{`age`: ${a}, `name`: ${n}}}]-'.format(
             n=get_dict_key(params, name), a=get_dict_key(params, age))
 
         self.assertEqual(str(p), exp)
@@ -312,7 +312,7 @@ class BuilderTests(unittest.TestCase):
         p.node(n).rel_out(labels=l).node(name=name, age=age)
         c = str(p)
         params = p.bound_params
-        exp = '({n})-[:`{l}`]->( {{`age`: {age}, `name`: {name}}})'.format(n=n, l=l,
+        exp = '({n})-[:`{l}`]->( {{`age`: ${age}, `name`: ${name}}})'.format(n=n, l=l,
             name=get_dict_key(params, name), age=get_dict_key(params, age))
 
         self.assertEqual(c, exp)
@@ -349,10 +349,10 @@ class BuilderTests(unittest.TestCase):
         p.this.will.be.raw(s, a.test.ID(i))
         c = str(p)
         params = p.bound_params
-        exp = 'this will be {} test id({})'.format(s, get_dict_key(params, i))
+        exp = 'this will be {} test id({})'.format(s, i)
 
         self.assertEqual(c, exp)
-        self.assertEqual(1, len(params))
+        self.assertEqual(0, len(params))
 
     def test_can_add_random_function(self):
         p = Pypher()
@@ -386,10 +386,10 @@ class BuilderTests(unittest.TestCase):
         p.func_raw(f, one, two, a.id(i))
         c = str(p)
         params = p.bound_params
-        exp = '{}({}, {}, id({}))'.format(f, one, two, get_dict_key(params, i))
+        exp = '{}({}, {}, id({}))'.format(f, one, two, i)
 
         self.assertEqual(c, exp)
-        self.assertEqual(1, len(params))
+        self.assertEqual(0, len(params))
 
     def test_can_add_in_clause(self):
         p = Pypher()
@@ -742,7 +742,6 @@ class OperatorTests(unittest.TestCase):
     def test_can_add_alias_using_alias_as(self):
         p = Pypher()
         p.mark
-        import pudb; pu.db
         p.AS('MARK')
         exp = 'mark AS MARK'
 

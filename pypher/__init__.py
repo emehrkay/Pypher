@@ -1,5 +1,6 @@
 from .builder import (Pypher, _PREDEFINED_STATEMENTS, _PREDEFINED_FUNCTIONS,
-    Anon, __, create_statement, create_function, RELATIONSHIP_DIRECTIONS)
+    Anon, __, create_statement, create_function, RELATIONSHIP_DIRECTIONS,
+    Param)
 from .exception import (PypherException, PypherAliasException,
     PypherArgumentException)
 from .version import __version__

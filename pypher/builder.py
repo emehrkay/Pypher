@@ -28,7 +28,7 @@ _PREDEFINED_STATEMENTS = [['Match',], ['Create',], ['Merge',], ['Delete',],
     ['DropConstraintOn', 'DROP CONSTRAINT ON'], ['WHEN'], ['THEN']]
 _PREDEFINED_FUNCTIONS = [['size',], ['reverse',], ['head',], ['tail',],
     ['last',], ['extract',], ['filter',], ['reduce',], ['Type', 'type',],
-    ['startNode',], ['endNode',], ['count',], ['ID', 'id',], ['collect',],
+    ['startNode',], ['endNode',], ['count',], ['collect',],
     ['sum',], ['percentileDisc',], ['stDev',], ['coalesce',], ['timestamp',],
     ['toInteger',], ['toFloat',], ['toBoolean',], ['keys',], ['properties',],
     ['length',], ['nodes',], ['relationships',], ['point',], ['distance',],
@@ -58,7 +58,12 @@ def create_statement(name, attrs=None):
     setattr(_MODULE, name, type(name, (Statement,), attrs))
 
 
-Param = namedtuple('Param', 'name value')
+class Param(object):
+
+    def __init__(self, name, value):
+        self.name = name.lstrip('$')
+        self.value = value
+        self.placeholder = '$' + self.name
 
 
 class Params(object):
@@ -90,7 +95,7 @@ class Params(object):
 
     def bind_param(self, value, name=None):
         if isinstance(value, Param):
-            name = value.name
+            name = value.placeholder
             value = value.value
         elif value in self._bound_params.values():
             for k, v in self._bound_params.items():
@@ -106,9 +111,6 @@ class Params(object):
 
         if not name:
             name = self.param_name()
-
-        if name[0] != '$':
-            name = '$' + name
 
         self._bound_params[name] = value
 
@@ -527,7 +529,7 @@ class IN(Statement):
                 value = str(arg)
             else:
                 param = self.bind_param(arg)
-                value = param.name
+                value = param.placeholder
 
             args.append(value)
 
@@ -548,7 +550,7 @@ class Func(Statement):
                 value = str(arg)
             else:
                 param = self.bind_param(arg)
-                value = param.name
+                value = param.placeholder
 
             args.append(value)
 
@@ -573,6 +575,10 @@ class FuncRaw(Func):
             args.append(str(arg))
 
         return ', '.join(args)
+
+
+class ID(FuncRaw):
+    name = 'id'
 
 
 class Raw(Statement):
@@ -606,7 +612,7 @@ class List(_BaseLink):
                 value = str(arg)
             else:
                 param = self.bind_param(arg)
-                value = param.name
+                value = param.placeholder
 
             args.append(value)
 
@@ -642,7 +648,7 @@ class Operator(_BaseLink):
                 value = str(self.value)
             elif self._BIND_PARAMS:
                 param = self.bind_param(self.value)
-                value = param.name
+                value = param.placeholder
             else:
                 value = self.value
 
@@ -716,7 +722,8 @@ class Entity(_BaseLink):
             name = self.params.param_name(k)
             param = self.bind_param(value=v, name=name)
 
-            properties.append('`{key}`: {val}'.format(key=k, val=param.name))
+            properties.append('`{key}`: {val}'.format(key=k,
+                val=param.placeholder))
 
         if properties:
             return '{{{props}}}'.format(props=', '.join(properties))
