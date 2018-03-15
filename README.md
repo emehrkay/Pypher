@@ -176,6 +176,8 @@ _`Param`_ objects are simple containers that store a name and a value.
 * These objects are useful when you want finer control over the names of the bound params in the resulting Cypher query.
 * These can be passed in to Pyper instances and will be referenced by their name once the Cypher string is created. 
 * `Pypher.bind_param` will return an instance of a Param object.
+* When binding params Pypher will reuse the existing reference if the same value is passed in.
+	* It will also reuse the same reference if the value passed in is the name of a previously bound param.
 
 ```python
 from pypher import Param, Pypher, __
@@ -187,6 +189,19 @@ p.SET(__.m.__name__ == name)
 
 str(p) # SET m.`name` = namedParam
 print(p.bound_params) # {'namedParam': 'Mark'}
+
+# reusing the same reference per value
+param = p.bind_param('some value', 'key')
+param2 = p.bind_param('some_value')
+
+param.name == param2.name # True
+
+# reusing the same reference when the value is the key
+param = p.bind_param('some value', 'some key')
+param2 = p.bind_param('some key')
+
+param.name == param2.name # True
+param.value == params2.value # True
 ```
 
 ### Statement

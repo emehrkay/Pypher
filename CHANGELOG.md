@@ -1,6 +1,14 @@
 # Pypher Changelog
 
 
+## 0.4.2 -- 3/15/2018
+
+### Fixed
+
+* Ensured that params that share the same value with previously bound params return the same reference.
+* Ensured that params passed as a value only, but is the name of an existing key tha thas be bound, returns the same reference.
+
+
 ## 0.4.1 -- 3/14/2018
 
 ### Fixed

@@ -95,16 +95,17 @@ class Params(object):
 
     def bind_param(self, value, name=None):
         if isinstance(value, Param):
-            name = value.placeholder
+            name = value.name
             value = value.value
-        elif value in self._bound_params.values():
+
+        if value in self._bound_params.values():
             for k, v in self._bound_params.items():
                 if v == value:
                     name = k
                     break
         elif value in self._bound_params.keys():
             for k, v in self._bound_params.items():
-                if v == k:
+                if k == value:
                     name = k
                     value = v
                     break

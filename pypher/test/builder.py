@@ -4,7 +4,7 @@ import unittest
 import re
 
 from pypher.builder import (Pypher, Statement, _PREDEFINED_STATEMENTS,
-    _PREDEFINED_FUNCTIONS, __)
+    _PREDEFINED_FUNCTIONS, __, Param)
 
 
 def get_dict_key(dict, value):
@@ -746,6 +746,168 @@ class OperatorTests(unittest.TestCase):
         exp = 'mark AS MARK'
 
         self.assertEqual(exp, str(p))
+
+
+class ParamTests(unittest.TestCase):
+
+    def test_will_get_param_object_from_binding_param(self):
+        v = 'v'
+        p = Pypher()
+        param = p.bind_param(v)
+
+        self.assertIsInstance(param, Param)
+
+    def test_can_bind_unnamed_primitive_to_pypher(self):
+        v = 'value {}'.format(random())
+        p = Pypher()
+        p.bind_param(v)
+
+        str(p)
+        params = p.bound_params
+
+        self.assertIn(v, params.values())
+        self.assertEqual(1, len(params))
+
+    def test_can_bind_named_primitive_to_pypher(self):
+        v = 'value {}'.format(random())
+        n = 'some_param'
+        p = Pypher()
+        p.bind_param(v, n)
+
+        str(p)
+        params = p.bound_params
+
+        self.assertIn(v, params.values())
+        self.assertIn(n, params)
+        self.assertEqual(1, len(params))
+
+    def test_can_bind_multiple_uniquie_primitives_to_pypher(self):
+        v = 'value {}'.format(random())
+        v2 = 'value {}'.format(random())
+        p = Pypher()
+        p.bind_param(v)
+        p.bind_param(v2)
+
+        str(p)
+        params = p.bound_params
+
+        self.assertIn(v, params.values())
+        self.assertIn(v2, params.values())
+        self.assertEqual(2, len(params))
+
+    def test_can_bind_multiple_uniquie_primitives_to_pypher(self):
+        v = 'value {}'.format(random())
+        v2 = 'value {}'.format(random())
+        p = Pypher()
+        p.bind_param(v)
+        p.bind_param(v2)
+
+        str(p)
+        params = p.bound_params
+
+        self.assertIn(v, params.values())
+        self.assertIn(v2, params.values())
+        self.assertEqual(2, len(params))
+
+    def test_can_bind_multiple_mixed_named_unamed_uniquie_primitives_to_nested_pypher_instances(self):
+        v = 'value {}'.format(random())
+        v2 = 'value {}'.format(random())
+        n = 'some_name'
+        p = Pypher()
+        p2 = Pypher()
+        p.bind_param(v)
+        p2.bind_param(v2, n)
+        p.func('testing', p2)
+
+        str(p)
+        params = p.bound_params
+
+        self.assertIn(v, params.values())
+        self.assertIn(v2, params.values())
+        self.assertIn(n, params)
+        self.assertEqual(2, len(params))
+
+    def test_can_bind_multiple_ununique_primitives_to_pypher(self):
+        v = 'value {}'.format(random())
+        v2 = v
+        p = Pypher()
+        par = p.bind_param(v)
+        par2 = p.bind_param(v2)
+
+        str(p)
+        params = p.bound_params
+
+        self.assertIn(v, params.values())
+        self.assertIn(v2, params.values())
+        self.assertEqual(1, len(params))
+        self.assertEqual(par.name, par2.name)
+
+    def test_can_bind_param_object_to_pypher(self):
+        n = 'some name'
+        v = 'value {}'.format(random())
+
+        v = Param(n, v)
+        p = Pypher()
+        param = p.bind_param(v)
+
+        str(p)
+        params = p.bound_params
+
+        self.assertNotEqual(id(v), id(param))
+        self.assertIn(v.value, params.values())
+        self.assertIn(n, params)
+        self.assertEqual(1, len(params))
+
+    def test_can_bind_mixed_primitive_and_param_object_to_pypher(self):
+        n = 'some name'
+        v = 'value {}'.format(random())
+        v2 = 'value {}'.format(random())
+        v = Param(n, v)
+        p = Pypher()
+        param = p.bind_param(v)
+        param2 = p.bind_param(v2)
+
+        str(p)
+        params = p.bound_params
+
+        self.assertNotEqual(id(v), id(param))
+        self.assertIn(v.value, params.values())
+        self.assertIn(v2, params.values())
+        self.assertIn(n, params)
+        self.assertEqual(2, len(params))
+
+    def test_can_bind_nonunique_mixed_primitive_and_param_object_to_pypher(self):
+        n = 'some name'
+        v = 'value {}'.format(random())
+        v2 = v
+        v = Param(n, v)
+        p = Pypher()
+        param = p.bind_param(v)
+        param2 = p.bind_param(v2)
+
+        str(p)
+        params = p.bound_params
+
+        self.assertNotEqual(id(v), id(param))
+        self.assertIn(v.value, params.values())
+        self.assertIn(n, params)
+        self.assertEqual(1, len(params))
+        self.assertEqual(param.name, param2.name)
+
+    def test_can_ensure_that_a_value_the_same_as_a_previously_bound_param_returns_previous_params_value(self):
+        n = 'some_name'
+        v = 'value {}'.format(random())
+        p = Pypher()
+        import pudb; pu.db
+        param = p.bind_param(v, n)
+        param2 = p.bind_param(n)
+
+        str(p)
+        params = p.bound_params
+
+        self.assertEqual(1, len(params))
+        self.assertEqual(param.name, param2.name)
+
 
 if __name__ == '__main__':
     unittest.main()
