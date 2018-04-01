@@ -156,12 +156,12 @@ class _Link(type):
 class Pypher(with_metaclass(_Link)):
     PARAM_PREFIX = '$NEO'
 
-    def __init__(self, parent=None, *args, **kwargs):
+    def __init__(self, parent=None, params=None, *args, **kwargs):
         self._ = self
         self._parent = parent
         self.link = None
         self.next = None
-        self.params = Params(prefix=self.PARAM_PREFIX)
+        self.params = params or Params(prefix=self.PARAM_PREFIX)
 
     def reset(self):
         self.link = None

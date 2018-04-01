@@ -1,6 +1,13 @@
 # Pypher Changelog
 
 
+## 0.5.0 -- 4/1/2018
+
+### Added
+
+* Added optional params argument to the `Pypher` class that will allow self-defined `Params` objects to be used instead of being created when a `Pypher` instance is created.
+
+
 ## 0.4.2 -- 3/15/2018
 
 ### Fixed

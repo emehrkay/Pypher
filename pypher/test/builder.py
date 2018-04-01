@@ -4,7 +4,7 @@ import unittest
 import re
 
 from pypher.builder import (Pypher, Statement, _PREDEFINED_STATEMENTS,
-    _PREDEFINED_FUNCTIONS, __, Param)
+    _PREDEFINED_FUNCTIONS, __, Param, Params)
 
 
 def get_dict_key(dict, value):
@@ -436,6 +436,13 @@ class BuilderTests(unittest.TestCase):
         exp = 'MATCH p = (n)-->(m)'
 
         self.assertEqual(str(p), exp)
+
+    def test_can_reuse_params_object_across_pypher_isntances(self):
+        params = Params('xxx')
+        p = Pypher(params=params)
+        p2 = Pypher(params=params)
+
+        self.assertEqual(id(p.params), id(p2.params))
 
 
 class OperatorTests(unittest.TestCase):
@@ -898,7 +905,6 @@ class ParamTests(unittest.TestCase):
         n = 'some_name'
         v = 'value {}'.format(random())
         p = Pypher()
-        import pudb; pu.db
         param = p.bind_param(v, n)
         param2 = p.bind_param(n)
 
