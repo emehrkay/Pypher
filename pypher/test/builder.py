@@ -272,14 +272,14 @@ class BuilderTests(unittest.TestCase):
     def test_can_add_empty_undirected_relationship_with_labels(self):
         p = Pypher()
         p.relationship(labels=['one', 'two', 'three'])
-        exp = '-[:`one`:`two`:`three`]-'
+        exp = '-[:`one`|`two`|`three`]-'
 
         self.assertEqual(str(p), exp)
 
     def test_can_add_named_undirected_relationship_with_labels(self):
         p = Pypher()
         p.relationship(variable='test', labels=['one', 'two', 'three'])
-        exp = '-[test:`one`:`two`:`three`]-'
+        exp = '-[test:`one`|`two`|`three`]-'
 
         self.assertEqual(str(p), exp)
 
@@ -291,7 +291,7 @@ class BuilderTests(unittest.TestCase):
             name=name, age=age)
         c = str(p)
         params = p.bound_params
-        exp = '-[test:`one`:`two`:`three` {{`age`: ${a}, `name`: ${n}}}]-'.format(
+        exp = '-[test:`one`|`two`|`three` {{`age`: ${a}, `name`: ${n}}}]-'.format(
             n=get_dict_key(params, name), a=get_dict_key(params, age))
 
         self.assertEqual(str(p), exp)
@@ -418,6 +418,7 @@ class BuilderTests(unittest.TestCase):
 
     def test_can_add_single_label(self):
         p = Pypher()
+
         p.n.label('one')
         exp = 'n:`one`'
 
@@ -425,7 +426,7 @@ class BuilderTests(unittest.TestCase):
 
     def test_can_add_multiple_labels(self):
         p = Pypher()
-        p.n.label('one', 'two', 'three', 'four')
+        p.n.label(['one', 'two', 'three', 'four'])
         exp = 'n:`one`:`two`:`three`:`four`'
 
         self.assertEqual(str(p), exp)

@@ -511,10 +511,49 @@ class Property(Statement):
 class Label(Statement):
     _ADD_PRECEEDING_WS = False
     _CLEAR_PRECEEDING_WS = True
+    _ALLOWED_OPERATORS = {
+        '+': ':',
+        '|': '|',
+    }
+
+    def __init__(self, labels=None, default_operator='+'):
+        self._labels = []
+        self.labels = labels
+        self._operator = '+'
+        self.operator = default_operator
+
+        super(Label, self).__init__()
+
+    def _set_label(self, labels):
+        if not labels:
+            labels = []
+        elif not isinstance(labels, (list, set, tuple)):
+            labels = [labels]
+
+        self._labels = labels
+
+    def _get_label(self):
+        return self._labels
+
+    labels = property(_get_label, _set_label)
+
+    def _get_operator(self):
+        return self._ALLOWED_OPERATORS[self._operator]
+
+    def _set_operator(self, operator):
+        if operator not in self._ALLOWED_OPERATORS:
+            raise 
+
+        self._operator = operator
+
+    operator = property(_get_operator, _set_operator)
 
     def __unicode__(self):
-        labels = ['`{}`'.format(a) for a in self.args]
-        labels = ':'.join(labels)
+        if not self.labels:
+            return ''
+
+        labels = ['`{}`'.format(a) for a in self.labels]
+        labels = ('{}'.format(self.operator)).join(labels)
 
         return ':{labels}'.format(labels=labels)
 
@@ -691,11 +730,13 @@ class Entity(_BaseLink):
     _ADD_PRECEEDING_WS = False
     _ADD_SUCEEDING_WS = False
     _CLEAR_PRECEEDING_WS = False
+    _LABEL_OPERATOR = '+'
 
     def __init__(self, variable=None, labels=None, **properties):
-        if labels and not isinstance(labels, (list, set, tuple)):
-            labels = [labels]
+        if not isinstance(labels, Label):
+            labels = Label(labels)
 
+        labels.operator = self._LABEL_OPERATOR
         self.variable = variable or ''
         self._labels = labels
         self._properties = OrderedDict(sorted(properties.items()))
@@ -705,13 +746,14 @@ class Entity(_BaseLink):
     @property
     def labels(self):
         variable = self.variable
+        labels = str(self._labels)
 
-        if self._labels:
-            labels = ['`{}`'.format(l) for l in self._labels]
-            labels = ':'.join(labels)
-
-            return '{variable}:{labels}'.format(variable=variable,
-                labels=labels)
+        if labels:
+            if variable:
+                return '{variable}{labels}'.format(variable=variable,
+                    labels=labels)
+            else:
+                return '{labels}'.format(labels=labels)
 
         return variable
 
@@ -753,6 +795,7 @@ class Relationship(Entity):
         'in': '<-{}-',
         'out': '-{}->',
     }
+    _LABEL_OPERATOR = '|'
 
     def __init__(self, variable=None, labels=None, direction=None,
                  **properties):
