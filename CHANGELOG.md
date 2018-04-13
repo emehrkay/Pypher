@@ -1,6 +1,17 @@
 # Pypher Changelog
 
 
+## 0.6.0 -- 4/13/2018
+
+### Added
+
+* `Entity` objects now accept a `Label` instance for the `labels` or `types` argument.
+* `Relationship` objects now accept a `types` kwarg that will supercede the `labels` definition.
+
+### Fixed
+
+* `Property` objects' alias `prop` now work as expected.
+
 ## 0.5.0 -- 4/1/2018
 
 ### Added

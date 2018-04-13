@@ -276,6 +276,27 @@ class BuilderTests(unittest.TestCase):
 
         self.assertEqual(str(p), exp)
 
+    def test_can_add_empty_undirected_relationship_with_types(self):
+        p = Pypher()
+        p.relationship(types=['one', 'two', 'three'])
+        exp = '-[:`one`|`two`|`three`]-'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_add_empty_undirected_relationship_with_labels_and_types_but_uses_types(self):
+        p = Pypher()
+        p.relationship(labels=[1, 2, 3], types=['one', 'two', 'three'])
+        exp = '-[:`one`|`two`|`three`]-'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_add_empty_undirected_relationship_with_labels_and_types_but_uses_labels(self):
+        p = Pypher()
+        p.relationship(labels=[1, 2, 3], types=None)
+        exp = '-[:`1`|`2`|`3`]-'
+
+        self.assertEqual(str(p), exp)
+
     def test_can_add_named_undirected_relationship_with_labels(self):
         p = Pypher()
         p.relationship(variable='test', labels=['one', 'two', 'three'])

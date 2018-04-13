@@ -504,6 +504,9 @@ class Property(Statement):
     _CLEAR_PRECEEDING_WS = True
     _ALIASES = ['prop',]
 
+    def __init__(self, name=None):
+        super(Property, self).__init__(name=name)
+
     def __unicode__(self):
         return '.`{}`'.format(self.name)
 
@@ -797,8 +800,9 @@ class Relationship(Entity):
     }
     _LABEL_OPERATOR = '|'
 
-    def __init__(self, variable=None, labels=None, direction=None,
+    def __init__(self, variable=None, labels=None, types=None, direction=None,
                  **properties):
+        labels = types or labels
         super(Relationship, self).__init__(variable=variable, labels=labels,
             **properties)
 
