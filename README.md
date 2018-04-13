@@ -152,10 +152,10 @@ from pypher import __, Pypher
 
 p = Pypher()
 
-p.MATCH.node('mark', labels='Person').rel(labels='knows').node('mikey', lables=['Cat', 'Animal'])
+p.MATCH.node('mark', labels='Person').rel(labels='knows').node('mikey', labels=['Cat', 'Animal'])
 p.RETURN(__.mark, __.mikey) 
 
-str(p) # MATCH (mark:`Person`)-[:knows]-(mikey:`Cat`:`Animal`) RETURN mark, mikey
+str(p) # MATCH (mark:`Person`)-[:`knows`]-(mikey:`Cat`:`Animal`) RETURN mark, mikey
 
 # OR
 
@@ -163,8 +163,8 @@ p = Pypher()
 
 p.MATCH.node('mark').SET(__.mark.property('name') == 'Mark!!')
 
-str(p) # MATCH (mark) SET mark.`name` = NEO_XXUU3_1
-print(p.bound_params) # {'NEO_XXUU3_1': 'Mark!!'}
+print(str(p)) # MATCH (mark) SET mark.`name` = $NEO_2548a_0
+print(dict(p.bound_params)) # {'NEO_2548a_0': 'Mark!!'}
 ```
 
 > The `__` is just an instance of the Anon object. You can change what you want your factory name to be, or create an instance of Anon and assign it to another variable as you see fit.
@@ -212,7 +212,7 @@ _`Statement`_ objects are simple, they are things like `MATCH` or `CREATE` or `R
 * When an undefined attribute is accessed on a Pypher instance, it will create a Statement from it. `q.iMade.ThisUp` will result in `IMADE THISUP `
 * Will print out in ALL CAPS and end with an empty space.
 * Can take a list of arguments `q.return(1, 2, 3)` will print out `RETURN 1, 2, 3`
-* Can also just exist along the chain `a.MATACH.node('m')` will print out `MATCH (m)`
+* Can also just exist along the chain `a.MATCH.node('m')` will print out `MATCH (m)`
 * Pypher provides a suite of pre-defined statements out of the box:
 
 | Pypher Object | Resulting Cypher |
@@ -287,7 +287,7 @@ from pypher import Pypher, Statement
 
 
 class MyStatement(Statement):
-    _CAPATILIZE = True # will make the resulting name all caps. Defaults to True
+    _CAPITALIZE = True # will make the resulting name all caps. Defaults to True
     _ADD_PRECEEDING_WS = True # add whitespace before the resulting Cypher string. Defaults to True
     _CLEAR_PRECEEDING_WS = True # add whitespace after the resulting Cypher string. Defaults to False
     _ALIASES = ['myst',] # aliases for your custom statement. Will throw an exception if it is already defined

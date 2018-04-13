@@ -113,9 +113,10 @@ class Params(object):
         if not name:
             name = self.param_name()
 
-        self._bound_params[name] = value
+        param = Param(name=name, value=value)
+        self._bound_params[param.name] = param.value
 
-        return Param(name=name, value=value)
+        return param
 
     def param_name(self, name=None):
         return '{}{}_{}'.format(name or self.prefix, self.key,

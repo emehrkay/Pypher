@@ -391,7 +391,7 @@ class BuilderTests(unittest.TestCase):
         p.func(f, one, two)
         c = str(p)
         params = p.bound_params
-        exp = '{}({}, {})'.format(f, get_dict_key(params, one),
+        exp = '{}(${}, ${})'.format(f, get_dict_key(params, one),
             get_dict_key(params, two))
 
         self.assertEqual(c, exp)
@@ -420,7 +420,7 @@ class BuilderTests(unittest.TestCase):
         p.n.property('name').IN(one, two, three)
         c = str(p)
         params = p.bound_params
-        exp = 'n.`name` IN [{}, {}, {}]'.format(get_dict_key(params, one),
+        exp = 'n.`name` IN [${}, ${}, ${}]'.format(get_dict_key(params, one),
             get_dict_key(params, two), get_dict_key(params, three))
 
         self.assertEqual(c, exp)
@@ -432,7 +432,7 @@ class BuilderTests(unittest.TestCase):
         p.n.property('name').comp(__.field | three)
         c = str(p)
         params = p.bound_params
-        exp = 'n.`name` [field | {}]'.format(get_dict_key(params, three))
+        exp = 'n.`name` [field | ${}]'.format(get_dict_key(params, three))
 
         self.assertEqual(c, exp)
         self.assertEqual(1, len(params))
@@ -483,7 +483,7 @@ class OperatorTests(unittest.TestCase):
         p.one + s
         c = str(p)
         params = p.bound_params
-        exp = 'one + {s}'.format(s=get_dict_key(params, s))
+        exp = 'one + ${s}'.format(s=get_dict_key(params, s))
 
         self.assertEqual(c, exp)
         self.assertEqual(1, len(params))
@@ -494,7 +494,7 @@ class OperatorTests(unittest.TestCase):
         s + p.one
         c = str(p)
         params = p.bound_params
-        exp = '{s} + one'.format(s=get_dict_key(params, s))
+        exp = '${s} + one'.format(s=get_dict_key(params, s))
 
         self.assertEqual(c, exp)
         self.assertEqual(1, len(params))
@@ -506,7 +506,7 @@ class OperatorTests(unittest.TestCase):
         p.one + a.two + s
         c = str(p)
         params = p.bound_params
-        exp = 'one + two + {s}'.format(s=get_dict_key(params, s))
+        exp = 'one + two + ${s}'.format(s=get_dict_key(params, s))
 
         self.assertEqual(c, exp)
         self.assertEqual(1, len(params))
@@ -542,7 +542,7 @@ class OperatorTests(unittest.TestCase):
         a - p.two
         c = str(p)
         params = p.bound_params
-        exp = '{} - two'.format(get_dict_key(params, a))
+        exp = '${} - two'.format(get_dict_key(params, a))
 
         self.assertEqual(str(p), exp)
 
@@ -568,7 +568,7 @@ class OperatorTests(unittest.TestCase):
         a * p.two
         c = str(p)
         params = p.bound_params
-        exp = '{} * two'.format(get_dict_key(params, a))
+        exp = '${} * two'.format(get_dict_key(params, a))
 
         self.assertEqual(str(p), exp)
 
@@ -594,7 +594,7 @@ class OperatorTests(unittest.TestCase):
         a / p.two
         c = str(p)
         params = p.bound_params
-        exp = '{} / two'.format(get_dict_key(params, a))
+        exp = '${} / two'.format(get_dict_key(params, a))
 
         self.assertEqual(str(p), exp)
 
@@ -620,7 +620,7 @@ class OperatorTests(unittest.TestCase):
         a % p.two
         c = str(p)
         params = p.bound_params
-        exp = '{} % two'.format(get_dict_key(params, a))
+        exp = '${} % two'.format(get_dict_key(params, a))
 
         self.assertEqual(str(p), exp)
 
@@ -638,7 +638,7 @@ class OperatorTests(unittest.TestCase):
         a & p.two
         c = str(p)
         params = p.bound_params
-        exp = '{} & two'.format(get_dict_key(params, a))
+        exp = '${} & two'.format(get_dict_key(params, a))
 
         self.assertEqual(str(p), exp)
 
@@ -664,7 +664,7 @@ class OperatorTests(unittest.TestCase):
         a | p.two
         c = str(p)
         params = p.bound_params
-        exp = '{} | two'.format(get_dict_key(params, a))
+        exp = '${} | two'.format(get_dict_key(params, a))
 
         self.assertEqual(str(p), exp)
 
@@ -690,7 +690,7 @@ class OperatorTests(unittest.TestCase):
         a ^ p.two
         c = str(p)
         params = p.bound_params
-        exp = '{} ^ two'.format(get_dict_key(params, a))
+        exp = '${} ^ two'.format(get_dict_key(params, a))
 
         self.assertEqual(str(p), exp)
 

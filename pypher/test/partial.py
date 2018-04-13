@@ -59,7 +59,7 @@ class PartialTests(unittest.TestCase):
         c = str(p)
         params = p.bound_params
 
-        exp = 'THIS PARTIAL HAS toInteger({})'.format(
+        exp = 'THIS PARTIAL HAS toInteger(${})'.format(
             get_dict_key(params, arg))
 
         self.assertEqual(c, exp)
@@ -73,7 +73,7 @@ class PartialTests(unittest.TestCase):
         p.THIS.IS.A.apply_partial(vp).WITH.AN.apply_partial(ap)
         c = str(p)
         params = p.bound_params
-        exp = 'THIS IS A VALID PARTIAL WITH AN toInteger({})'.format(
+        exp = 'THIS IS A VALID PARTIAL WITH AN toInteger(${})'.format(
             get_dict_key(params, arg))
 
         self.assertEqual(c, exp)
@@ -96,7 +96,7 @@ class PartialTests(unittest.TestCase):
         p.n.__name__ + ap
         c = str(p)
         params = p.bound_params
-        exp = 'n.`name` + toInteger({})'.format(get_dict_key(params, arg))
+        exp = 'n.`name` + toInteger(${})'.format(get_dict_key(params, arg))
 
         self.assertEqual(c, exp)
         self.assertEqual(1, len(params))
@@ -111,7 +111,7 @@ class PartialTests(unittest.TestCase):
         p.n.__name__ + ap
         c = str(p)
         params = p.bound_params
-        exp = 'n.`name` + toInteger({}, toInteger({}))'.format(
+        exp = 'n.`name` + toInteger(${}, toInteger(${}))'.format(
             get_dict_key(params, arg), get_dict_key(params, arg2))
 
         self.assertEqual(c, exp)
@@ -142,7 +142,7 @@ class PartialOperatorTests(unittest.TestCase):
 
         c = str(p)
         params = p.bound_params
-        exp = 'toInteger({}) + toInteger({}) + toInteger({})'.format(
+        exp = 'toInteger(${}) + toInteger(${}) + toInteger(${})'.format(
             get_dict_key(params, integer), get_dict_key(params, arg),
             get_dict_key(params, arg2))
 

@@ -11,6 +11,7 @@
 ### Fixed
 
 * `Property` objects' alias `prop` now work as expected.
+* Fixed a few bugs regarding `Param.name` and `Pypher.bound_params` keys.
 
 ## 0.5.0 -- 4/1/2018
 
