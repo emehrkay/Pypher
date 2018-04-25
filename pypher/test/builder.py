@@ -466,6 +466,78 @@ class BuilderTests(unittest.TestCase):
 
         self.assertEqual(id(p.params), id(p2.params))
 
+    def test_can_return_regular_shallow_map(self):
+        p = Pypher()
+        one = 'one'
+        two = 'two'
+        three = 'three'
+        p.RETURN.map(one, two, three=three)
+        q = str(p)
+        params = p.bound_params
+        exp = 'RETURN {{one, two, `three`: ${three}}}'.format(
+            three=get_dict_key(params, three))
+
+        self.assertEqual(exp, q)
+        self.assertEqual(1, len(params))
+
+    def test_can_nest_map(self):
+        p = Pypher()
+        p.collect(__.map('one', 'two', 'three'))
+        q = str(p)
+        exp = 'collect({one, two, three})'
+        self.assertEqual(exp, q)
+
+    def test_can_return_regular_shallow_map_with_list(self):
+        p = Pypher()
+        one = 'one'
+        two = 'two'
+        three = 'three'
+        four = 'four'
+        five = 'five'
+        p.RETURN.map(one, two, three=three, list=[four, five])
+        q = str(p)
+        params = p.bound_params
+        exp = 'RETURN {{one, two, `three`: ${three}, `list`: [${four}, ${five}]}}'.format(
+            three=get_dict_key(params, three),
+            four=get_dict_key(params, four),
+            five=get_dict_key(params, five))
+
+        self.assertEqual(exp, q)
+        self.assertEqual(3, len(params))
+
+    def test_can_return_map_projection(self):
+        p = Pypher()
+        one = 'one'
+        two = 'two'
+        three = 'three'
+        four = 'four'
+        five = 'five'
+        user = 'user'
+        p.RETURN.mapprojection(user, one, two, three=three, list=[four, five])
+        q = str(p)
+        params = p.bound_params
+        exp = 'RETURN user {{one, two, `three`: ${three}, `list`: [${four}, ${five}]}}'.format(
+            three=get_dict_key(params, three),
+            four=get_dict_key(params, four),
+            five=get_dict_key(params, five))
+
+        self.assertEqual(exp, q)
+        self.assertEqual(3, len(params))
+
+    def test_can_nest_map_projection(self):
+        p = Pypher()
+        name = '.name'
+        real_name = '.realName'
+        title = '.title'
+        year = '.year'
+        mp = __.mapprojection('movie', title, year)
+        p.RETURN.mapprojection('actor', name, real_name, movies=__.collect(mp))
+
+        q = str(p)
+        params = p.bound_params
+        exp = 'RETURN actor {.name, .realName, `movies`: collect(movie {.title, .year})}'
+        self.assertEqual(exp, q)
+        self.assertEqual(0, len(params))
 
 class OperatorTests(unittest.TestCase):
 
@@ -775,6 +847,70 @@ class OperatorTests(unittest.TestCase):
         exp = 'mark AS MARK'
 
         self.assertEqual(exp, str(p))
+
+    def test_can_use_shallow_dictionary_in_operator(self):
+        d = {
+            'name': 'name_{}'.format(str(random())),
+            'age': random(),
+        }
+        p = Pypher()
+        p.SET.user += d
+        q = str(p)
+        params = p.bound_params
+        exp = 'SET user += {{`name`: ${name}, `age`: ${age}}}'.format(
+            name=get_dict_key(params, d['name']),
+            age=get_dict_key(params, d['age']))
+
+        self.assertEqual(exp, q)
+        self.assertEqual(2, len(params))
+        self.assertIn(d['name'], params.values())
+        self.assertIn(d['age'], params.values())
+
+    def test_can_use_shallow_dict_with_list_in_operator(self):
+        one = 1
+        two = 2
+        three = 3
+        d = {
+            'list': [one, two, three],
+        }
+        p = Pypher()
+        p.SET.user += d
+        q = str(p)
+        params = p.bound_params
+        exp = 'SET user += {{`list`: [${one}, ${two}, ${three}]}}'.format(
+            one=get_dict_key(params, one), two=get_dict_key(params, two),
+            three=get_dict_key(params, three))
+
+        self.assertEqual(exp, q)
+        self.assertEqual(3, len(params))
+        self.assertIn(one, params.values())
+        self.assertIn(two, params.values())
+        self.assertIn(three, params.values())
+
+    def test_can_use_nested_dictionary_in_operator(self):
+        lat = random()
+        lng = random()
+        d = {
+            'name': 'name_{}'.format(str(random())),
+            'loc': {
+                'city': 'city_{}'.format(str(random())),
+                'latlng': [lat, lng],
+            },
+        }
+        p = Pypher()
+        p.SET.user += d
+        q = str(p)
+        params = p.bound_params
+        exp = ('SET user += {{`name`: ${name}, `loc`: {{`city`: ${city}, `latlng`: [${lat}, ${lng}]}}}}').format(
+            name=get_dict_key(params, d['name']),
+            city=get_dict_key(params, d['loc']['city']),
+            lat=get_dict_key(params, lat),
+            lng=get_dict_key(params, lng))
+
+        self.assertEqual(exp, q)
+        self.assertEqual(4, len(params))
+        self.assertIn(d['name'], params.values())
+        self.assertIn(d['loc']['city'], params.values())
 
 
 class ParamTests(unittest.TestCase):

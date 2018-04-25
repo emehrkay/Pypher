@@ -1,1 +1,2 @@
 six==1.11.0
+git+https://github.com/jonathanslenders/python-prompt-toolkit.git#egg=prompt_toolkit

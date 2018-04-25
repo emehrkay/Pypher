@@ -671,6 +671,67 @@ class Comprehension(List):
     _ALIASES = ['comp']
 
 
+class Map(_BaseLink):
+    _ADD_PRECEEDING_WS = True
+
+    def __unicode__(self):
+        body = []
+
+        def prep_value(value, name=None):
+
+            if isinstance(value, (list, set, tuple)):
+                values = []
+
+                for v in value:
+                    if isinstance(v, (Pypher, Partial)):
+                        v.parent = self.parent
+
+                        values.append(str(v))
+                    else:
+                        param = self.bind_param(v)
+                        values.append(param.placeholder)
+
+                values = ', '.join(values)
+
+                return '[{}]'.format(values)
+
+            if isinstance(value, (Pypher, Partial)):
+                value.parent = self.parent
+            elif name:
+                name = self.params.param_name(name)
+                param = self.bind_param(value=value, name=name)
+
+                return param.placeholder
+
+            return str(value)
+
+
+        for arg in self.args:
+            body.append(prep_value(arg))
+
+        for k, val in self.kwargs.items():
+            pair = '`{}`: {}'.format(k, prep_value(val, k))
+            body.append(pair)
+
+        body = ', '.join(body)
+
+        return '{{{}}}'.format(body)
+
+
+class MapProjection(Map):
+    _ALIASES = ['map_projection', 'projection',]
+
+    def __init__(self, name=None, *args, **kwargs):
+        super(MapProjection, self).__init__(*args, **kwargs)
+
+        self.name = name
+
+    def __unicode__(self):
+        _map = super(MapProjection, self).__unicode__()
+
+        return '{} {}'.format(self.name, _map)
+
+
 class Operator(_BaseLink):
     _ADD_PRECEEDING_WS = True
     _ADD_SUCEEDING_WS = False
@@ -690,6 +751,37 @@ class Operator(_BaseLink):
             if isinstance(self.value, (Pypher, Partial)):
                 self.value.parent = self.parent
                 value = str(self.value)
+            elif isinstance(self.value, dict):
+                # TODO: abstract this logoic out to be used for entity params
+
+                def params(item):
+                    new = []
+                    is_dict = isinstance(item, dict)
+
+                    if is_dict:
+                        for k, v in item.items():
+                            if isinstance(v, (list, set, tuple, dict)):
+                                v = params(v)
+                            elif self._BIND_PARAMS:
+                                param = self.bind_param(v)
+                                v = param.placeholder
+
+                            new.append('`{}`: {}'.format(k, v))
+
+                        return '{{{}}}'.format(', '.join(new))
+                    else:
+                        for v in item:
+                            if self._BIND_PARAMS:
+                                param = self.bind_param(v)
+                                v = param.placeholder
+
+                            new.append(v)
+
+                        return '[{}]'.format(', '.join(new))
+
+                    return new
+
+                value = params(self.value)
             elif self._BIND_PARAMS:
                 param = self.bind_param(self.value)
                 value = param.placeholder

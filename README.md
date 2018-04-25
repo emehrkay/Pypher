@@ -87,6 +87,8 @@ _`Pypher`_ is the root object that all other objects sub-class and it makes ever
 Since Pypher is an object whose sole job is to compose a linked list via a fluid interface, adding common operators to the object is tricky. Here are some rules:
 
 * No matter the operator, the right side of the operation must not be the same Pypher instance as found on the left. A common way around this is to import and use the `__` Anon Pypher factory.
+* Operators allow for Python dictionaires to be passed in
+    * `p.user += {'name': 'Mark'}`
 * You can create custom Operators by calling `.operator(name, other_value)` on the Pypher instance -- the first operator rule must be followed if the other end is a Pypher object.
     * Operators always resolve in a space, the operator, and then the other value. Until it doesn't.
         * Certain operators (all of the Python magic methods that support it) support reflected, or right, side assignment and will print the resulting Cypher as expected. Something like `99 - p.__field__` will work as expected, but `99 > p.__field__` will result in `p.field < 99`
@@ -215,52 +217,54 @@ _`Statement`_ objects are simple, they are things like `MATCH` or `CREATE` or `R
 * Can also just exist along the chain `a.MATCH.node('m')` will print out `MATCH (m)`
 * Pypher provides a suite of pre-defined statements out of the box:
 
-| Pypher Object | Resulting Cypher |
-| ------------- | ------------- |
-| `Match` | `MATCH` |
-| `Create` | `CREATE` |
-| `Merge` | `MERGE` |
-| `Delete` | `DELETE` |
-| `Remove` | `REMOVE` |
-| `Drop` | `DROP` |
-| `Where` | `WHERE` |
-| `Distinct` | `DISTINCT` |
-| `OrderBy` | `ORDER BY` |
-| `Set` | `SET` |
-| `Skip` | `SKIP` |
-| `Limit` | `LIMIT` |
-| `Return` | `RETURN` |
-| `Unwind` | `UNWIND` |
-| `ASSERT` | `ASSERT` |
-| `Detach` | `DETACH` |
-| `DetachDelete` | `DETACH DELETE` |
-| `Foreach` | `FOREACH` |
-| `Load` | `LOAD` |
-| `CSV` | `CSV` |
-| `FROM` | `FROM` |
-| `Headers` | `HEADERS` |
-| `LoadCsvFrom` | `LOAD CSV FROM` |
-| `LoadCSVWithHeadersFrom` | `LOAD CSV WITH HEADERS FROM` |
-| `WITH` | `WITH` |
-| `UsingPeriodIcCommit` | `USING PERIODIC COMMIT` |
-| `Periodic` | `PERIODIC` |
-| `Commit` | `COMMIT` |
-| `FieldTerminator` | `FIELDTERMINATOR` |
-| `Optional` | `OPTIONAL` |
-| `OptionalMatch` | `OPTIONAL MATCH` |
-| `Desc` | `DESC` |
-| `When` | `WHEN` |
-| `ELSE` | `ELSE` |
-| `Case` | `CASE` |
-| `End` | `END` |
-| `OnCreate` | `ON CREATE` |
-| `OnCreateSet` | `ON CREATE SET` |
-| `OnMatchSet` | `ON MATCH SET` |
-| `CreateIndexOn` | `CREATE INDEX ON` |
-| `UsingIndex` | `USING INDEX` |
-| `DropIndexOn` | `DROP INDEX ON` |
-| `CreateConstraintOn` | `CREATE CONSTRAINT ON` |
-| `DropConstraintOn` | `DROP CONSTRAINT ON` |
+| Pypher Object | Resulting Cypher | Alias |
+| ------------- | ------------- | ------------- |
+| `Match` | `MATCH` | |
+| `Create` | `CREATE` | |
+| `Merge` | `MERGE` | |
+| `Delete` | `DELETE` | |
+| `Remove` | `REMOVE` | |
+| `Drop` | `DROP` | |
+| `Where` | `WHERE` | |
+| `Distinct` | `DISTINCT` | |
+| `OrderBy` | `ORDER BY` | |
+| `Set` | `SET` | |
+| `Skip` | `SKIP` | |
+| `Limit` | `LIMIT` | |
+| `Return` | `RETURN` | |
+| `Unwind` | `UNWIND` | |
+| `ASSERT` | `ASSERT` | |
+| `Detach` | `DETACH` | |
+| `DetachDelete` | `DETACH DELETE` | |
+| `Foreach` | `FOREACH` | |
+| `Load` | `LOAD` | |
+| `CSV` | `CSV` | |
+| `FROM` | `FROM` | |
+| `Headers` | `HEADERS` | |
+| `LoadCsvFrom` | `LOAD CSV FROM` | |
+| `LoadCSVWithHeadersFrom` | `LOAD CSV WITH HEADERS FROM` | |
+| `WITH` | `WITH` | |
+| `UsingPeriodIcCommit` | `USING PERIODIC COMMIT` | |
+| `Periodic` | `PERIODIC` | |
+| `Commit` | `COMMIT` | |
+| `FieldTerminator` | `FIELDTERMINATOR` | |
+| `Optional` | `OPTIONAL` | |
+| `OptionalMatch` | `OPTIONAL MATCH` | |
+| `Desc` | `DESC` | |
+| `When` | `WHEN` | |
+| `ELSE` | `ELSE` | |
+| `Case` | `CASE` | |
+| `End` | `END` | |
+| `OnCreate` | `ON CREATE` | |
+| `OnCreateSet` | `ON CREATE SET` | |
+| `OnMatchSet` | `ON MATCH SET` | |
+| `CreateIndexOn` | `CREATE INDEX ON` | |
+| `UsingIndex` | `USING INDEX` | |
+| `DropIndexOn` | `DROP INDEX ON` | |
+| `CreateConstraintOn` | `CREATE CONSTRAINT ON` | |
+| `DropConstraintOn` | `DROP CONSTRAINT ON` | |
+| `Map` | `{}` | |
+| `MapProjection` | `var {}` | `map_projection` `projection` |
 
 > Python keywords will be in all CAPS
 
@@ -493,6 +497,26 @@ str(p) # CASE n.eyes WHEN "blue" THEN 1 WHEN "brown" THEN 2 ELSE 3 END
 ```
 
 > As seen in this example, if you want your resulting Cypher to have actual quotes, you must nest quotes when passing in the arguments to the Statement objects
+
+### Maps
+
+Cypher allows for maps to be retuned in some complex queries, Pypher provides two classes to assit with maps: `Map` and `MapProjection`
+
+* Both objects have a signature of `*args` and `**kwargs`
+    * `*args` will be printed out in the resoling Cypher exactly how they are defined in Python
+    * `**kwargs` will be printed out as `key:value` pairs where the values are bound params
+    * `MapProjection` has a `name` argument that will printed out before the map
+
+```python
+p = Pypher()
+p.RETURN.map('one', 'two', three='three')
+print(str(p)) # RETURN {one, two, `three`: $three213bd_0}
+print(dict(p.bound_params)) # {'three213bd_0': 'three'}
+
+p.reset()
+p.RETURN.map_projection('user', '.name', '.age')
+print(str(p)) # 'RETURN user {.name, .age}'
+```
 
 ## Code Examples
 

@@ -1,6 +1,14 @@
 # Pypher Changelog
 
 
+## 0.7.0 -- 4/24/2018
+
+### Added
+
+* Map and map projection support via `Map` and `MapProjection` respectively.
+* Dict support for assignments
+
+
 ## 0.6.0 -- 4/13/2018
 
 ### Added
