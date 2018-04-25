@@ -217,7 +217,7 @@ _`Statement`_ objects are simple, they are things like `MATCH` or `CREATE` or `R
 * Can also just exist along the chain `a.MATCH.node('m')` will print out `MATCH (m)`
 * Pypher provides a suite of pre-defined statements out of the box:
 
-| Pypher Object | Resulting Cypher | Alias |
+| Pypher Object | Resulting Cypher | Aliases |
 | ------------- | ------------- | ------------- |
 | `Match` | `MATCH` | |
 | `Create` | `CREATE` | |
