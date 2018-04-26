@@ -552,3 +552,11 @@ SET user.Name = 'Jim'
 ```python
 p.MERGE.node('user', 'User', Id=456).ON.CREATE.user.SET(__.user.__Name__ == 'Jim')
 ```
+
+## Tester
+
+Included is a very bare-bones CLI app that will allow you to test your Pypher scripts. After installing Pypher, you can run the script simply by calling `python tester.py`. Once loaded you are presented with a screen that will allow you to write Pypher code and it will generate the Cypher and bound params. This is a quick way to check if your Pypher is producing the desired Cypher for your project.
+
+![Example tester.py usage](tester.gif)
+
+> The cli app needs prompt-toolkit v2 installed as a dependency. It is defined in the requirements.py or you can manually install it yourself.

@@ -7,6 +7,7 @@
 
 * Map and map projection support via `Map` and `MapProjection` respectively.
 * Dict support for assignments
+* Very alpha CLI app used to test Pypher scripts. Simply run `python tester.py` after installing this package.
 
 
 ## 0.6.0 -- 4/13/2018
