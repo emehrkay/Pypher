@@ -25,7 +25,9 @@ _PREDEFINED_STATEMENTS = [['Match',], ['Create',], ['Merge',], ['Delete',],
     ['OnMatchSet', 'ON MATCH SET'], ['CreateIndexOn', 'CREATE INDEX ON'],
     ['UsingIndex', 'USING INDEX'], ['DropIndexOn', 'DROP INDEX ON'],
     ['CreateConstraintOn', 'CREATE CONSTRAINT ON'], ['OnCreate', 'ON CREATE'],
-    ['DropConstraintOn', 'DROP CONSTRAINT ON'], ['WHEN'], ['THEN']]
+    ['DropConstraintOn', 'DROP CONSTRAINT ON'], ['WHEN'], ['THEN'], ['NOT'],
+    ['XOR'], ['NULL'], ['IS_NULL', 'IS NULL'], ['IS_NOT_NULL', 'IS NOT NULL'],
+    ['OR'], ['IS']]
 _PREDEFINED_FUNCTIONS = [['size',], ['reverse',], ['head',], ['tail',],
     ['last',], ['extract',], ['filter',], ['reduce',], ['Type', 'type',],
     ['startNode',], ['endNode',], ['count',], ['collect',],
@@ -210,6 +212,10 @@ class Pypher(with_metaclass(_Link)):
         return self.add_link(link)
 
     def __call__(self, *args, **kwargs):
+        if ('name' not in kwargs and '_name' in self._bottom.__dict__
+            and type(self._bottom) is Statement):
+            kwargs['name'] = self._bottom.name
+
         func = self._bottom.__class__(*args, **kwargs)
 
         return self.remove_link(self._bottom).add_link(func)

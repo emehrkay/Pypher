@@ -1,4 +1,4 @@
-from random import randrange, random
+from random import randrange, random, randint
 
 import unittest
 import re
@@ -36,6 +36,27 @@ class BuilderTests(unittest.TestCase):
 
 
         self.assertEqual(str(p), ' '.join(expected))
+
+    def test_pypher_can_create_dynamic_statment(self):
+        p = Pypher()
+        p.my_statement(1, 2, 3)
+
+        exp = 'my_statement 1, 2, 3'
+        q = str(p)
+
+        self.assertEqual(exp, q)
+        self.assertEqual(0, len(p.bound_params))
+
+    def test_pypher_can_create_dynamic_statment_random(self):
+        p = Pypher()
+        stmt = 'my_statment_{}'.format(randint(1, 777))
+        getattr(p, stmt)(1, 2, 3)
+
+        exp = '{} 1, 2, 3'.format(stmt)
+        q = str(p)
+
+        self.assertEqual(exp, q)
+        self.assertEqual(0, len(p.bound_params))
 
     def test_pypher_created_functions(self):
         p = Pypher()

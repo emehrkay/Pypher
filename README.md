@@ -215,6 +215,8 @@ _`Statement`_ objects are simple, they are things like `MATCH` or `CREATE` or `R
 * Will print out in ALL CAPS and end with an empty space.
 * Can take a list of arguments `q.return(1, 2, 3)` will print out `RETURN 1, 2, 3`
 * Can also just exist along the chain `a.MATCH.node('m')` will print out `MATCH (m)`
+* Random statements can be created. This is useful for when Cypher grows, but Pypher may not have manually defined the new functionality
+    * `p.some_statement(1, 2, 3)` will return `random_statement 1, 2, 3`
 * Pypher provides a suite of pre-defined statements out of the box:
 
 | Pypher Object | Resulting Cypher | Aliases |
@@ -265,6 +267,12 @@ _`Statement`_ objects are simple, they are things like `MATCH` or `CREATE` or `R
 | `DropConstraintOn` | `DROP CONSTRAINT ON` | |
 | `Map` | `{}` | |
 | `MapProjection` | `var {}` | `map_projection` `projection` |
+| `NOT` | `NOT` | |
+| `IS` | `IS` | |
+| `OR` | `OR` | |
+| `NULL` | `NULL` | |
+| `IS_NULL` | `IS NULL` | |
+| `IS NOT NULL` | `IS NOT NULL` | |
 
 > Python keywords will be in all CAPS
 

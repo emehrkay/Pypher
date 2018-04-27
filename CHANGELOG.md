@@ -1,6 +1,17 @@
 # Pypher Changelog
 
 
+## 0.8.0 -- 4/27/2018
+
+### Added
+
+* Added a few missing statements; `XOR`, `NULL`, `IS_NULL`, `IS_NOT_NULL`, `NOT`, and `OR`
+
+### Fixed
+
+* A bug where dynamic statements were printing out `STATEMENT`. Now `p.some_statemnt(1, 2, 3)` will return `some_statement 1, 2, 3`
+
+
 ## 0.7.0 -- 4/26/2018
 
 ### Added
