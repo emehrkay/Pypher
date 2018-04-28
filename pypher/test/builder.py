@@ -518,7 +518,7 @@ class BuilderTests(unittest.TestCase):
         p.RETURN.map(one, two, three=three, list=[four, five])
         q = str(p)
         params = p.bound_params
-        exp = 'RETURN {{one, two, `three`: ${three}, `list`: [${four}, ${five}]}}'.format(
+        exp = 'RETURN {{one, two, `list`: [${four}, ${five}], `three`: ${three}}}'.format(
             three=get_dict_key(params, three),
             four=get_dict_key(params, four),
             five=get_dict_key(params, five))
@@ -537,7 +537,7 @@ class BuilderTests(unittest.TestCase):
         p.RETURN.mapprojection(user, one, two, three=three, list=[four, five])
         q = str(p)
         params = p.bound_params
-        exp = 'RETURN user {{one, two, `three`: ${three}, `list`: [${four}, ${five}]}}'.format(
+        exp = 'RETURN user {{one, two, `list`: [${four}, ${five}], `three`: ${three}}}'.format(
             three=get_dict_key(params, three),
             four=get_dict_key(params, four),
             five=get_dict_key(params, five))
@@ -878,7 +878,7 @@ class OperatorTests(unittest.TestCase):
         p.SET.user += d
         q = str(p)
         params = p.bound_params
-        exp = 'SET user += {{`name`: ${name}, `age`: ${age}}}'.format(
+        exp = 'SET user += {{`age`: ${age}, `name`: ${name}}}'.format(
             name=get_dict_key(params, d['name']),
             age=get_dict_key(params, d['age']))
 
@@ -922,7 +922,7 @@ class OperatorTests(unittest.TestCase):
         p.SET.user += d
         q = str(p)
         params = p.bound_params
-        exp = ('SET user += {{`name`: ${name}, `loc`: {{`city`: ${city}, `latlng`: [${lat}, ${lng}]}}}}').format(
+        exp = ('SET user += {{`loc`: {{`city`: ${city}, `latlng`: [${lat}, ${lng}]}}, `name`: ${name}}}').format(
             name=get_dict_key(params, d['name']),
             city=get_dict_key(params, d['loc']['city']),
             lat=get_dict_key(params, lat),

@@ -1,7 +1,7 @@
 # Pypher Changelog
 
 
-## 0.8.0 -- 4/27/2018
+## 0.8.0 -- 4/28/2018
 
 ### Added
 
@@ -10,6 +10,7 @@
 ### Fixed
 
 * A bug where dynamic statements were printing out `STATEMENT`. Now `p.some_statemnt(1, 2, 3)` will return `some_statement 1, 2, 3`
+* Ensured ordering of `kwargs` in `Map` and `MapProjection` objects
 
 
 ## 0.7.0 -- 4/26/2018

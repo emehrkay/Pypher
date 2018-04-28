@@ -715,7 +715,9 @@ class Map(_BaseLink):
         for arg in self.args:
             body.append(prep_value(arg))
 
-        for k, val in self.kwargs.items():
+        kwargs = OrderedDict(sorted(self.kwargs.items()))
+
+        for k, val in kwargs.items():
             pair = '`{}`: {}'.format(k, prep_value(val, k))
             body.append(pair)
 
