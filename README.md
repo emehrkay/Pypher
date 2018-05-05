@@ -97,7 +97,7 @@ Since Pypher is an object whose sole job is to compose a linked list via a fluid
 from pypher import Pypher, __
 
 p = Pypher()
-p.WHERE.n.name == __.s.name
+p.WHERE.n.name == __.s.__name__
 
 str(p) # WHERE n.`name` = s.`name`
 
@@ -383,7 +383,7 @@ _`Func`_ objects resolve to functions (things that have parenthesis)
 
 > Python keywords will be in all CAPS
 
-* Pypher provides a way to define a custom Func class via a function call (this is used to create all of the functions listed above)
+* Pypher provides a way to define a custom `Func` or `FuncRaw` class via a function call (this is used to create all of the functions listed above)
 
 ```python
 from pyher import create_function, Pypher
@@ -567,4 +567,4 @@ Included is a very bare-bones CLI app that will allow you to test your Pypher sc
 
 ![Example tester.py usage](tester.gif)
 
-> The cli app needs prompt-toolkit v2 installed as a dependency. It is defined in the requirements.py or you can manually install it yourself.
+> The cli app needs prompt-toolkit v2 installed as a dependency which is not currently on Pypi. It is defined in the requirements.py so once you have Pypher installed in your virtual environment or system-wide, run `pip install -r requirements.txt` or you can manually install it yourself.

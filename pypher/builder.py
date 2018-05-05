@@ -48,10 +48,11 @@ RELATIONSHIP_DIRECTIONS = {
 }
 
 
-def create_function(name, attrs=None):
+def create_function(name, attrs=None, func_raw=False):
     attrs = attrs or {}
+    func = Func if not func_raw else FuncRaw
 
-    setattr(_MODULE, name, type(name, (Func,), attrs))
+    setattr(_MODULE, name, type(name, (func,), attrs))
 
 
 def create_statement(name, attrs=None):
@@ -984,4 +985,9 @@ for fun in _PREDEFINED_FUNCTIONS:
     except Exception as e:
         attrs = {'name': name}
 
-    create_function(name=name, attrs=attrs)
+    try:
+        func_raw = bool(fun[2])
+    except Exception as e:
+        func_raw = False
+
+    create_function(name=name, attrs=attrs, func_raw=func_raw)

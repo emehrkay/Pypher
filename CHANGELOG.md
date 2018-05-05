@@ -1,6 +1,13 @@
 # Pypher Changelog
 
 
+## 0.9.0 -- 5/5/2018
+
+### Added
+
+* `ctrl-c` shortcut to clear the Pypher pane in the tester.py console
+* `func_raw=False` argument to the `Pypher.builder.crete_function` method that will create a `FuncRaw` class instead of a `Func` when set to true.
+
 ## 0.8.0 -- 4/28/2018
 
 ### Added

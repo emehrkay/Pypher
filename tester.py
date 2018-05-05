@@ -42,7 +42,8 @@ def input(_):
 
 
 edit_buffer.on_text_changed += input
-toolbar_message = ('[Ctrl] + q (to quit)')
+toolbar_message = ('[Ctrl] + q (to quit)'
+    ' | [Ctrl] + c (to clear)')
 pyper_message = (' Pypher and __ are imported | p is a Pypher instance')
 kb = KeyBindings()
 
@@ -82,6 +83,12 @@ body = HSplit([
 def _(event):
     " Quit application. "
     event.app.exit()
+
+
+@kb.add('c-c')
+def _(event):
+    " Clear Pypher "
+    edit_buffer.text = ''
 
 
 application = Application(
