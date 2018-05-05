@@ -768,6 +768,8 @@ class Operator(_BaseLink):
                     is_dict = isinstance(item, dict)
 
                     if is_dict:
+                        item = OrderedDict(sorted(item.items()))
+
                         for k, v in item.items():
                             if isinstance(v, (list, set, tuple, dict)):
                                 v = params(v)

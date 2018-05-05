@@ -1,6 +1,13 @@
 # Pypher Changelog
 
 
+## 0.9.0.1 -- 5/5/2018
+
+### Hotfix
+
+* Ensured ordering of params for dict assignments
+
+
 ## 0.9.0 -- 5/5/2018
 
 ### Added
