@@ -667,7 +667,7 @@ class List(_BaseLink):
 
             args.append(value)
 
-        args = ' '.join(args)
+        args = ', '.join(args)
 
         return '[{args}]'.format(args=args)
 

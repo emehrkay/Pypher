@@ -6,6 +6,7 @@
 ### Bugfix
 
 * Ensured that `MapProjection` could have a `name` kwarg
+* Modified `List` to use a comma as the concatenator instead of a blank space
 
 
 ## 0.9.0.1 -- 5/5/2018

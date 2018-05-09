@@ -447,6 +447,20 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(c, exp)
         self.assertEqual(3, len(params))
 
+    def test_can_add_list(self):
+        p = Pypher()
+        one = 1
+        two = 2
+        three = 3
+        p.List(one, two, three)
+        c = str(p)
+        params = p.bound_params
+        exp = '[${one}, ${two}, ${three}]'.format(one=get_dict_key(params, one),
+            two=get_dict_key(params, two), three=get_dict_key(params, three))
+
+        self.assertEqual(exp, c)
+        self.assertEqual(3, len(params))
+
     def test_can_add_list_comprehension_clause(self):
         p = Pypher()
         three = 3
