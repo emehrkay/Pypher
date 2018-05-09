@@ -1,6 +1,13 @@
 # Pypher Changelog
 
 
+## 0.9.2 -- 5/9/2018
+
+### Bugfix
+
+* Ensured that `MapProjection` could have a `name` kwarg
+
+
 ## 0.9.0.1 -- 5/5/2018
 
 ### Hotfix

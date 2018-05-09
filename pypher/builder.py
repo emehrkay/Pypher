@@ -730,10 +730,10 @@ class Map(_BaseLink):
 class MapProjection(Map):
     _ALIASES = ['map_projection', 'projection',]
 
-    def __init__(self, name=None, *args, **kwargs):
+    def __init__(self, _name=None, *args, **kwargs):
         super(MapProjection, self).__init__(*args, **kwargs)
 
-        self.name = name
+        self.name = _name
 
     def __unicode__(self):
         _map = super(MapProjection, self).__unicode__()
