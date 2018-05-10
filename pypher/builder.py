@@ -905,13 +905,22 @@ class Relationship(Entity):
     _LABEL_OPERATOR = '|'
 
     def __init__(self, variable=None, labels=None, types=None, direction=None,
-                 **properties):
+                 min_hops=None, max_hops=None, **properties):
         labels = types or labels
         super(Relationship, self).__init__(variable=variable, labels=labels,
             **properties)
 
         self._direction = None
         self.direction = direction
+        self.hops = list(
+            dict.fromkeys(
+                [str(h) for h in [min_hops, max_hops] if h is not None]))
+        
+    @property
+    def variable_length(self):
+        if self.hops:
+            return '*{}'.format('..'.join(self.hops))
+        return ''
 
     def _get_direction(self):
         direction = self._direction.lower()
@@ -937,13 +946,14 @@ class Relationship(Entity):
     def __unicode__(self):
         properties = self.properties
         labels = self.labels
+        hops = self.variable_length
 
         if properties:
             properties = ' ' + properties
 
-        if labels or properties:
-            fill = '[{labels}{properties}]'.format(labels=labels,
-                properties=properties)
+        if labels or properties or hops:
+            fill = '[{labels}{properties}{hops}]'.format(labels=labels,
+                properties=properties, hops=hops)
         else:
             fill = ''
 

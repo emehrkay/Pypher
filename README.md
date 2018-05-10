@@ -428,8 +428,10 @@ _`Node`__ This represents an actual node in the ascii format.
 
 _`Relationship`__ This represents an relationship node in the ascii format.
 
-* The init can accept a `variable`\<String>, `direction`\<String>['in', 'out', '>', '<'], `labels`<List|String>, `properties`\<Keyword Arguments>
+* The init can accept a `variable`\<String>, `direction`\<String>['in', 'out', '>', '<'], `labels`<List|String>, `min_hops`\<Number>, `max_hops`\<Number>, `properties`\<Keyword Arguments>
 * Can be added to the chain by typing `.relationship`, `.rel`, `.r_`, or for directed: `.rel_out` or `.rel_in`
+* To create a variable length relationship, use `min_hops` and `max_hops`
+* To create a fixed length relationship, use either `min_hops` or `max_hops`, or set both to the same number
 
 ### Property
 
@@ -560,6 +562,30 @@ SET user.Name = 'Jim'
 
 ```python
 p.MERGE.node('user', 'User', Id=456).ON.CREATE.user.SET(__.user.__Name__ == 'Jim')
+```
+
+_Create a variable length relationship_
+
+```cypher
+MATCH (martin { name: 'Charlie Sheen' })-[:ACTED_IN*1..3]-(movie:Movie)
+RETURN movie.title
+```
+
+```python
+p.Match.node('martin', name='Charlie Sheen').rel(labels='ACTED_IN', min_hops=1, max_hops=3).node('movie', 'Movie')
+p.Return(__.movie.__title__)
+```
+
+_Create a fixed length relationship_
+
+```cypher
+MATCH (martin { name: 'Charlie Sheen' })-[:ACTED_IN*2]-(movie:Movie)
+RETURN movie.title
+```
+
+```python
+p.Match.node('martin', name='Charlie Sheen').rel(labels='ACTED_IN', min_hops=2).node('movie', 'Movie')
+p.Return(__.movie.__title__)
 ```
 
 ## Tester
