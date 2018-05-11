@@ -304,6 +304,34 @@ class BuilderTests(unittest.TestCase):
 
         self.assertEqual(str(p), exp)
 
+    def test_can_add_empty_undirected_relationship_with_min_hop(self):
+        p = Pypher()
+        p.relationship(min_hops=1)
+        exp = '-[*1]-'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_add_empty_undirected_relationship_with_max_hop(self):
+        p = Pypher()
+        p.relationship(max_hops=1)
+        exp = '-[*1]-'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_add_empty_undirected_relationship_with_min_max_hop(self):
+        p = Pypher()
+        p.relationship(min_hops=1, max_hops=3)
+        exp = '-[*1..3]-'
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_add_empty_undirected_relationship_with_fixed_length(self):
+        p = Pypher()
+        p.relationship(min_hops=3, max_hops=3)
+        exp = '-[*3]-'
+
+        self.assertEqual(str(p), exp)
+
     def test_can_add_empty_undirected_relationship_with_labels_and_types_but_uses_types(self):
         p = Pypher()
         p.relationship(labels=[1, 2, 3], types=['one', 'two', 'three'])
@@ -334,6 +362,19 @@ class BuilderTests(unittest.TestCase):
         c = str(p)
         params = p.bound_params
         exp = '-[test:`one`|`two`|`three` {{`age`: ${a}, `name`: ${n}}}]-'.format(
+            n=get_dict_key(params, name), a=get_dict_key(params, age))
+
+        self.assertEqual(str(p), exp)
+
+    def test_can_add_named_undirected_relationship_with_labels_and_properties_and_hops(self):
+        p = Pypher()
+        name = 'somename'
+        age = 99
+        p.relationship(variable='test', labels=['one', 'two', 'three'],
+            name=name, age=age, min_hops=1, max_hops=3)
+        c = str(p)
+        params = p.bound_params
+        exp = '-[test:`one`|`two`|`three` {{`age`: ${a}, `name`: ${n}}}*1..3]-'.format(
             n=get_dict_key(params, name), a=get_dict_key(params, age))
 
         self.assertEqual(str(p), exp)
