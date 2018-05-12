@@ -1,6 +1,13 @@
 # Pypher Changelog
 
 
+## 0.10.0 -- 5/12/2018
+
+### Added
+
+* `Relationship` now accept `min_hops` and `max_hops` arguments that will resolve to a pattern.
+
+
 ## 0.9.2 -- 5/9/2018
 
 ### Bugfix
