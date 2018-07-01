@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+## 0.11.0 -- 7/1/2018
+
+### Updated
+
+* Prompt Toolkit 2.0 has been released so now when `python setup.py install` is executed, `tester.py` will work out of the box
+
 
 ## 0.10.0 -- 5/12/2018
 

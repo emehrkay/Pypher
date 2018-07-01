@@ -593,5 +593,3 @@ p.Return(__.movie.__title__)
 Included is a very bare-bones CLI app that will allow you to test your Pypher scripts. After installing Pypher, you can run the script simply by calling `python tester.py`. Once loaded you are presented with a screen that will allow you to write Pypher code and it will generate the Cypher and bound params. This is a quick way to check if your Pypher is producing the desired Cypher for your project.
 
 ![Example tester.py usage](tester.gif)
-
-> The cli app needs prompt-toolkit v2 installed as a dependency which is not currently on Pypi. It is defined in the requirements.py so once you have Pypher installed in your virtual environment or system-wide, run `pip install -r requirements.txt` or you can manually install it yourself.
