@@ -57,6 +57,8 @@ cypher = str(q) # MATCH (mark:`Person`) WHERE mark.`name` = NEO_9326c_1 RETURN m
 params = q.bound_params # {'NEO_9326c_1': 'Mark'}
 ```
 
+> Note: Pypher doesn't create the Cypher string until your Pypher instance is converted into a string via `str(p)` or `print(p)` etc., at the same time all of the bound parameters are collected through the many possible sub-instances of Pypher objects that may be in the chain.
+
 # Structure
 
 Pypher is a very simple query builder for Cypher. It works by creating a simple linked list of objects and running `__str__` against the list when it is time to render the Cypher. Along the way it stores bound params, allows for complex Cypher queries with deep Pypher nestings, and even direct string inclusion if the abstraction gets too messy.
