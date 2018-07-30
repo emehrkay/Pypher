@@ -620,10 +620,41 @@ class OperatorTests(unittest.TestCase):
     def test_can_add_two_pypher_objects(self):
         p = Pypher()
         a = Pypher()
+
         p.one + a.two
         exp = 'one + two'
 
         self.assertEqual(str(p), exp)
+
+    def test_can_use_zero_value_in_operator(self):
+        val = 0.0
+        p = Pypher()
+        p.one == val
+        s = str(p)
+        params = p.bound_params
+        exp = 'one = ${v}'.format(v=get_dict_key(params, val))
+
+        self.assertEqual(s, exp)
+
+    def test_can_use_empty_string_value_in_operator(self):
+        val = ''
+        p = Pypher()
+        p.one += val
+        s = str(p)
+        params = p.bound_params
+        exp = 'one += ${v}'.format(v=get_dict_key(params, val))
+
+        self.assertEqual(s, exp)
+
+    def test_can_use_none_value_in_operator_and_get_null(self):
+        val = None
+        p = Pypher()
+        p.one += val
+        s = str(p)
+        params = p.bound_params
+        exp = 'one += ${v}'.format(v=get_dict_key(params, 'null'))
+
+        self.assertEqual(s, exp)
 
     def test_can_add_pypher_and_string(self):
         p = Pypher()

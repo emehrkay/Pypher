@@ -753,58 +753,68 @@ class Operator(_BaseLink):
 
         super(Operator, self).__init__()
 
+    def _get_value(self):
+        return self._value
+
+    def _set_value(self, value):
+        if value is None:
+            value = 'null'
+
+        self._value = value
+
+        return self
+
+    value = property(_get_value, _set_value)
+
     def __unicode__(self):
-        if self.value:
-            operator = self.operator
+        operator = self.operator
 
-            if isinstance(self.value, (Pypher, Partial)):
-                self.value.parent = self.parent
-                value = str(self.value)
-            elif isinstance(self.value, dict):
-                # TODO: abstract this logoic out to be used for entity params
+        if isinstance(self.value, (Pypher, Partial)):
+            self.value.parent = self.parent
+            value = str(self.value)
+        elif isinstance(self.value, dict):
+            # TODO: abstract this logoic out to be used for entity params
 
-                def params(item):
-                    new = []
-                    is_dict = isinstance(item, dict)
+            def params(item):
+                new = []
+                is_dict = isinstance(item, dict)
 
-                    if is_dict:
-                        item = OrderedDict(sorted(item.items()))
+                if is_dict:
+                    item = OrderedDict(sorted(item.items()))
 
-                        for k, v in item.items():
-                            if isinstance(v, (list, set, tuple, dict)):
-                                v = params(v)
-                            elif self._BIND_PARAMS:
-                                param = self.bind_param(v)
-                                v = param.placeholder
+                    for k, v in item.items():
+                        if isinstance(v, (list, set, tuple, dict)):
+                            v = params(v)
+                        elif self._BIND_PARAMS:
+                            param = self.bind_param(v)
+                            v = param.placeholder
 
-                            new.append('`{}`: {}'.format(k, v))
+                        new.append('`{}`: {}'.format(k, v))
 
-                        return '{{{}}}'.format(', '.join(new))
-                    else:
-                        for v in item:
-                            if self._BIND_PARAMS:
-                                param = self.bind_param(v)
-                                v = param.placeholder
+                    return '{{{}}}'.format(', '.join(new))
+                else:
+                    for v in item:
+                        if self._BIND_PARAMS:
+                            param = self.bind_param(v)
+                            v = param.placeholder
 
-                            new.append(v)
+                        new.append(v)
 
-                        return '[{}]'.format(', '.join(new))
+                    return '[{}]'.format(', '.join(new))
 
-                    return new
+                return new
 
-                value = params(self.value)
-            elif self._BIND_PARAMS:
-                param = self.bind_param(self.value)
-                value = param.placeholder
-            else:
-                value = self.value
+            value = params(self.value)
+        elif self._BIND_PARAMS:
+            param = self.bind_param(self.value)
+            value = param.placeholder
+        else:
+            value = self.value
 
-            if self.inverse:
-                operator, value = value, operator
+        if self.inverse:
+            operator, value = value, operator
 
-            return '{} {}'.format(operator, value)
-
-        return self.operator
+        return '{} {}'.format(operator, value)
 
 
 class OperatorRaw(Operator):

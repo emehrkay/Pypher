@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+## 0.11.1 -- 7/30/2018
+
+### Bugfix
+
+* Fixed issue https://github.com/emehrkay/Pypher/issues/17 where falsy values were not being honored in `Operator` objects
+
 ## 0.11.0 -- 7/1/2018
 
 ### Updated
