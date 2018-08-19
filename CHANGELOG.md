@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+## 0.12.0 -- 8/18/2018
+
+### Bugfix
+
+* Fixed an issue with `Params.reset()` method not working properly.
+
 ## 0.11.1 -- 7/30/2018
 
 ### Bugfix

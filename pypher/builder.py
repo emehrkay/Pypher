@@ -77,7 +77,7 @@ class Params(object):
         self._bound_params = {}
 
     def reset(self):
-        self.bind_params = {}
+        self._bound_params = {}
 
     @property
     def bound_params(self):
