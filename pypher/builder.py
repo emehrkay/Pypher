@@ -452,6 +452,13 @@ class Pypher(with_metaclass(_Link)):
 
         return self
 
+    def append(self, *pyphers):
+        for p in pyphers:
+            self.next = p.next
+            self._bottom = p._bottom
+
+        return self
+
 
 class _BaseLink(Pypher):
     _CLEAR_PRECEEDING_WS = False
@@ -981,6 +988,9 @@ class Anon(object):
         getattr(py, attr)
 
         return py
+
+    def __call__(self, *args, **kwargs):
+        return Pypher()
 
 
 # Create an anonymous Pypher factory
