@@ -454,8 +454,8 @@ class Pypher(with_metaclass(_Link)):
 
     def append(self, *pyphers):
         for p in pyphers:
-            self.next = p.next
-            self._bottom = p._bottom
+            if self._bottom:
+                self._bottom.next = p.next
 
         return self
 
