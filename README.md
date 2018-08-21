@@ -83,6 +83,7 @@ _`Pypher`_ is the root object that all other objects sub-class and it makes ever
 * `operator(operator, value)` -- a simple way to add anything to the chain. All of the Pypher magic methods around assignments and math call this method. Note: the `other` needs to be a different Pypher instance or you will get a funky Cypher string.
 * `_` -- the current Pypher instance. This is useful for special edge cases. See `Property`
 * `apply_partial` -- adds the result of the Partial object to the given Pypher instance.
+* `append` -- will allow multiple `Pypher` instances to be combined into a single chain.
 
 #### Operators
 

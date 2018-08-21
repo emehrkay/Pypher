@@ -615,6 +615,49 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(exp, q)
         self.assertEqual(0, len(params))
 
+    def test_can_append_two_instances(self):
+        p = Pypher()
+        p2 = Pypher()
+        p.one
+        p2.two
+
+        p.append(p2)
+
+        exp = 'one two'
+        exp2 = 'two'
+        s = str(p)
+        s2 = str(p2)
+
+        self.assertEqual(exp, s)
+        self.assertEqual(exp2, s2)
+
+    def test_can_append_four_instances(self):
+        p = Pypher()
+        p2 = Pypher()
+        p3 = Pypher()
+        p4 = Pypher()
+        p.one
+        p2.two
+        p3.three.three
+        p4.four.four.four
+
+        p.append(p2.append(p3))
+        p.append(p4)
+
+        exp = 'one two three three four four four'
+        exp2 = 'two three three four four four'
+        exp3 = 'three three four four four'
+        exp4 = 'four four four'
+        s = str(p)
+        s2 = str(p2)
+        s3 = str(p3)
+        s4 = str(p4)
+
+        self.assertEqual(exp, s)
+        self.assertEqual(exp2, s2)
+        self.assertEqual(exp3, s3)
+        self.assertEqual(exp4, s4)
+
 class OperatorTests(unittest.TestCase):
 
     def test_can_add_two_pypher_objects(self):

@@ -452,10 +452,17 @@ class Pypher(with_metaclass(_Link)):
 
         return self
 
-    def append(self, *pyphers):
-        for p in pyphers:
-            if self._bottom:
-                self._bottom.next = p.next
+    def append(self, pypher):
+        token = self.next
+
+        while token:
+            try:
+                token.next.next
+                token = token.next
+            except Exception as e:
+                token.next = pypher.next
+                self._bottom = pypher.next
+                break
 
         return self
 

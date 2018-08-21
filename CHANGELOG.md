@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+## 0.12.2 -- 8/20/2018
+
+### Bugfix
+
+* Fixed a bug with `Pypher.append()` that will allow you to combine multiple `Pypher` instances into one.
+
 ## 0.12.1 -- 8/18/2018
 
 ### Bugfix
