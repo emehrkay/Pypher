@@ -662,6 +662,39 @@ class Raw(Statement):
         return '{args}'.format(args=args)
 
 
+class Conditional(Func):
+    _ADD_PRECEEDING_WS = True
+    _ADD_SUCEEDING_WS = True
+    _SEPARATOR = ', '
+
+    def __unicode__(self):
+        parts = []
+
+        for arg in self.args:
+            if isinstance(arg, (Pypher, Partial)):
+                arg.parent = self.parent
+                value = str(arg)
+            else:
+                param = self.bind_param(arg)
+                value = param.placeholder
+
+            parts.append(value)
+
+        parts = self._SEPARATOR.join(parts)
+
+        return '({})'.format(parts)
+
+
+class ConditionalAND(Conditional):
+    _SEPARATOR = ' AND '
+    _ALIASES = ['CAND', 'COND_AND']
+
+
+class ConditionalOR(Conditional):
+    _SEPARATOR = ' OR '
+    _ALIASES = ['COR', 'COND_OR']
+
+
 class List(_BaseLink):
     _ADD_PRECEEDING_WS = False
     _CLEAR_PRECEEDING_WS = True

@@ -420,6 +420,17 @@ class MyCustomFunction(Func):
     name = 'myCustomFunction' # the string that will be printed in the resulting Cypher. If this isn't defined, the class name will be used
 ```
 
+### Conditionals
+
+_`Conditional`_ objects allow groupings of values surrounded by parenthesis and separated by a comma or other value.
+
+| Pypher Object | Resulting Cypher | Aliases |
+| ------------- | ------------- | ---------- |
+| `Conditional` | `(val, val2, valN)` | |
+| `ConditionalAND` | `(val AND val2 AND valN)` | `CAND`, `COND_AND` |
+| `ConditionalOR` | `(val OR val2 OR valN)` | `COR`, `COND_OR` |
+
+
 ### Entity
 
 Entities are `Node` or `Relationship` objects. They both sub-class the `Entity` class and share the same attributes.

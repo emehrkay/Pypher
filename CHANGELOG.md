@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+## 0.13.0 -- 8/26/2018
+
+### Added
+
+* `Conditional`, `ConditionalAND`, and `ConditionalOR` objects that will produce lists with parenthesis with a separator.
+
 ## 0.12.2 -- 8/20/2018
 
 ### Bugfix

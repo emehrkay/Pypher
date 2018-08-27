@@ -658,6 +658,55 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(exp3, s3)
         self.assertEqual(exp4, s4)
 
+    def test_can_use_base_conditional(self):
+        p = Pypher()
+        p.CONDITIONAL(1, 2, 3)
+
+        s = str(p)
+        params = p.bound_params
+        exp = '(${one}, ${two}, ${three})'.format(one=get_dict_key(params, 1),
+            two=get_dict_key(params, 2), three=get_dict_key(params, 3))
+
+        self.assertEqual(exp, s)
+        self.assertEqual(3, len(params))
+
+    def test_can_use_AND_conditional_alias(self):
+        p = Pypher()
+        p.COND_AND(1, 2, 3)
+
+        s = str(p)
+        params = p.bound_params
+        exp = '(${one} AND ${two} AND ${three})'.format(one=get_dict_key(params, 1),
+            two=get_dict_key(params, 2), three=get_dict_key(params, 3))
+
+        self.assertEqual(exp, s)
+        self.assertEqual(3, len(params))
+
+    def test_can_use_OR_conditional_alias(self):
+        p = Pypher()
+        p.COR(1, 2, 3)
+
+        s = str(p)
+        params = p.bound_params
+        exp = '(${one} OR ${two} OR ${three})'.format(one=get_dict_key(params, 1),
+            two=get_dict_key(params, 2), three=get_dict_key(params, 3))
+
+        self.assertEqual(exp, s)
+        self.assertEqual(3, len(params))
+
+    def test_can_nest_AND_and_OR_conditionals(self):
+        p = Pypher()
+        p.COR(1, __.CAND(2, 3))
+
+        s = str(p)
+        params = p.bound_params
+        exp = '(${one} OR (${two} AND ${three}))'.format(one=get_dict_key(params, 1),
+            two=get_dict_key(params, 2), three=get_dict_key(params, 3))
+
+        self.assertEqual(exp, s)
+        self.assertEqual(3, len(params))
+
+
 class OperatorTests(unittest.TestCase):
 
     def test_can_add_two_pypher_objects(self):
