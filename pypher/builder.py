@@ -72,7 +72,7 @@ class Param(object):
 class Params(object):
 
     def __init__(self, prefix=None, key=None):
-        self.prefix = prefix + '_' or ''
+        self.prefix = prefix + '_' if prefix else ''
         self.key = key or str(uuid.uuid4())[-5:]
         self._bound_params = {}
 
