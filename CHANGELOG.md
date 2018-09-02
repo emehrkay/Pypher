@@ -1,5 +1,29 @@
 # Pypher Changelog
 
+## 0.13.0 -- 8/26/2018
+
+### Added
+
+* `Conditional`, `ConditionalAND`, and `ConditionalOR` objects that will produce lists with parenthesis with a separator.
+
+## 0.12.2 -- 8/20/2018
+
+### Bugfix
+
+* Fixed a bug with `Pypher.append()` that will allow you to combine multiple `Pypher` instances into one.
+
+## 0.12.1 -- 8/18/2018
+
+### Bugfix
+
+* Fixed an issue with `Params.reset()` method not working properly.
+
+## 0.12.0 -- 8/18/2018
+
+## Added
+
+* Added `Anon.__call__` that will create an empty `Pypher` instance.
+
 ## 0.11.1 -- 7/30/2018
 
 ### Bugfix

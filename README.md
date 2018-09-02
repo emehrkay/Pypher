@@ -83,6 +83,7 @@ _`Pypher`_ is the root object that all other objects sub-class and it makes ever
 * `operator(operator, value)` -- a simple way to add anything to the chain. All of the Pypher magic methods around assignments and math call this method. Note: the `other` needs to be a different Pypher instance or you will get a funky Cypher string.
 * `_` -- the current Pypher instance. This is useful for special edge cases. See `Property`
 * `apply_partial` -- adds the result of the Partial object to the given Pypher instance.
+* `append` -- will allow multiple `Pypher` instances to be combined into a single chain.
 
 #### Operators
 
@@ -418,6 +419,17 @@ class MyCustomFunction(Func):
     _ALIASES = ['myst',] # aliases for your custom function. Will throw an exception if it is already defined
     name = 'myCustomFunction' # the string that will be printed in the resulting Cypher. If this isn't defined, the class name will be used
 ```
+
+### Conditionals
+
+_`Conditional`_ objects allow groupings of values surrounded by parenthesis and separated by a comma or other value.
+
+| Pypher Object | Resulting Cypher | Aliases |
+| ------------- | ------------- | ---------- |
+| `Conditional` | `(val, val2, valN)` | |
+| `ConditionalAND` | `(val AND val2 AND valN)` | `CAND`, `COND_AND` |
+| `ConditionalOR` | `(val OR val2 OR valN)` | `COR`, `COND_OR` |
+
 
 ### Entity
 
