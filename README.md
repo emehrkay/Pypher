@@ -84,6 +84,7 @@ _`Pypher`_ is the root object that all other objects sub-class and it makes ever
 * `_` -- the current Pypher instance. This is useful for special edge cases. See `Property`
 * `apply_partial` -- adds the result of the Partial object to the given Pypher instance.
 * `append` -- will allow multiple `Pypher` instances to be combined into a single chain.
+* `clone` -- will create a copy of the `Pypher` instance and the `Params` object that holds the `pypher_instance.bound_params`
 
 #### Operators
 

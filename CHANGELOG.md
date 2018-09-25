@@ -1,5 +1,12 @@
 # Pypher Changelog
 
+## 0.14.0 -- 9/24/2018
+
+### Added
+
+* `Pypher.clone()` method will create a carbon copy of the `Pypher` instance and its bound params.
+* `Params.clone()` method will create a new instance of a `Params` instance with the same `prefix`, `key`, and defined `bound_params`.
+
 ## 0.13.0 -- 8/26/2018
 
 ### Added

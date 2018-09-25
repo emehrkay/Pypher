@@ -706,6 +706,32 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(exp, s)
         self.assertEqual(3, len(params))
 
+    def test_can_clone_shallow_pypher(self):
+        p = Pypher()
+        p.a.b.c.d
+        c = p.clone()
+        x = str(p)
+        y = str(c)
+
+        self.assertEqual(x, y)
+        self.assertEqual(len(p.bound_params), len(c.bound_params))
+        self.assertTrue(id(p.bound_params) == id(c.bound_params))
+
+    def test_can_clone_nested_pypher(self):
+        p = Pypher()
+        d = Pypher()
+        e = Pypher()
+        e.CAND(1, 2, 3, 4, 5, __.test.this.out.CONDITIONAL(9, 9, 8, __.node(6)))
+        d.id(123).raw(e)
+        p.a.b.c.d.node(d == 122)
+        c = p.clone()
+        x = str(p)
+        y = str(c)
+
+        self.assertEqual(x, y)
+        self.assertEqual(len(p.bound_params), len(c.bound_params))
+        self.assertTrue(id(p.bound_params) == id(c.bound_params))
+
 
 class OperatorTests(unittest.TestCase):
 

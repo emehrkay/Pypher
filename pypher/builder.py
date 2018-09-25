@@ -1,3 +1,4 @@
+import copy
 import sys
 import uuid
 
@@ -78,6 +79,12 @@ class Params(object):
 
     def reset(self):
         self._bound_params = {}
+
+    def clone(self):
+        params = Params(prefix=self.prefix, key=self.key)
+        params._bound_params = copy.deepcopy(self._bound_params)
+
+        return params
 
     @property
     def bound_params(self):
@@ -465,6 +472,14 @@ class Pypher(with_metaclass(_Link)):
                 break
 
         return self
+
+    def clone(self):
+        clone = copy.deepcopy(self)
+        params = self.params
+        clone.params = Params(prefix=params.prefix, key=params.key)
+        clone.params += params
+
+        return clone
 
 
 class _BaseLink(Pypher):
