@@ -473,13 +473,22 @@ class Pypher(with_metaclass(_Link)):
 
         return self
 
-    def clone(self):
-        clone = copy.deepcopy(self)
-        params = self.params
-        clone.params = Params(prefix=params.prefix, key=params.key)
-        clone.params += params
+    def clone(self, pypher=None):
+        pypher = Pypher()
+        link = self.next
+        nxt = pypher
 
-        return clone
+        while link:
+            try:
+                clone = link.__class__()
+                clone.__dict__ = link.__dict__
+                link = link.next
+                nxt.next = clone
+                nxt = clone
+            except Exception as e:
+                break
+
+        return pypher
 
 
 class _BaseLink(Pypher):

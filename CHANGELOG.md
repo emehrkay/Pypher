@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+## 0.14.1 -- 9/28/2018
+
+#### Bugfix
+
+* Fixed `Pypher.clone()`, it was adding an empty `.PROPERTY` to the resulting Cypher
+
 ## 0.14.0 -- 9/24/2018
 
 ### Added
