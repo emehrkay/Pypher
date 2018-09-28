@@ -732,6 +732,17 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(len(p.bound_params), len(c.bound_params))
         self.assertTrue(id(p.bound_params) == id(c.bound_params))
 
+    def test_can_clone_pypher_and_follow_different_paths(self):
+        p = Pypher()
+        p.one.two.three.four
+        c = p.clone()
+        p.xx.yy.zz.node('zzz11122')
+        c.a.b.c.d
+        before = str(p)
+        after = str(c)
+
+        self.assertTrue(before != after)
+
 
 class OperatorTests(unittest.TestCase):
 

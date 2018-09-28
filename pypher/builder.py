@@ -481,9 +481,11 @@ class Pypher(with_metaclass(_Link)):
         while link:
             try:
                 clone = link.__class__()
-                clone.__dict__ = link.__dict__
+                clone.__dict__ = copy.copy(link.__dict__)
+                clone.__dict__['next'] = None
                 link = link.next
                 nxt.next = clone
+                nxt._bottom = clone
                 nxt = clone
             except Exception as e:
                 break

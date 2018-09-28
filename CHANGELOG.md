@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+## 0.14.1.1 -- 9/28/2018
+
+#### Hotfix
+
+* Fixed `Pypher.clone()` was not creating new `.next` instances correctly in the linked list
+
 ## 0.14.1 -- 9/28/2018
 
 #### Bugfix
