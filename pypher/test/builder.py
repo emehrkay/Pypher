@@ -1308,6 +1308,17 @@ class ParamTests(unittest.TestCase):
         self.assertEqual(1, len(params))
         self.assertEqual(param.name, param2.name)
 
+    def test_can_add_param_to_statement(self):
+        p = Pypher()
+        n = 'some_param'
+        v = 'value {}'.format(random())
+        param = Param(n, v)
+        p.CONTAINS(param)
+        exp = 'CONTAINS ${}'.format(n)
+        s = str(p)
+
+        self.assertEqual(exp, s)
+        self.assertEqual(1, len(p.bound_params))
 
 if __name__ == '__main__':
     unittest.main()

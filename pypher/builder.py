@@ -28,7 +28,7 @@ _PREDEFINED_STATEMENTS = [['Match',], ['Create',], ['Merge',], ['Delete',],
     ['CreateConstraintOn', 'CREATE CONSTRAINT ON'], ['OnCreate', 'ON CREATE'],
     ['DropConstraintOn', 'DROP CONSTRAINT ON'], ['WHEN'], ['THEN'], ['NOT'],
     ['XOR'], ['NULL'], ['IS_NULL', 'IS NULL'], ['IS_NOT_NULL', 'IS NOT NULL'],
-    ['OR'], ['IS']]
+    ['OR'], ['IS'], ['CONTAINS']]
 _PREDEFINED_FUNCTIONS = [['size',], ['reverse',], ['head',], ['tail',],
     ['last',], ['extract',], ['filter',], ['reduce',], ['Type', 'type',],
     ['startNode',], ['endNode',], ['count',], ['collect',],
@@ -537,6 +537,9 @@ class Statement(_BaseLink):
             for arg in self.args:
                 if isinstance(arg, (Pypher, Partial)):
                     arg.parent = self.parent
+                elif isinstance(arg, Param):
+                    self.bind_param(arg)
+                    arg = arg.placeholder
 
                 parts.append(str(arg))
 

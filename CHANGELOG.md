@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+## 0.14.2 -- 9/29/2018
+
+#### Bugfix
+
+* Fixed an issue where `Param` objects were not being recognized by `Statment` objects
+
 ## 0.14.1.1 -- 9/28/2018
 
 #### Hotfix
