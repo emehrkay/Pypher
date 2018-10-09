@@ -283,7 +283,7 @@ _`Statement`_ objects are simple, they are things like `MATCH` or `CREATE` or `R
 * Pypher provides a way to define a custom Statement class via a function call (this is used to create all of the statements listed above).
 
 ```python
-from pyher import create_statement, Pypher
+from pypher import create_statement, Pypher
 
 create_statement('MyStatementName', {'name': 'MY STATEMENT IN CYPHER'})
 
@@ -391,7 +391,7 @@ _`Func`_ objects resolve to functions (things that have parenthesis)
 * Pypher provides a way to define a custom `Func` or `FuncRaw` class via a function call (this is used to create all of the functions listed above)
 
 ```python
-from pyher import create_function, Pypher
+from pypher import create_function, Pypher
 
 create_function('myFunction', {'name': 'mfun'})
 
