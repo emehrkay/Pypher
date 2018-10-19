@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+## 0.14.3 -- 10/19/2018
+
+### Bugfix
+
+* Fixed a bug with the tester.py script that bound `ctrl + c` to clear the screen. Changed it to `ctrl + [` because the other one is used for copy on sone operating systems.
+
 ## 0.14.2 -- 9/29/2018
 
 #### Bugfix
