@@ -706,6 +706,43 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(exp, s)
         self.assertEqual(3, len(params))
 
+    def test_can_clone_shallow_pypher(self):
+        p = Pypher()
+        p.a.b.c.d
+        c = p.clone()
+        x = str(p)
+        y = str(c)
+
+        self.assertEqual(x, y)
+        self.assertEqual(len(p.bound_params), len(c.bound_params))
+        self.assertTrue(id(p.bound_params) == id(c.bound_params))
+
+    def test_can_clone_nested_pypher(self):
+        p = Pypher()
+        d = Pypher()
+        e = Pypher()
+        e.CAND(1, 2, 3, 4, 5, __.test.this.out.CONDITIONAL(9, 9, 8, __.node(6)))
+        d.id(123).raw(e)
+        p.a.b.c.d.node(d == 122)
+        c = p.clone()
+        x = str(p)
+        y = str(c)
+
+        self.assertEqual(x, y)
+        self.assertEqual(len(p.bound_params), len(c.bound_params))
+        self.assertTrue(id(p.bound_params) == id(c.bound_params))
+
+    def test_can_clone_pypher_and_follow_different_paths(self):
+        p = Pypher()
+        p.one.two.three.four
+        c = p.clone()
+        p.xx.yy.zz.node('zzz11122')
+        c.a.b.c.d
+        before = str(p)
+        after = str(c)
+
+        self.assertTrue(before != after)
+
 
 class OperatorTests(unittest.TestCase):
 
@@ -1271,6 +1308,17 @@ class ParamTests(unittest.TestCase):
         self.assertEqual(1, len(params))
         self.assertEqual(param.name, param2.name)
 
+    def test_can_add_param_to_statement(self):
+        p = Pypher()
+        n = 'some_param'
+        v = 'value {}'.format(random())
+        param = Param(n, v)
+        p.CONTAINS(param)
+        exp = 'CONTAINS ${}'.format(n)
+        s = str(p)
+
+        self.assertEqual(exp, s)
+        self.assertEqual(1, len(p.bound_params))
 
 if __name__ == '__main__':
     unittest.main()

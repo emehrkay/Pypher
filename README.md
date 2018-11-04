@@ -84,6 +84,7 @@ _`Pypher`_ is the root object that all other objects sub-class and it makes ever
 * `_` -- the current Pypher instance. This is useful for special edge cases. See `Property`
 * `apply_partial` -- adds the result of the Partial object to the given Pypher instance.
 * `append` -- will allow multiple `Pypher` instances to be combined into a single chain.
+* `clone` -- will create a copy of the `Pypher` instance and the `Params` object that holds the `pypher_instance.bound_params`
 
 #### Operators
 
@@ -282,7 +283,7 @@ _`Statement`_ objects are simple, they are things like `MATCH` or `CREATE` or `R
 * Pypher provides a way to define a custom Statement class via a function call (this is used to create all of the statements listed above).
 
 ```python
-from pyher import create_statement, Pypher
+from pypher import create_statement, Pypher
 
 create_statement('MyStatementName', {'name': 'MY STATEMENT IN CYPHER'})
 
@@ -390,7 +391,7 @@ _`Func`_ objects resolve to functions (things that have parenthesis)
 * Pypher provides a way to define a custom `Func` or `FuncRaw` class via a function call (this is used to create all of the functions listed above)
 
 ```python
-from pyher import create_function, Pypher
+from pypher import create_function, Pypher
 
 create_function('myFunction', {'name': 'mfun'})
 

@@ -1,3 +1,4 @@
+import copy
 import sys
 import uuid
 
@@ -27,7 +28,7 @@ _PREDEFINED_STATEMENTS = [['Match',], ['Create',], ['Merge',], ['Delete',],
     ['CreateConstraintOn', 'CREATE CONSTRAINT ON'], ['OnCreate', 'ON CREATE'],
     ['DropConstraintOn', 'DROP CONSTRAINT ON'], ['WHEN'], ['THEN'], ['NOT'],
     ['XOR'], ['NULL'], ['IS_NULL', 'IS NULL'], ['IS_NOT_NULL', 'IS NOT NULL'],
-    ['OR'], ['IS']]
+    ['OR'], ['IS'], ['CONTAINS']]
 _PREDEFINED_FUNCTIONS = [['size',], ['reverse',], ['head',], ['tail',],
     ['last',], ['extract',], ['filter',], ['reduce',], ['Type', 'type',],
     ['startNode',], ['endNode',], ['count',], ['collect',],
@@ -78,6 +79,12 @@ class Params(object):
 
     def reset(self):
         self._bound_params = {}
+
+    def clone(self):
+        params = Params(prefix=self.prefix, key=self.key)
+        params._bound_params = copy.deepcopy(self._bound_params)
+
+        return params
 
     @property
     def bound_params(self):
@@ -466,6 +473,25 @@ class Pypher(with_metaclass(_Link)):
 
         return self
 
+    def clone(self, pypher=None):
+        pypher = Pypher()
+        link = self.next
+        nxt = pypher
+
+        while link:
+            try:
+                clone = link.__class__()
+                clone.__dict__ = copy.copy(link.__dict__)
+                clone.__dict__['next'] = None
+                link = link.next
+                nxt.next = clone
+                nxt._bottom = clone
+                nxt = clone
+            except Exception as e:
+                break
+
+        return pypher
+
 
 class _BaseLink(Pypher):
     _CLEAR_PRECEEDING_WS = False
@@ -511,6 +537,9 @@ class Statement(_BaseLink):
             for arg in self.args:
                 if isinstance(arg, (Pypher, Partial)):
                     arg.parent = self.parent
+                elif isinstance(arg, Param):
+                    self.bind_param(arg)
+                    arg = arg.placeholder
 
                 parts.append(str(arg))
 

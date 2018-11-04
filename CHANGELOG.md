@@ -1,5 +1,36 @@
 # Pypher Changelog
 
+## 0.14.3 -- 10/19/2018
+
+### Bugfix
+
+* Fixed a bug with the tester.py script that bound `ctrl + c` to clear the screen. Changed it to `ctrl + [` because the other one is used for copy on sone operating systems.
+
+## 0.14.2 -- 9/29/2018
+
+#### Bugfix
+
+* Fixed an issue where `Param` objects were not being recognized by `Statment` objects
+
+## 0.14.1.1 -- 9/28/2018
+
+#### Hotfix
+
+* Fixed `Pypher.clone()` was not creating new `.next` instances correctly in the linked list
+
+## 0.14.1 -- 9/28/2018
+
+#### Bugfix
+
+* Fixed `Pypher.clone()`, it was adding an empty `.PROPERTY` to the resulting Cypher
+
+## 0.14.0 -- 9/24/2018
+
+### Added
+
+* `Pypher.clone()` method will create a carbon copy of the `Pypher` instance and its bound params.
+* `Params.clone()` method will create a new instance of a `Params` instance with the same `prefix`, `key`, and defined `bound_params`.
+
 ## 0.13.0 -- 8/26/2018
 
 ### Added
