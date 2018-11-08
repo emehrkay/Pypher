@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+### 0.14.4 -- 11/8/2018
+
+### Bugfix
+
+* Fixed a bug where assignment operators were not allowing nested dicts in lists.
+
 ## 0.14.3 -- 10/19/2018
 
 ### Bugfix

@@ -870,7 +870,11 @@ class Operator(_BaseLink):
                     return '{{{}}}'.format(', '.join(new))
                 else:
                     for v in item:
-                        if self._BIND_PARAMS:
+                        is_seq = isinstance(v, (list, set, tuple, dict))
+
+                        if is_seq:
+                            v = params(v)
+                        elif self._BIND_PARAMS:
                             param = self.bind_param(v)
                             v = param.placeholder
 

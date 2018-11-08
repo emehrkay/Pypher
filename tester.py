@@ -85,7 +85,7 @@ def _(event):
     event.app.exit()
 
 
-@kb.add('c-[')
+@kb.add('c-u')
 def _(event):
     " Clear Pypher "
     edit_buffer.text = ''
