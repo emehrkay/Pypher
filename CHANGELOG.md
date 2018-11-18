@@ -1,5 +1,12 @@
 # Pypher Changelog
 
+
+### 0.14.5 -- 11/18/2018
+
+#### Bugfix
+
+* Fixed a bug where if False or True were bound, they would be matched by falsy/truthy values that were bound afterward.
+
 ### 0.14.4 -- 11/8/2018
 
 ### Bugfix
