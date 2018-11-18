@@ -73,7 +73,7 @@ class Param(object):
 class Params(object):
 
     def __init__(self, prefix=None, key=None):
-        self.prefix = prefix + '_' or ''
+        self.prefix = prefix + '_' if prefix else ''
         self.key = key or str(uuid.uuid4())[-5:]
         self._bound_params = {}
 
@@ -870,7 +870,11 @@ class Operator(_BaseLink):
                     return '{{{}}}'.format(', '.join(new))
                 else:
                     for v in item:
-                        if self._BIND_PARAMS:
+                        is_seq = isinstance(v, (list, set, tuple, dict))
+
+                        if is_seq:
+                            v = params(v)
+                        elif self._BIND_PARAMS:
                             param = self.bind_param(v)
                             v = param.placeholder
 

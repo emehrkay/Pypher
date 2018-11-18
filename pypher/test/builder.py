@@ -1148,6 +1148,21 @@ class OperatorTests(unittest.TestCase):
         self.assertIn(d['name'], params.values())
         self.assertIn(d['loc']['city'], params.values())
 
+    def test_can_use_dict_inside_of_list(self):
+        item = 'one'
+        toplevel = 1
+        args = { 'nested': [{'item': item}], 'toplevel': toplevel}
+        p = Pypher()
+        p.SET.UPDATED += args
+        q = str(p)
+        params = p.bound_params
+        exp = ('SET UPDATED += {{`nested`: [{{`item`: ${item}}}], `toplevel`: ${toplevel}}}').format(
+            item=get_dict_key(params, item),
+            toplevel=get_dict_key(params, toplevel))
+
+        self.assertEqual(exp, q)
+        self.assertEqual(2, len(params))
+
 
 class ParamTests(unittest.TestCase):
 

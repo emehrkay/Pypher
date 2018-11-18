@@ -43,7 +43,7 @@ def input(_):
 
 edit_buffer.on_text_changed += input
 toolbar_message = ('[Ctrl] + q (to quit)'
-    ' | [Ctrl] + [ (to clear)')
+    ' | [Ctrl] + u (to clear)')
 pyper_message = (' Pypher and __ are imported | p is a Pypher instance')
 kb = KeyBindings()
 
@@ -85,7 +85,7 @@ def _(event):
     event.app.exit()
 
 
-@kb.add('c-c')
+@kb.add('c-u')
 def _(event):
     " Clear Pypher "
     edit_buffer.text = ''
