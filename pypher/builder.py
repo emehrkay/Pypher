@@ -2,7 +2,7 @@ import copy
 import sys
 import uuid
 
-from collections import namedtuple, OrderedDict
+from collections import namedtuple, OrderedDict, Hashable
 
 from six import with_metaclass
 
@@ -110,7 +110,7 @@ class Params(object):
 
         if value in self._bound_params.values():
             for k, v in self._bound_params.items():
-                if v == value:
+                if v == value and type(v) == type(value):
                     name = k
                     break
         elif value in self._bound_params.keys():

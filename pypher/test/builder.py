@@ -1320,5 +1320,26 @@ class ParamTests(unittest.TestCase):
         self.assertEqual(exp, s)
         self.assertEqual(1, len(p.bound_params))
 
+    def test_cannot_match_falsy_params_with_false(self):
+        p = Pypher()
+        f = p.bind_param(False)
+        z = p.bind_param(0)
+
+        str(p)
+        params = p.bound_params
+
+        self.assertEqual(2, len(params))
+
+    def test_cannot_match_truthy_params_with_true(self):
+        p = Pypher()
+        f = p.bind_param(True)
+        z = p.bind_param(1)
+
+        str(p)
+        params = p.bound_params
+
+        self.assertEqual(2, len(params))
+
+
 if __name__ == '__main__':
     unittest.main()
