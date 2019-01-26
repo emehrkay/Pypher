@@ -58,6 +58,16 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(exp, q)
         self.assertEqual(0, len(p.bound_params))
 
+    def test_can_add_statement_with_link_method(self):
+        p = Pypher()
+        stmt = 'my_statment_{}'.format(randint(1, 777))
+        p.link(stmt)
+
+        q = str(p)
+
+        self.assertEqual(stmt, q)
+        self.assertEqual(0, len(p.bound_params))
+
     def test_pypher_created_functions(self):
         p = Pypher()
         expected = []

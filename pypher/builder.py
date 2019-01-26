@@ -50,6 +50,26 @@ RELATIONSHIP_DIRECTIONS = {
 
 
 def create_function(name, attrs=None, func_raw=False):
+    """
+    This is a utility function that is used to dynamically create new
+    Func or FuncRaw objects.
+
+    Custom functions can be created and then used in Pypher:
+
+        create_function('MyCustomFunction', {'name': 'MY_CUSTOM_FUNCTION'})
+        p = Pypher()
+        p.MyCustomFunction('one', 2, 'C')
+        str(p) # MY_CUSTOM_FUNCTION($_PY_1123_1, $_PY_1123_2, $_PY_1123_3)
+
+    :param str name: the name of the Func object that will be created. This
+        value is used when the Pypher instance is converted to a string
+    :param dict attrs: any attributes that are passed into the Func constructor
+        options include `name` which will override the name param and will be
+        used when the Pypher instance is converted to a string
+    :param func_raw bool: A flag stating if a FuncRaw instance should be crated
+        instead of a Func instance
+    :return None
+    """
     attrs = attrs or {}
     func = Func if not func_raw else FuncRaw
 
@@ -57,12 +77,32 @@ def create_function(name, attrs=None, func_raw=False):
 
 
 def create_statement(name, attrs=None):
+    """
+    This is a utility function that is used to dynamically create a new
+    Statement object.
+
+    :param str name: the name of the Func object that will be created. This
+        value is used when the Pypher instance is converted to a string
+    :param dict attrs: any attributes that are passed into the Func constructor
+        options include `name` which will override the name param and will be
+        used when the Pypher instance is converted to a string
+    :return None
+    """
     attrs = attrs or {}
 
     setattr(_MODULE, name, type(name, (Statement,), attrs))
 
 
 class Param(object):
+    """
+    This object handles setting a named parameter for use in Pypher instances.
+    Anytime Pypher.bind_param is called, this object is created. 
+
+    :param str name: The name of the parameter that will be used in place
+        of a value in the resuliting Cypher string
+    :param value: The value of the parameter that is bound to the resulting
+        Cypher string
+    """
 
     def __init__(self, name, value):
         self.name = name.lstrip('$')
@@ -71,6 +111,19 @@ class Param(object):
 
 
 class Params(object):
+    """
+    This object is used to collect Param objects that are bound to the Pypher
+    istnace and all of its included instances. Anytime a Pypher instance is
+    added to an existing istance, its Params objects are merged so that the
+    parent instance handles all of the Params.
+
+    :param string prefix: an optional prefix value for any Param objects that
+        are created when the bind_param method is called without a defined
+        name
+    :param string key: a key that should be unique to each Params instance that
+        will be used when Param objects are created with the bind_param method
+        that do not have an existing name
+    """
 
     def __init__(self, prefix=None, key=None):
         self.prefix = prefix + '_' if prefix else ''
@@ -78,9 +131,22 @@ class Params(object):
         self._bound_params = {}
 
     def reset(self):
+        """
+        Method used to reset the Param objects that are currently registered
+        with the instance of the Params object.
+
+        :return: None
+        """
         self._bound_params = {}
 
     def clone(self):
+        """
+        Method used to create a copy of the current instance with all of the
+        Param objects copied in the _bound_params attribute
+
+        :return: a new instance with the same _bound_params values
+        :rtype: Params
+        """
         params = Params(prefix=self.prefix, key=self.key)
         params._bound_params = copy.deepcopy(self._bound_params)
 
@@ -170,12 +236,10 @@ class Pypher(with_metaclass(_Link)):
     def __init__(self, parent=None, params=None, *args, **kwargs):
         self._ = self
         self._parent = parent
-        self.link = None
         self.next = None
         self.params = params or Params(prefix=self.PARAM_PREFIX)
 
     def reset(self):
-        self.link = None
         self.next = None
         self.params = Params(prefix=self.PARAM_PREFIX)
 
@@ -403,6 +467,11 @@ class Pypher(with_metaclass(_Link)):
         func = FuncRaw(*args, **kwargs)
 
         return self.add_link(func)
+
+    def link(self, name):
+        statement = Statement(name=name)
+
+        return self.add_link(statement)
 
     def apply_partial(self, partial):
         partial.pypher = self

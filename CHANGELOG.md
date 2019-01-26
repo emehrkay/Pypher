@@ -1,6 +1,26 @@
 # Pypher Changelog
 
 
+### 0.15.0 -- 1/26/2019
+
+#### Added
+
+* `Pypher.link()` method that will shortcut the process of adding a dynamically named object to the Pypher instance.
+
+```python
+p = Pypher()
+x = 'mark'
+
+# the old ways
+getattr(p, x).__location__ == 'MD'
+
+#or
+p.add_link(Statement(x)).__location__ == 'MD'
+
+# with .link
+p.link(x).__location__ == 'MD'
+```
+
 ### 0.14.5 -- 11/18/2018
 
 #### Bugfix
