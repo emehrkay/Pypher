@@ -1365,6 +1365,50 @@ class ParamTests(unittest.TestCase):
 
         self.assertEqual(2, len(params))
 
+    def test_will_allow_binding_of_pypher_instances_as_values(self):
+        p = Pypher()
+        p.bind_param(__.ID('x'), 'SOME_ID')
+        
+        str(p)
+        params = p.bound_params
+
+        self.assertIn('SOME_ID', params)
+        self.assertEqual('id(x)', params['SOME_ID'])
+        self.assertEqual(1, len(params))
+
+        # do it in a Pypher string
+        p = Pypher()
+        val = 'some value {}'.format(random())
+        name = 'name'
+        p.MATCH.node('p', 'person', lastname=__.coalesce(name, val))
+
+        cy = str(p)
+        params = p.bound_params
+        name = get_dict_key(params, 'name')
+        val = get_dict_key(params, val)
+        exp = 'MATCH (p:`person` {{`lastname`: coalesce(${name}, ${val})}})'.format(
+            name=name, val=val)
+
+        self.assertEqual(3, len(params))
+        self.assertEqual(exp, cy)
+
+        # manually use Param and pass it in
+        p = Pypher()
+        val = 'some value {}'.format(random())
+        name = 'name'
+        ln = Param(name, __.coalesce(name, val))
+        p.MATCH.node('p', 'person', lastname=ln)
+
+        cy = str(p)
+        params = p.bound_params
+        name = get_dict_key(params, 'name')
+        val = get_dict_key(params, val)
+        exp = 'MATCH (p:`person` {{`lastname`: coalesce(${name}, ${val})}})'.format(
+            name=name, val=val)
+
+        self.assertEqual(3, len(params))
+        self.assertEqual(exp, cy)
+
 
 if __name__ == '__main__':
     unittest.main()

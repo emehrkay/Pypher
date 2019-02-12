@@ -113,8 +113,8 @@ class Param(object):
 class Params(object):
     """
     This object is used to collect Param objects that are bound to the Pypher
-    istnace and all of its included instances. Anytime a Pypher instance is
-    added to an existing istance, its Params objects are merged so that the
+    instance and all of its included instances. Anytime a Pypher instance is
+    added to an existing instance, its Params objects are merged so that the
     parent instance handles all of the Params.
 
     :param string prefix: an optional prefix value for any Param objects that
@@ -125,9 +125,10 @@ class Params(object):
         that do not have an existing name
     """
 
-    def __init__(self, prefix=None, key=None):
+    def __init__(self, prefix=None, key=None, pypher=None):
         self.prefix = prefix + '_' if prefix else ''
         self.key = key or str(uuid.uuid4())[-5:]
+        self.pypher = pypher
         self._bound_params = {}
 
     def reset(self):
@@ -170,16 +171,26 @@ class Params(object):
         return self.bound_params
 
     def bind_param(self, value, name=None):
+        bind = True
+        is_pypher = False
+
         if isinstance(value, Param):
             name = value.name
             value = value.value
 
-        if value in self._bound_params.values():
+        # we will skip binding the value if it is a Pypher instance
+        if isinstance(value, Pypher):
+            value.parent = self.pypher.parent
+            value = str(value)
+            bind = False
+            is_pypher = True
+
+        if bind and value in self._bound_params.values():
             for k, v in self._bound_params.items():
                 if v == value and type(v) == type(value):
                     name = k
                     break
-        elif value in self._bound_params.keys():
+        elif bind and value in self._bound_params.keys():
             for k, v in self._bound_params.items():
                 if k == value:
                     name = k
@@ -191,6 +202,12 @@ class Params(object):
 
         param = Param(name=name, value=value)
         self._bound_params[param.name] = param.value
+
+        # if the value was a Pypher instance, we want to override the
+        # .placeholder property with the resulting Cypher string and not
+        # a variable
+        if is_pypher:
+            param.placeholder = value
 
         return param
 
@@ -266,9 +283,11 @@ class Pypher(with_metaclass(_Link)):
         return None
 
     def bind_params(self, params=None):
+        self.params.pypher = self
         return self.params.bind_params(params=params)
 
     def bind_param(self, value, name=None):
+        self.params.pypher = self
         return self.params.bind_param(value=value, name=name)
 
     def __getattr__(self, attr):

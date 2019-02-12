@@ -1,6 +1,22 @@
 # Pypher Changelog
 
 
+### 0.16.0 -- 2/11/2019
+
+#### Added
+
+* Support for allowing `Pypher` instances as values in `Param` instances.
+
+```python
+p = Pypher()
+val = 'some value'
+name = 'name'
+p.MATCH.node('p', 'person', lastname=__.coalesce(name, val))
+
+str(p) # MATCH (p:`person` {`lastname`: coalesce($NEO_06c97_0, $NEO_06c97_1)})
+```
+
+
 ### 0.15.0 -- 1/26/2019
 
 #### Added
