@@ -1,6 +1,12 @@
 # Pypher Changelog
 
 
+### 0.16.1 -- 2/13/2019
+
+#### Bugfix
+
+* Setting `None` as values did not result in the keyword `NULL`, but a string of `'null'`.
+
 ### 0.16.0 -- 2/11/2019
 
 #### Added

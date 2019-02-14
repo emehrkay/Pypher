@@ -791,7 +791,7 @@ class OperatorTests(unittest.TestCase):
         p.one += val
         s = str(p)
         params = p.bound_params
-        exp = 'one += ${v}'.format(v=get_dict_key(params, 'null'))
+        exp = 'one += NULL'
 
         self.assertEqual(s, exp)
 
@@ -1408,6 +1408,17 @@ class ParamTests(unittest.TestCase):
 
         self.assertEqual(3, len(params))
         self.assertEqual(exp, cy)
+
+    def test_will_correctly_assign_None_to_NULL(self):
+        p = Pypher()
+        p.node('n', name=None)
+
+        s = str(p)
+        params = p.bound_params
+        exp = '(n {`name`: NULL})'
+
+        self.assertEqual(exp, s)
+        self.assertEqual(1, len(params))
 
 
 if __name__ == '__main__':
