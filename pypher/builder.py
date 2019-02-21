@@ -448,7 +448,7 @@ class Pypher(with_metaclass(_Link)):
         return self.operator(operator='<=', value=other)
 
     def __ne__(self, other):
-        return self.operator(operator='!=', value=other)
+        return self.operator(operator='<>', value=other)
 
     def __eq__(self, other):
         return self.operator(operator='=', value=other)

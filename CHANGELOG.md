@@ -1,6 +1,25 @@
 # Pypher Changelog
 
 
+### 0.16.2 -- 2/21/2019
+
+### Bugfix
+
+* Fixed the output from doing a not equal comparison between Pypher objects. It used to result to `!=` which is invalid Cypher, now it results in `<>`
+
+```python
+p = Pypher()
+p2 = Pypher()
+
+p.a != p2.b
+
+str(p) # a != b
+
+# after 0.16.2
+str(p) # a <> b
+```
+
+
 ### 0.16.1 -- 2/13/2019
 
 #### Bugfix

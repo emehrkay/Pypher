@@ -1048,7 +1048,7 @@ class OperatorTests(unittest.TestCase):
         p = Pypher()
         a = Pypher()
         p.one != a.two
-        exp = 'one != two'
+        exp = 'one <> two'
 
         self.assertEqual(str(p), exp)
 
