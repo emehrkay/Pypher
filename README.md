@@ -114,7 +114,7 @@ str(x) # WHERE n.name ** NEO_az23p_0
 | Pypher Operator | Resulting Cypher | Supports Referece Assignment |
 | ------------- | ------------- | ------------- |
 | `==` | `=` | - |
-| `!=` | `!=` | - |
+| `!=` | `<>` | - |
 | `+` | `+` | yes |
 | `+=` | `+=` | - |
 | `-` | `-` | yes |
