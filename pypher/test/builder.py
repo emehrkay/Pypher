@@ -625,6 +625,21 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(exp, q)
         self.assertEqual(0, len(params))
 
+    def test_can_append_two_instances_first_is_empty(self):
+        p = Pypher()
+        p2 = Pypher()
+        p2.two
+
+        p.append(p2)
+
+        exp = 'two'
+        exp2 = 'two'
+        s = str(p)
+        s2 = str(p2)
+
+        self.assertEqual(exp, s)
+        self.assertEqual(exp2, s2)
+
     def test_can_append_two_instances(self):
         p = Pypher()
         p2 = Pypher()

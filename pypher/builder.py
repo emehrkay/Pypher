@@ -555,6 +555,10 @@ class Pypher(with_metaclass(_Link)):
     def append(self, pypher):
         token = self.next
 
+        if not token:
+            self.next = pypher.next
+            self._bottom = pypher.next
+
         while token:
             try:
                 token.next.next

@@ -1,5 +1,10 @@
 # Pypher Changelog
 
+### 0.16.3 -- 6/22/2019
+
+### Bugfix
+
+* Fixed an issue where calling `.append()` on an empty Pypher instance did not work as expected.
 
 ### 0.16.2 -- 2/21/2019
 
