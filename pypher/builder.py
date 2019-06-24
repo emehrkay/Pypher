@@ -1016,7 +1016,7 @@ class Alias(OperatorRaw):
     operator = 'AS'
 
 
-class Rexp(OperatorRaw):
+class Rexp(Operator):
     _ALIASES = ['re',]
     operator = '=~'
 

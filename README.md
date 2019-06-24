@@ -144,7 +144,7 @@ Some methods resolve to Operator instances. These are called on the Pypher insta
 | `.OR(other)` | `OR other` |
 | `.ALIAS(other)` | `AS other` |
 | `.AS(other)` | `AS other` |
-| `.rexp(other)` | `=~ other` |
+| `.rexp(other)` | `=~ $other_bound_param` |
 
 
 ### __ (double underscore)

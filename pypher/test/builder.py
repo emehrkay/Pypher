@@ -1081,10 +1081,21 @@ class OperatorTests(unittest.TestCase):
         p.one.rexp(s)
         c = str(p)
         params = p.bound_params
-        exp = 'one =~ {}'.format(s)
+        exp = 'one =~ ${}'.format(get_dict_key(params, s))
 
         self.assertEqual(c, exp)
-        self.assertEqual(0, len(params))
+        self.assertEqual(1, len(params))
+
+    def test_can_bind_Rexp_arguments(self):
+        p = Pypher()
+        val = '".*some_val.*"'
+        p.n.__field__.Rexp(val)
+        q = str(p)
+        params = p.bound_params
+        exp = 'n.`field` =~ ${val}'.format(val=get_dict_key(params, val))
+
+        self.assertEqual(exp, q)
+        self.assertEqual(1, len(params))
 
     def test_can_create_custom_operator(self):
         p = Pypher()

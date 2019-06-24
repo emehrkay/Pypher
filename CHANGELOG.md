@@ -1,5 +1,12 @@
 # Pypher Changelog
 
+### 0.16.4 -- 6/24/2019
+
+### Bugfix
+
+* Fixed an issue where calling `.re()` for regular expresson matching, will bind its passed in params.
+
+
 ### 0.16.3 -- 6/22/2019
 
 ### Bugfix
