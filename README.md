@@ -269,6 +269,7 @@ _`Statement`_ objects are simple, they are things like `MATCH` or `CREATE` or `R
 | `DropIndexOn` | `DROP INDEX ON` | |
 | `CreateConstraintOn` | `CREATE CONSTRAINT ON` | |
 | `DropConstraintOn` | `DROP CONSTRAINT ON` | |
+| `In` | `IN` | |
 | `Map` | `{}` | |
 | `MapProjection` | `var {}` | `map_projection` `projection` |
 | `NOT` | `NOT` | |
@@ -558,6 +559,19 @@ WHERE n.name = 'Alice'
 ```python
 p.MATCH.node('n', 'Person').rel_out(labels='KNOWS').node('m', 'PERSON').WHERE.n.__name__ == 'Alice'
 ```
+
+_A Simple Match with IN_
+
+```cypher
+MATCH (n:Person)-[:KNOWS]->(m:Person)
+WHERE n.name IN ['Alice', 'Bob']
+```
+
+```python
+names = ['Alice', 'Bob']
+p.MATCH.node('n', 'Person').rel_out(labels='KNOWS').node('m', 'PERSON').WHERE.n.__name__.In(*names)
+```
+
 
 _Create A Node_
 
