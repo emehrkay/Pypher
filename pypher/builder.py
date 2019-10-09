@@ -14,7 +14,7 @@ from .partial import Partial
 _LINKS = {}
 _MODULE = sys.modules[__name__]
 _PREDEFINED_STATEMENTS = [['Match',], ['Create',], ['Merge',], ['Delete',],
-    ['Remove',], ['Drop',], ['Where',], ['Distinct',], ['OrderBy', 'ORDER BY'],
+    ['Remove',], ['Drop',], ['Where',], ['OrderBy', 'ORDER BY'],
     ['Set',], ['Skip',], ['Limit',], ['Return',], ['Unwind',], ['ASSERT'],
     ['Detach'], ['DetachDelete', 'DETACH DELETE'], ['Foreach'], ['Load'],
     ['CSV'], ['FROM'], ['Headers'], ['LoadCsvFrom', 'LOAD CSV FROM'],
@@ -41,7 +41,7 @@ _PREDEFINED_FUNCTIONS = [['size',], ['reverse',], ['head',], ['tail',],
     ['degrees',], ['radians',], ['pi',], ['log10',], ['log',], ['exp',],
     ['E', 'e'], ['toString',], ['replace',], ['substring',], ['left',],
     ['right',], ['trim',], ['ltrim',], ['toUpper',], ['toLower',],
-    ['SPLIT', 'split',],['exists',],]
+    ['SPLIT', 'split',],['exists',], ['distinct', 'distinct', True],]
 RELATIONSHIP_DIRECTIONS = {
     '-': 'undirected',
     '>': 'out',
@@ -819,6 +819,71 @@ class ConditionalAND(Conditional):
 class ConditionalOR(Conditional):
     _SEPARATOR = ' OR '
     _ALIASES = ['COR', 'COND_OR']
+
+
+
+class _APOCBitwiseBase(Func):
+    def __unicode__(self):
+
+        def fix(arg):
+            if isinstance(arg, (Pypher, Partial)):
+                arg.parent = self.parent
+                value = str(arg)
+            else:
+                param = self.bind_param(arg)
+                value = param.placeholder
+
+            return value
+
+        if not isinstance(self.args, list):
+            self.args = list(self.args)
+
+        left = fix(self.args.pop(0))
+
+        if len(self.args) > 1:
+            bw = self.__class__(*self.args)
+            bw.parent = self.parent
+            right = str(bw)
+        else:
+            right = fix(self.args[0])
+
+        return 'apoc.bitwise.op({}, "{}", {})'.format(left, self._OPERATOR,
+            right)
+
+
+class BitwiseAnd(_APOCBitwiseBase):
+    _ALIASES = ['BAND',]
+    _OPERATOR = '&'
+
+
+class BitwiseOr(_APOCBitwiseBase):
+    _ALIASES = ['BOR',]
+    _OPERATOR = '|'
+
+
+class BitwiseXOr(_APOCBitwiseBase):
+    _ALIASES = ['BXOR',]
+    _OPERATOR = '^'
+
+
+class BitwiseNot(_APOCBitwiseBase):
+    _ALIASES = ['BNOT',]
+    _OPERATOR = '~'
+
+
+class BitwiseLeftShift(_APOCBitwiseBase):
+    _ALIASES = ['BLSHIFT',]
+    _OPERATOR = '>>'
+
+
+class BitwiseRightShift(_APOCBitwiseBase):
+    _ALIASES = ['BRSHIFT',]
+    _OPERATOR = '<<'
+
+
+class BitwiseUnsighedLeftShift(_APOCBitwiseBase):
+    _ALIASES = ['BULSHIFT',]
+    _OPERATOR = '>>>'
 
 
 class List(_BaseLink):

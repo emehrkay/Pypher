@@ -1,21 +1,35 @@
 # Pypher Changelog
 
+### 0.17.0 -- 10/08/2019
+
+#### Added
+
+* Bitwise operators that compile down to apoc calls
+    * `BAND`
+    * `BOR`
+    * `BXOR`
+    * `BNOT`
+    * `BLSHIFT`
+    * `BRSHIFT`
+    * `BULSHIFT`
+
+
 ### 0.16.4 -- 6/24/2019
 
-### Bugfix
+#### Bugfix
 
 * Fixed an issue where calling `.re()` for regular expresson matching, will bind its passed in params.
 
 
 ### 0.16.3 -- 6/22/2019
 
-### Bugfix
+#### Bugfix
 
 * Fixed an issue where calling `.append()` on an empty Pypher instance did not work as expected.
 
 ### 0.16.2 -- 2/21/2019
 
-### Bugfix
+#### Bugfix
 
 * Fixed the output from doing a not equal comparison between Pypher objects. It used to result to `!=` which is invalid Cypher, now it results in `<>`
 

@@ -768,6 +768,98 @@ class BuilderTests(unittest.TestCase):
 
         self.assertTrue(before != after)
 
+    def test_can_do_bitwise_and(self):
+        p = Pypher()
+        p.BAND(12, 4)
+        x = str(p)
+        params = p.bound_params
+        expected = 'apoc.bitwise.op(${}, "&", ${})'.format(
+            get_dict_key(params, 12), get_dict_key(params, 4))
+
+        self.assertEquals(x, expected)
+
+    def test_can_do_one_nested_bitwise_and(self):
+        p = Pypher()
+        p.BAND(12, 4, 4)
+        x = str(p)
+        params = p.bound_params
+        expected = 'apoc.bitwise.op(${}, "&", apoc.bitwise.op(${}, "&", ${}))'.format(
+            get_dict_key(params, 12), get_dict_key(params, 4), get_dict_key(params, 4))
+
+        self.assertEquals(x, expected)
+        self.assertEquals(2, len(params))
+
+    def test_can_do_two_nested_bitwise_and(self):
+        p = Pypher()
+        p.BAND(12, 4, 4, 20)
+        x = str(p)
+        params = p.bound_params
+        expected = 'apoc.bitwise.op(${}, "&", apoc.bitwise.op(${}, "&", apoc.bitwise.op(${}, "&", ${})))'.format(
+            get_dict_key(params, 12), get_dict_key(params, 4), get_dict_key(params, 4), get_dict_key(params, 20))
+
+        self.assertEquals(x, expected)
+        self.assertEquals(3, len(params))
+
+    def test_can_do_bitwise_or(self):
+        p = Pypher()
+        p.BOR(12, 4)
+        x = str(p)
+        params = p.bound_params
+        expected = 'apoc.bitwise.op(${}, "|", ${})'.format(
+            get_dict_key(params, 12), get_dict_key(params, 4))
+
+        self.assertEquals(x, expected)
+
+    def test_can_do_bitwise_xor(self):
+        p = Pypher()
+        p.BXOR(12, 4)
+        x = str(p)
+        params = p.bound_params
+        expected = 'apoc.bitwise.op(${}, "^", ${})'.format(
+            get_dict_key(params, 12), get_dict_key(params, 4))
+
+        self.assertEquals(x, expected)
+
+    def test_can_do_bitwise_not(self):
+        p = Pypher()
+        p.BNOT(12, 4)
+        x = str(p)
+        params = p.bound_params
+        expected = 'apoc.bitwise.op(${}, "~", ${})'.format(
+            get_dict_key(params, 12), get_dict_key(params, 4))
+
+        self.assertEquals(x, expected)
+
+    def test_can_do_bitwise_left_shift(self):
+        p = Pypher()
+        p.BLSHIFT(12, 4)
+        x = str(p)
+        params = p.bound_params
+        expected = 'apoc.bitwise.op(${}, ">>", ${})'.format(
+            get_dict_key(params, 12), get_dict_key(params, 4))
+
+        self.assertEquals(x, expected)
+
+    def test_can_do_bitwise_right_shift(self):
+        p = Pypher()
+        p.BRSHIFT(12, 4)
+        x = str(p)
+        params = p.bound_params
+        expected = 'apoc.bitwise.op(${}, "<<", ${})'.format(
+            get_dict_key(params, 12), get_dict_key(params, 4))
+
+        self.assertEquals(x, expected)
+
+    def test_can_do_bitwise_unsigned_left_shift(self):
+        p = Pypher()
+        p.BULSHIFT(12, 4)
+        x = str(p)
+        params = p.bound_params
+        expected = 'apoc.bitwise.op(${}, ">>>", ${})'.format(
+            get_dict_key(params, 12), get_dict_key(params, 4))
+
+        self.assertEquals(x, expected)
+
 
 class OperatorTests(unittest.TestCase):
 
