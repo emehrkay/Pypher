@@ -145,8 +145,8 @@ Some methods resolve to Operator instances. These are called on the Pypher insta
 | `.ALIAS(other)` | `AS other` |
 | `.AS(other)` | `AS other` |
 | `.rexp(other)` | `=~ $other_bound_param` |
-| `.BAND(right, left)` | `apoc.bitwise.op(right, "\&", left)` |
-| `.BOR(right, left)` | `apoc.bitwise.op(right, "|", left)` |
+| `.BAND(right, left)` | `apoc.bitwise.op(right, "&", left)` |
+| `.BOR(right, left)` | `apoc.bitwise.op(right, "\|", left)` |
 | `.BXOR(right, left)` | `apoc.bitwise.op(right, "^", left)` |
 | `.BNOT(right, left)` | `apoc.bitwise.op(right, "~", left)` |
 | `.BLSHIFT(right, left)` | `apoc.bitwise.op(right, ">>", left)` |
