@@ -4,7 +4,7 @@ import unittest
 import re
 
 from pypher.builder import (Pypher, Statement, _PREDEFINED_STATEMENTS,
-    _PREDEFINED_FUNCTIONS, __, Param, Params)
+    _PREDEFINED_FUNCTIONS, __, Param, Params, Func, Statement)
 
 
 def get_dict_key(dict, value):
@@ -776,7 +776,7 @@ class BuilderTests(unittest.TestCase):
         expected = 'apoc.bitwise.op(${}, "&", ${})'.format(
             get_dict_key(params, 12), get_dict_key(params, 4))
 
-        self.assertEquals(x, expected)
+        self.assertEqual(x, expected)
 
     def test_can_do_one_nested_bitwise_and(self):
         p = Pypher()
@@ -786,8 +786,8 @@ class BuilderTests(unittest.TestCase):
         expected = 'apoc.bitwise.op(${}, "&", apoc.bitwise.op(${}, "&", ${}))'.format(
             get_dict_key(params, 12), get_dict_key(params, 4), get_dict_key(params, 4))
 
-        self.assertEquals(x, expected)
-        self.assertEquals(2, len(params))
+        self.assertEqual(x, expected)
+        self.assertEqual(2, len(params))
 
     def test_can_do_two_nested_bitwise_and(self):
         p = Pypher()
@@ -797,8 +797,8 @@ class BuilderTests(unittest.TestCase):
         expected = 'apoc.bitwise.op(${}, "&", apoc.bitwise.op(${}, "&", apoc.bitwise.op(${}, "&", ${})))'.format(
             get_dict_key(params, 12), get_dict_key(params, 4), get_dict_key(params, 4), get_dict_key(params, 20))
 
-        self.assertEquals(x, expected)
-        self.assertEquals(3, len(params))
+        self.assertEqual(x, expected)
+        self.assertEqual(3, len(params))
 
     def test_can_do_bitwise_or(self):
         p = Pypher()
@@ -808,7 +808,7 @@ class BuilderTests(unittest.TestCase):
         expected = 'apoc.bitwise.op(${}, "|", ${})'.format(
             get_dict_key(params, 12), get_dict_key(params, 4))
 
-        self.assertEquals(x, expected)
+        self.assertEqual(x, expected)
 
     def test_can_do_bitwise_xor(self):
         p = Pypher()
@@ -818,7 +818,7 @@ class BuilderTests(unittest.TestCase):
         expected = 'apoc.bitwise.op(${}, "^", ${})'.format(
             get_dict_key(params, 12), get_dict_key(params, 4))
 
-        self.assertEquals(x, expected)
+        self.assertEqual(x, expected)
 
     def test_can_do_bitwise_not(self):
         p = Pypher()
@@ -828,7 +828,7 @@ class BuilderTests(unittest.TestCase):
         expected = 'apoc.bitwise.op(${}, "~", ${})'.format(
             get_dict_key(params, 12), get_dict_key(params, 4))
 
-        self.assertEquals(x, expected)
+        self.assertEqual(x, expected)
 
     def test_can_do_bitwise_left_shift(self):
         p = Pypher()
@@ -838,7 +838,7 @@ class BuilderTests(unittest.TestCase):
         expected = 'apoc.bitwise.op(${}, ">>", ${})'.format(
             get_dict_key(params, 12), get_dict_key(params, 4))
 
-        self.assertEquals(x, expected)
+        self.assertEqual(x, expected)
 
     def test_can_do_bitwise_right_shift(self):
         p = Pypher()
@@ -848,7 +848,7 @@ class BuilderTests(unittest.TestCase):
         expected = 'apoc.bitwise.op(${}, "<<", ${})'.format(
             get_dict_key(params, 12), get_dict_key(params, 4))
 
-        self.assertEquals(x, expected)
+        self.assertEqual(x, expected)
 
     def test_can_do_bitwise_unsigned_left_shift(self):
         p = Pypher()
@@ -858,7 +858,121 @@ class BuilderTests(unittest.TestCase):
         expected = 'apoc.bitwise.op(${}, ">>>", ${})'.format(
             get_dict_key(params, 12), get_dict_key(params, 4))
 
-        self.assertEquals(x, expected)
+        self.assertEqual(x, expected)
+
+    def test_can_use_subclassed_function_by_classname(self):
+        class SubClassedFunc(Func):
+            name = 'sub_class_func'
+
+        p = Pypher()
+        y = 12
+        p.SubClassedFunc(y)
+        x = str(p)
+        params = p.bound_params
+        expected = 'sub_class_func(${})'.format(get_dict_key(params, y))
+
+        self.assertEqual(x, expected)
+        self.assertEqual(1, len(params))
+
+    def test_can_use_subclassed_function_by_alias(self):
+        class SubClassedFunc2(Func):
+            name = 'sub_class_func2'
+            _ALIASES = ['scf']
+
+        p = Pypher()
+        y = 12
+        p.scf(y)
+        x = str(p)
+        params = p.bound_params
+        expected = 'sub_class_func2(${})'.format(get_dict_key(params, y))
+
+        self.assertEqual(x, expected)
+        self.assertEqual(1, len(params))
+
+    def test_can_use_subclassed_function_by_alias_and_classname(self):
+        class SubClassedFunc3(Func):
+            name = 'sub_class_func3'
+            _ALIASES = ['scf3']
+
+        p = Pypher()
+        y = 12
+        p.scf3(y).SubClassedFunc3(y)
+        x = str(p)
+        params = p.bound_params
+        expected = 'sub_class_func3(${}) sub_class_func3(${})'.format(
+            get_dict_key(params, y), get_dict_key(params, y))
+
+        self.assertEqual(x, expected)
+        self.assertEqual(1, len(params))
+
+    def test_can_use_subclassed_statement_by_classname(self):
+        class SubClassedStatement(Statement):
+            name = 'sub_class_stmt'
+
+        p = Pypher()
+        y = 12
+        p.SubClassedStatement(y)
+        x = str(p)
+        params = p.bound_params
+        expected = 'sub_class_stmt {}'.format(y)
+
+        self.assertEqual(x, expected)
+        self.assertEqual(0, len(params))
+
+    def test_can_use_subclassed_statement_by_alias(self):
+        class SubClassedStmt2(Statement):
+            name = 'sub_class_stmt2'
+            _ALIASES = ['scs']
+
+        p = Pypher()
+        y = 12
+        p.scs(y)
+        x = str(p)
+        params = p.bound_params
+        expected = 'sub_class_stmt2 {}'.format(y)
+
+        self.assertEqual(x, expected)
+        self.assertEqual(0, len(params))
+
+    def test_can_use_subclassed_statement_by_alias_and_classname(self):
+        class SubClassedStmt3(Statement):
+            name = 'sub_class_stmt3'
+            _ALIASES = ['scs3']
+
+        p = Pypher()
+        y = 12
+        p.scs3(y).SubClassedStmt3(y)
+        x = str(p)
+        params = p.bound_params
+        expected = 'sub_class_stmt3 {} sub_class_stmt3 {}'.format(y, y)
+
+        self.assertEqual(x, expected)
+        self.assertEqual(0, len(params))
+
+    def test_can_call_bundled_custom_functions(self):
+        p = Pypher()
+        x = 10
+        y = 11
+        p.extract(y).size(x)
+        u = str(p)
+        params = p.bound_params
+        expected = 'extract(${}) size(${})'.format(get_dict_key(params, y),
+            get_dict_key(params, x))
+
+        self.assertEqual(u, expected)
+        self.assertEqual(2, len(params))
+
+    def test_can_call_bundled_custom_statements(self):
+        p = Pypher()
+        x = 10
+        y = 11
+        p.remove(y).drop(x)
+        u = str(p)
+        params = p.bound_params
+        expected = 'REMOVE {} DROP {}'.format(y, x)
+
+        self.assertEqual(u, expected)
+        self.assertEqual(0, len(params))
 
 
 class OperatorTests(unittest.TestCase):

@@ -231,7 +231,7 @@ class _Link(type):
     def __new__(cls, name, bases, attrs):
         cls = super(_Link, cls).__new__(cls, name, bases, attrs)
         aliases = attrs.get('_ALIASES', None)
-        _LINKS[name.lower()] = name
+        _LINKS[name.lower()] = cls
 
         if aliases:
             for alias in aliases:
@@ -246,8 +246,8 @@ class _Link(type):
                         ' used by "{}"'.format(alias, name, _LINKS[alias_low]))
                     raise PypherAliasException(error)
 
-                _LINKS[alias] = name
-                _LINKS[alias_low] = name
+                _LINKS[alias] = cls
+                _LINKS[alias_low] = cls
 
         return cls
 
@@ -301,7 +301,7 @@ class Pypher(with_metaclass(_Link)):
         if attr_low[:2] == '__' and attr_low[-2:] == '__':
             link = Property(name=attr.strip('__'))
         elif attr_low in _LINKS:
-            link = (getattr(_MODULE, _LINKS[attr_low]))()
+            link = _LINKS[attr_low]()
         else:
             link = Statement(name=attr)
 

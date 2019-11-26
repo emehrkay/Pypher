@@ -1,5 +1,13 @@
 # Pypher Changelog
 
+
+### 0.17.1 -- 11/26/2019
+
+#### BugFix
+
+* Fixed an error where custom `Func` or `Statement` sub-classed classes were not properly referenced when building out the final Pypher object.
+
+
 ### 0.17.0 -- 10/08/2019
 
 #### Added
