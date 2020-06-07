@@ -535,7 +535,7 @@ str(p) # CASE n.eyes WHEN "blue" THEN 1 WHEN "brown" THEN 2 ELSE 3 END
 
 ### Maps
 
-Cypher allows for Java-style maps to be retuned in some complex queries, Pypher provides two classes to assist with map creation: `Map` and `MapProjection`
+Cypher allows for Java-style maps to be returned in some complex queries, Pypher provides two classes to assist with map creation: `Map` and `MapProjection`
 
 * Both objects have a signature of `*args` and `**kwargs`
     * `*args` will be printed out in the resoling Cypher exactly how they are defined in Python
