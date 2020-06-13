@@ -317,14 +317,14 @@ class BuilderTests(unittest.TestCase):
     def test_can_add_empty_undirected_relationship_with_min_hop(self):
         p = Pypher()
         p.relationship(min_hops=1)
-        exp = '-[*1]-'
+        exp = '-[*1..]-'
 
         self.assertEqual(str(p), exp)
 
     def test_can_add_empty_undirected_relationship_with_max_hop(self):
         p = Pypher()
         p.relationship(max_hops=1)
-        exp = '-[*1]-'
+        exp = '-[*..1]-'
 
         self.assertEqual(str(p), exp)
 
@@ -341,6 +341,23 @@ class BuilderTests(unittest.TestCase):
         exp = '-[*3]-'
 
         self.assertEqual(str(p), exp)
+
+    def test_can_add_empty_undirected_relationship_with_fixed_length_hops(self):
+        p = Pypher()
+        p.relationship(hops=3)
+        exp = '-[*3]-'
+
+        self.assertEqual(str(p), exp)
+
+    def test_using_hops_and_min_hops_raises_error(self):
+        p = Pypher()
+        with self.assertRaises(ValueError):
+            p.relationship(hops=2, min_hops=3)
+
+    def test_using_hops_and_max_hops_raises_error(self):
+        p = Pypher()
+        with self.assertRaises(ValueError):
+            p.relationship(hops=2, max_hops=3)
 
     def test_can_add_empty_undirected_relationship_with_labels_and_types_but_uses_types(self):
         p = Pypher()
@@ -1600,7 +1617,7 @@ class ParamTests(unittest.TestCase):
     def test_will_allow_binding_of_pypher_instances_as_values(self):
         p = Pypher()
         p.bind_param(__.ID('x'), 'SOME_ID')
-        
+
         str(p)
         params = p.bound_params
 

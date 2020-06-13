@@ -97,7 +97,7 @@ def create_statement(name, attrs=None):
 class Param(object):
     """
     This object handles setting a named parameter for use in Pypher instances.
-    Anytime Pypher.bind_param is called, this object is created. 
+    Anytime Pypher.bind_param is called, this object is created.
 
     :param str name: The name of the parameter that will be used in place
         of a value in the resuliting Cypher string
@@ -696,7 +696,7 @@ class Label(Statement):
 
     def _set_operator(self, operator):
         if operator not in self._ALLOWED_OPERATORS:
-            raise 
+            raise
 
         self._operator = operator
 
@@ -1161,17 +1161,34 @@ class Relationship(Entity):
     _LABEL_OPERATOR = '|'
 
     def __init__(self, variable=None, labels=None, types=None, direction=None,
-                 min_hops=None, max_hops=None, **properties):
+                 hops=None, min_hops=None, max_hops=None, **properties):
         labels = types or labels
         super(Relationship, self).__init__(variable=variable, labels=labels,
             **properties)
 
         self._direction = None
         self.direction = direction
-        self.hops = list(
-            dict.fromkeys(
-                [str(h) for h in [min_hops, max_hops] if h is not None]))
-        
+
+        if hops is None:
+            if min_hops is None and max_hops is None:
+                # hops are not specified
+                self.hops = []
+            else:
+                # at least one of hops is not None
+                # empty string gets interpreted as open bound
+                # e.g. ["", 3] -> "..3" and [3, ""] -> "3.."
+                min_hops = "" if min_hops is None else str(min_hops)
+                max_hops = "" if max_hops is None else str(max_hops)
+                if min_hops == max_hops:
+                    # depcrated functionality, use hops instead
+                    self.hops = [min_hops]
+                else:
+                    self.hops = [min_hops, max_hops]
+        else:
+            if min_hops is not None or max_hops is not None:
+                raise ValueError("If 'hops' is specified, do not specify 'min_hops' or 'max_hops'")
+            self.hops = [str(hops)]
+
     @property
     def variable_length(self):
         if self.hops:
