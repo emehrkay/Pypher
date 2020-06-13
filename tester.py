@@ -22,10 +22,15 @@ mid_buffer = Buffer()
 lower_buffer = Buffer()
 
 
+from pypher import Pypher, builder
+from pypher.builder import __
+
+
+builder.CHECK_CUSTOM_CLASHES = False
+
+
 def input(_):
     try:
-        from pypher import Pypher
-        from pypher.builder import __
         p = Pypher()
 
         cmd = (

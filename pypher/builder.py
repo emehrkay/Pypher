@@ -11,6 +11,7 @@ from .exception import (PypherException, PypherAliasException,
 from .partial import Partial
 
 
+CHECK_CUSTOM_CLASHES = True
 _LINKS = {}
 _MODULE = sys.modules[__name__]
 _PREDEFINED_STATEMENTS = [['Match',], ['Create',], ['Merge',], ['Delete',],
@@ -237,14 +238,16 @@ class _Link(type):
             for alias in aliases:
                 alias_low = alias.lower()
 
-                if alias in _LINKS:
-                    error = ('The alias: "{}" defined in "{}" is already'
-                        ' used by "{}"'.format(alias, name, _LINKS[alias]))
-                    raise PypherAliasException(error)
-                elif alias_low in _LINKS:
-                    error = ('The alias: "{}" defined in "{}" is already'
-                        ' used by "{}"'.format(alias, name, _LINKS[alias_low]))
-                    raise PypherAliasException(error)
+                if CHECK_CUSTOM_CLASHES:
+                    if alias in _LINKS:
+                        error = ('The alias: "{}" defined in "{}" is already'
+                            ' used by "{}"'.format(alias, name, _LINKS[alias]))
+                        raise PypherAliasException(error)
+                    elif alias_low in _LINKS:
+                        error = ('The alias: "{}" defined in "{}" is already'
+                            ' used by "{}"'.format(alias, name, 
+                            _LINKS[alias_low]))
+                        raise PypherAliasException(error)
 
                 _LINKS[alias] = cls
                 _LINKS[alias_low] = cls

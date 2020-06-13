@@ -1,6 +1,13 @@
 # Pypher Changelog
 
 
+### 0.17.2 -- 11/26/2019
+
+#### BugFix
+
+* Fixed an issue with the interactive tester where defining a custom `Func` or `Statement` inline would throw an `already registered` error
+
+
 ### 0.17.1 -- 11/26/2019
 
 #### BugFix
