@@ -22,7 +22,7 @@ mid_buffer = Buffer()
 lower_buffer = Buffer()
 
 
-from pypher import Pypher, builder
+from pypher import Pypher, builder, create_function, create_statement
 from pypher.builder import __
 
 
@@ -49,7 +49,9 @@ def input(_):
 edit_buffer.on_text_changed += input
 toolbar_message = ('[Ctrl] + q (to quit)'
     ' | [Ctrl] + u (to clear)')
-pyper_message = (' Pypher and __ are imported | p is a Pypher instance')
+msg = (' Pypher, __, create_function, and create_statement are imported'
+    ' | p is a Pypher instance')
+pyper_message = (msg)
 kb = KeyBindings()
 
 

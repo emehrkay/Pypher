@@ -42,7 +42,8 @@ _PREDEFINED_FUNCTIONS = [['size',], ['reverse',], ['head',], ['tail',],
     ['degrees',], ['radians',], ['pi',], ['log10',], ['log',], ['exp',],
     ['E', 'e'], ['toString',], ['replace',], ['substring',], ['left',],
     ['right',], ['trim',], ['ltrim',], ['toUpper',], ['toLower',],
-    ['SPLIT', 'split',],['exists',], ['distinct', 'distinct', True],]
+    ['SPLIT', 'split',],['exists',], ['distinct', 'distinct', True],
+    ['MAX', 'max']]
 RELATIONSHIP_DIRECTIONS = {
     '-': 'undirected',
     '>': 'out',

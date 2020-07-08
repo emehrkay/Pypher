@@ -1,5 +1,11 @@
 # Pypher Changelog
 
+### 0.18.0 -- 7/8/2020
+
+* Added `max` as a predefined function
+* Added `create_statement` and `create_function` to the tester
+* Added a new param called `hops` for specifying a single hop number.`min_hops` and `max_hops` are reserved for specifying variable length relationships. If hops is specified, and one (or both) of min_hops and max_hops is specified, an error is raised. If just one of min_hops or max_hops is specified, then the range is only bounded on that side.
+
 
 ### 0.17.2 -- 11/26/2019
 

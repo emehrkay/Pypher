@@ -83,6 +83,17 @@ class BuilderTests(unittest.TestCase):
 
         self.assertEqual(str(p), ' '.join(expected))
 
+    def test_can_call_MAX_predefined_function(self):
+        p = Pypher()
+        p.MAX(9, 9)
+        string = str(p)
+        params = p.bound_params
+        expected = 'max(${}, ${})'.format(get_dict_key(params, 9),
+            get_dict_key(params, 9))
+
+        self.assertEqual(1, len(params))
+        self.assertEqual(expected, string)
+
     def test_can_add_one_statement(self):
         p = Pypher()
         p.some_attribute
