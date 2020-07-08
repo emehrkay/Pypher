@@ -393,6 +393,7 @@ _`Func`_ objects resolve to functions (things that have parenthesis)
 | `toLower` | `toLower` |
 | `SPLIT` |  `split` |
 | `exists` | `exists` |
+| `MAX` | `max` |
 
 > Python keywords will be in all CAPS
 
