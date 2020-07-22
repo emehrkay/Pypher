@@ -94,6 +94,15 @@ class BuilderTests(unittest.TestCase):
         self.assertEqual(1, len(params))
         self.assertEqual(expected, string)
 
+    def test_can_call_LABELS_predefined_function(self):
+        p = Pypher()
+        p.LABELS('test')
+        string = str(p)
+        params = p.bound_params
+        expected = 'labels(${})'.format(get_dict_key(params, 'test'))
+        self.assertEqual(1, len(params))
+        self.assertEqual(expected, string)
+
     def test_can_add_one_statement(self):
         p = Pypher()
         p.some_attribute
