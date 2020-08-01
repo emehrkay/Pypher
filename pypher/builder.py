@@ -105,11 +105,36 @@ class Param(object):
     :param value: The value of the parameter that is bound to the resulting
         Cypher string
     """
+    __placeholder_value__ = '_____!!@@_____placeholder&&&_____@@!!____'
+    nobind_mapping = {
+        True: 'true',
+        False: 'false',
+        None: 'NULL',
+    }
 
     def __init__(self, name, value):
         self.name = name.lstrip('$')
         self.value = value
-        self.placeholder = '$' + self.name
+        self._placeholder = self.__placeholder_value__
+
+    def get_placeholder(self):
+        """will check to see if the value is one of the types that should
+        not be bound"""
+        if self._placeholder != self.__placeholder_value__:
+            return self._placeholder
+
+        for k, v in self.nobind_mapping.items():
+            if self.value is k:
+                self._placeholder = v
+                return self._placeholder
+
+        self._placeholder = '$' + self.name
+        return self._placeholder
+
+    def set_placeholder(self, value):
+        self._placeholder = value
+
+    placeholder = property(get_placeholder, set_placeholder)
 
 
 class Params(object):
@@ -178,8 +203,8 @@ class Params(object):
 
         # we want None values to be assigned as the keyword NULL in the
         # resulting Cypher
-        if value is None:
-            value = __.NULL
+        # if value is None:
+        #     value = __.NULL
 
         if isinstance(value, Param):
             name = value.name
@@ -953,7 +978,6 @@ class Map(_BaseLink):
                 return param.placeholder
 
             return str(value)
-
 
         for arg in self.args:
             body.append(prep_value(arg))

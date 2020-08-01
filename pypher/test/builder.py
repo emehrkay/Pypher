@@ -1680,6 +1680,28 @@ class ParamTests(unittest.TestCase):
         self.assertEqual(exp, s)
         self.assertEqual(1, len(params))
 
+    def test_will_correctly_assign_True_to_true_unbound(self):
+        p = Pypher()
+        p.node('n', name=True)
+
+        s = str(p)
+        params = p.bound_params
+        exp = '(n {`name`: true})'
+
+        self.assertEqual(exp, s)
+        self.assertEqual(1, len(params))
+
+    def test_will_correctly_assign_False_to_false_unbound(self):
+        p = Pypher()
+        p.node('n', name=False)
+
+        s = str(p)
+        params = p.bound_params
+        exp = '(n {`name`: false})'
+
+        self.assertEqual(exp, s)
+        self.assertEqual(1, len(params))
+
 
 if __name__ == '__main__':
     unittest.main()

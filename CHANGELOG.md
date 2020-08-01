@@ -1,5 +1,10 @@
 # Pypher Changelog
 
+### 0.18.1 -- 7/31/2020
+
+* Fixed -- no longer binding python values of `True` and `False`, they will return `true` and `false` in the resulting cypher.
+
+
 ### 0.18.0 -- 7/8/2020
 
 * Added `max` as a predefined function
