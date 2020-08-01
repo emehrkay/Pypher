@@ -201,11 +201,6 @@ class Params(object):
         bind = True
         is_pypher = False
 
-        # we want None values to be assigned as the keyword NULL in the
-        # resulting Cypher
-        # if value is None:
-        #     value = __.NULL
-
         if isinstance(value, Param):
             name = value.name
             value = value.value
@@ -1023,10 +1018,6 @@ class Operator(_BaseLink):
         return self._value
 
     def _set_value(self, value):
-        # None should result to NULL
-        if value is None:
-            value = __.NULL
-
         self._value = value
 
         return self
