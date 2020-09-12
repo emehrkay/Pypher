@@ -43,7 +43,7 @@ _PREDEFINED_FUNCTIONS = [['size',], ['reverse',], ['head',], ['tail',],
     ['E', 'e'], ['toString',], ['replace',], ['substring',], ['left',],
     ['right',], ['trim',], ['ltrim',], ['toUpper',], ['toLower',],
     ['SPLIT', 'split',],['exists',], ['distinct', 'distinct', True],
-    ['MAX', 'max']]
+    ['MAX', 'max'], ['labels']]
 RELATIONSHIP_DIRECTIONS = {
     '-': 'undirected',
     '>': 'out',
