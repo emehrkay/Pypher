@@ -30,6 +30,12 @@ builder.CHECK_CUSTOM_CLASHES = False
 
 
 def input(_):
+    """
+    Input input.
+
+    Args:
+        _: (todo): write your description
+    """
     try:
         p = Pypher()
 
@@ -105,6 +111,11 @@ application = Application(
 
 
 def run():
+    """
+    Run the application.
+
+    Args:
+    """
     application.run()
 
 

@@ -17,30 +17,65 @@ class InvalidPartial(Partial):
 class ValidPartial(Partial):
 
     def build(self):
+        """
+        Builds the build.
+
+        Args:
+            self: (todo): write your description
+        """
         self.pypher.VALID.PARTIAL
 
 
 class PartialWithArgs(Partial):
 
     def __init__(self, *args):
+        """
+        Initialize a new instance.
+
+        Args:
+            self: (todo): write your description
+        """
         super(PartialWithArgs, self).__init__()
         self.args = args
 
     def build(self):
+        """
+        Build this build.
+
+        Args:
+            self: (todo): write your description
+        """
         self.pypher.toInteger(*self.args)
 
 
 class PartialTests(unittest.TestCase):
 
     def test_can_create_invalid_partial_and_raise_not_implemented_error(self):
+        """
+        Assert that the given test is raised.
+
+        Args:
+            self: (todo): write your description
+        """
         ipar = InvalidPartial()
 
         def c():
+            """
+            Return a string with the given ip address.
+
+            Args:
+            """
             str(ipar)
 
         self.assertRaises(NotImplementedError, c)
 
     def test_can_add_partial_to_pypher(self):
+        """
+        Tests if the test to_can_pypher.
+
+        Args:
+            self: (todo): write your description
+        """
         p = Pypher()
         vp = ValidPartial()
 
@@ -51,6 +86,12 @@ class PartialTests(unittest.TestCase):
         self.assertEqual(str(p), exp)
 
     def test_can_create_partial_with_args_and_pass_them_to_main_pypher(self):
+        """
+        Takes a test is_can_pypher_with_args_and_main.
+
+        Args:
+            self: (todo): write your description
+        """
         arg = 'my_arg_{}'.format(random())
         p = Pypher()
         ap = PartialWithArgs(arg)
@@ -65,6 +106,12 @@ class PartialTests(unittest.TestCase):
         self.assertEqual(c, exp)
 
     def test_can_chain_multiple_partials(self):
+        """
+        : return : py : meth : test for a.
+
+        Args:
+            self: (todo): write your description
+        """
         arg = 'my_arg_{}'.format(random())
         p = Pypher()
         ap = PartialWithArgs(arg)
@@ -79,6 +126,12 @@ class PartialTests(unittest.TestCase):
         self.assertEqual(c, exp)
 
     def test_can_pass_partial_as_an_argument(self):
+        """
+        Tests if a pass_can_as_can.
+
+        Args:
+            self: (todo): write your description
+        """
         p = Pypher()
         vp = ValidPartial()
 
@@ -89,6 +142,12 @@ class PartialTests(unittest.TestCase):
         self.assertEqual(str(p), exp)
 
     def test_can_pass_partial_as_an_argument_and_bubble_its_params(self):
+        """
+        Tests if the user - defined in this function call.
+
+        Args:
+            self: (todo): write your description
+        """
         arg = 'my_arg_{}'.format(random())
         p = Pypher()
         ap = PartialWithArgs(arg)
@@ -102,6 +161,12 @@ class PartialTests(unittest.TestCase):
         self.assertEqual(1, len(params))
 
     def test_can_nest_multiple_partials_as_an_argument_and_bubble_its_params(self):
+        """
+        Check if a random number of a random arguments.
+
+        Args:
+            self: (todo): write your description
+        """
         arg = 'my_arg_{}'.format(random())
         arg2 = 'my_arg2_{}'.format(random())
         p = Pypher()
@@ -121,6 +186,12 @@ class PartialTests(unittest.TestCase):
 class PartialOperatorTests(unittest.TestCase):
 
     def test_can_add_two_partials(self):
+        """
+        Tests if the test is already exists.
+
+        Args:
+            self: (todo): write your description
+        """
         v = ValidPartial()
         v2 = ValidPartial()
 
@@ -131,6 +202,12 @@ class PartialOperatorTests(unittest.TestCase):
         self.assertEqual(str(v), expected)
 
     def test_can_add_two_partials_with_arguments_to_pypher(self):
+        """
+        Function to add a test_can_to_arguments can be added to be used to set of arguments.
+
+        Args:
+            self: (todo): write your description
+        """
         arg = 'my_arg_{}'.format(random())
         arg2 = 'my_arg2_{}'.format(random())
         integer = int(random())
@@ -153,6 +230,12 @@ class PartialOperatorTests(unittest.TestCase):
 class PartialCaseTests(unittest.TestCase):
 
     def test_can_add_case_to_pypher(self):
+        """
+        Convert to case to case
+
+        Args:
+            self: (todo): write your description
+        """
         one = 1
         two = 2
         three = 3
