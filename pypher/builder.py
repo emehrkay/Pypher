@@ -2,7 +2,7 @@ import copy
 import sys
 import uuid
 
-from collections import namedtuple, OrderedDict, Hashable
+from collections import namedtuple, OrderedDict
 
 from six import with_metaclass
 
