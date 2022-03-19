@@ -69,6 +69,8 @@ Pypher is a very simple query builder for Cypher. It works by creating a simple 
 
 _`Pypher`_ is the root object that all other objects sub-class and it makes everything work. Every operation taken on it (attribute access or assignments or comparisons) will result in link being added to list.
 
+> Quoting: by default Pypher will quote labels, properties, and map_keys with backticks `. This behavior can be overwritten by setting the QUOTE value in the builder module. `import pyper; pyper.builder.QUOTES['propery'] = '"'` this sets the quote marksf for properties to be a double quote instead of a backtick
+
 *Useful Methods and Properties*
 
 * `bind_param(value, name=None)` -- this method will add a bound param to to resulting Cypher query. If a name is not passed it, one will be generated.
