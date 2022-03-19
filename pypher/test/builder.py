@@ -142,6 +142,20 @@ class BuilderTests(unittest.TestCase):
 
         self.assertEqual(c, expected)
 
+    def test_can_add_one_property_with_custom_quote(self):
+        import pypher
+        pypher.builder.QUOTES['property'] = '"'
+        p = Pypher()
+        p.property('property')
+
+        expected = '."property"'
+        c = str(p)
+
+        self.assertEqual(c, expected)
+
+        # set it back to defualt backticks
+        pypher.builder.QUOTES['property'] = '`'
+
     def test_can_add_one_property_underscore(self):
         p = Pypher()
         p.__property__
@@ -218,6 +232,18 @@ class BuilderTests(unittest.TestCase):
         exp = '(:`Test`)'
 
         self.assertEqual(str(p), exp)
+
+    def test_can_add_empty_node_with_one_label_with_custom_quote(self):
+        import pypher
+        pypher.builder.QUOTES['label'] = '"'
+        p = Pypher()
+        p.node(labels="Test")
+        exp = '(:"Test")'
+
+        self.assertEqual(str(p), exp)
+
+        # reset to backtick
+        pypher.builder.QUOTES['label'] = '`'
 
     def test_can_add_empty_node_with_multiple_labels(self):
         p = Pypher()
@@ -1441,6 +1467,27 @@ class OperatorTests(unittest.TestCase):
 
         self.assertEqual(exp, q)
         self.assertEqual(2, len(params))
+
+    def test_can_use_dict_inside_of_list_widh_custom_map_key(self):
+        import pypher
+        mk = '"'
+        pypher.builder.QUOTES['map_key'] = mk
+        item = 'one'
+        toplevel = 1
+        args = { 'nested': [{'item': item}], 'toplevel': toplevel}
+        p = Pypher()
+        p.SET.UPDATED += args
+        q = str(p)
+        params = p.bound_params
+        exp = ('SET UPDATED += {{"nested": [{{"item": ${item}}}], "toplevel": ${toplevel}}}').format(
+            item=get_dict_key(params, item),
+            toplevel=get_dict_key(params, toplevel))
+
+        self.assertEqual(exp, q)
+        self.assertEqual(2, len(params))
+
+        # set it back to backticks
+        pypher.builder.QUOTES['map_key'] = '`'
 
 
 class ParamTests(unittest.TestCase):
