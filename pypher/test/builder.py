@@ -447,7 +447,7 @@ class BuilderTests(unittest.TestCase):
             name=name, age=age, min_hops=1, max_hops=3)
         c = str(p)
         params = p.bound_params
-        exp = '-[test:`one`|`two`|`three` {{`age`: ${a}, `name`: ${n}}}*1..3]-'.format(
+        exp = '-[test:`one`|`two`|`three`*1..3 {{`age`: ${a}, `name`: ${n}}}]-'.format(
             n=get_dict_key(params, name), a=get_dict_key(params, age))
 
         self.assertEqual(str(p), exp)

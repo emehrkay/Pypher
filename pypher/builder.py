@@ -1263,7 +1263,7 @@ class Relationship(Entity):
             properties = ' ' + properties
 
         if labels or properties or hops:
-            fill = '[{labels}{properties}{hops}]'.format(labels=labels,
+            fill = '[{labels}{hops}{properties}]'.format(labels=labels,
                 properties=properties, hops=hops)
         else:
             fill = ''
