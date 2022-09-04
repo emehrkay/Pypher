@@ -1,5 +1,10 @@
 # Pypher Changelog
 
+### 0.20.1 -- 08/27/2022
+
+* Fixed -- an issue with hops/property ordering. See -- https://github.com/emehrkay/Pypher/pull/53
+
+
 ### 0.20.0 -- 03/19/2022
 
 * Added -- the ability to define custom quotes for labels, properties, and map_keys 
