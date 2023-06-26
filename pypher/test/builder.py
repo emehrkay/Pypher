@@ -1758,6 +1758,13 @@ class ParamTests(unittest.TestCase):
         self.assertEqual(exp, s)
         self.assertEqual(1, len(params))
 
+    def test_in_statement_generates_correct_cypher_for_functions_returning_lists(self):
+        p = Pypher()
+        q = Pypher()
+        q.split("test1, test2", ",")
+        p.IN(q)
+
+        self.assertEqual(str(p), f'IN split(${list(p.bound_params)[0]}, ${list(p.bound_params)[1]})')
 
 if __name__ == '__main__':
     unittest.main()
