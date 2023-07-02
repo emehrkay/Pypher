@@ -44,6 +44,8 @@ _PREDEFINED_FUNCTIONS = [['size',], ['reverse',], ['head',], ['tail',],
     ['right',], ['trim',], ['ltrim',], ['toUpper',], ['toLower',],
     ['SPLIT', 'split',],['exists',], ['distinct', 'distinct', True],
     ['MAX', 'max'], ['labels']]
+_FUNCTIONS_RETURNING_LIST = ['collect', 'reverse', 'tail', 'labels', 'nodes', 
+    'keys', 'relationships', 'split']
 RELATIONSHIP_DIRECTIONS = {
     '-': 'undirected',
     '>': 'out',
@@ -768,6 +770,9 @@ class IN(Statement):
             args.append(value)
 
         args = ', '.join(args)
+
+        if args.split("(")[0] in _FUNCTIONS_RETURNING_LIST:
+            return 'IN {args}'.format(args=args)
 
         return 'IN [{args}]'.format(args=args)
 
