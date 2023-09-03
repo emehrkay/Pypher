@@ -158,7 +158,7 @@ class BuilderTests(unittest.TestCase):
 
     def test_can_add_one_property_underscore(self):
         p = Pypher()
-        p.__property__
+        p._property_
 
         expected = '.`property`'
         c = str(p)
@@ -176,7 +176,7 @@ class BuilderTests(unittest.TestCase):
 
     def test_can_add_two_properties_underscore(self):
         p = Pypher()
-        p.__prop1__.__prop2__
+        p._prop1_._prop2_
 
         expected = '.`prop1`.`prop2`'
         c = str(p)
@@ -185,7 +185,7 @@ class BuilderTests(unittest.TestCase):
 
     def test_can_add_two_properties_mixed(self):
         p = Pypher()
-        p.property('prop1').__prop2__
+        p.property('prop1')._prop2_
 
         expected = '.`prop1`.`prop2`'
         c = str(p)
@@ -1358,7 +1358,7 @@ class OperatorTests(unittest.TestCase):
     def test_can_bind_Rexp_arguments(self):
         p = Pypher()
         val = '".*some_val.*"'
-        p.n.__field__.Rexp(val)
+        p.n._field_.Rexp(val)
         q = str(p)
         params = p.bound_params
         exp = 'n.`field` =~ ${val}'.format(val=get_dict_key(params, val))

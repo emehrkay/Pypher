@@ -1,4 +1,5 @@
 import copy
+import re
 import sys
 import uuid
 
@@ -342,8 +343,13 @@ class Pypher(with_metaclass(_Link)):
     def __getattr__(self, attr):
         attr_low = attr.lower()
 
-        if attr_low[:2] == '__' and attr_low[-2:] == '__':
-            link = Property(name=attr.strip('__'))
+        if re.match('^__[a-z0-9]+__$', attr_low):
+            try:
+                self.__dict__.get(attr)
+            except KeyError:
+                raise AttributeError(f"'{self.__class__.__name__}' object has not attribute '{attr}'")
+        elif re.match('^_[a-z0-9]+_$', attr_low):
+            link = Property(name=attr.strip('_'))
         elif attr_low in _LINKS:
             link = _LINKS[attr_low]()
         else:
